@@ -1,0 +1,119 @@
+﻿#region --- License ---
+/* Licensed under the MIT/X11 license.
+ * Copyright (c) 2008 mjt[matola@sci.fi]
+ * This notice may not be removed from any source distribution.
+ * See license.txt for licensing details.
+ */
+#endregion
+
+using System;
+using System.Drawing;
+using CSat;
+using OpenTK;
+using OpenTK.Graphics;
+using OpenTK.Input;
+using OpenTK.Platform;
+
+namespace CSatExamples
+{
+
+    class Game9 : GameWindow
+    {
+        Camera cam = new Camera();
+
+        ITextPrinter printer = new TextPrinter();
+        TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
+
+        public Game9(int width, int height) : base(width, height, GraphicsMode.Default, "xxx") { }
+
+        /// <summary>Load resources here.</summary>
+        public override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            GL.ClearColor(System.Drawing.Color.Blue);
+            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.Texture2D);
+            GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
+            GL.Enable(EnableCap.CullFace);
+            GL.ShadeModel(ShadingModel.Smooth);
+            GL.Enable(EnableCap.Lighting);
+            GL.Enable(EnableCap.Light0);
+
+            Mouse.ButtonDown += MouseButtonDown;
+            Mouse.ButtonUp += MouseButtonUp;
+
+        }
+
+        bool[] mouseButtons = new bool[5];
+        void MouseButtonDown(MouseDevice sender, MouseButton button) { mouseButtons[(int)button] = true; }
+        void MouseButtonUp(MouseDevice sender, MouseButton button) { mouseButtons[(int)button] = false; }
+
+        #region OnUnload
+        public override void OnUnload(EventArgs e)
+        {
+            font.Dispose();
+
+        }
+        #endregion
+
+        /// <summary>
+        /// Called when your window is resized. Set your viewport here. It is also
+        /// a good place to set up your projection matrix (which probably changes
+        /// along when the aspect ratio of your window).
+        /// </summary>
+        /// <param name="e">Contains information on the new Width and Size of the GameWindow.</param>
+        protected override void OnResize(ResizeEventArgs e)
+        {
+            Util.Resize(e.Width, e.Height, 1.0, 1000);
+        }
+
+        /// <summary>
+        /// Called when it is time to setup the next frame.
+        /// </summary>
+        /// <param name="e">Contains timing information for framerate independent logic.</param>
+        public override void OnUpdateFrame(UpdateFrameEventArgs e)
+        {
+            if (Keyboard[Key.Escape])
+                Exit();
+
+            // ohjaus
+            float spd = 1;
+            if (Keyboard[Key.ShiftLeft]) spd = 2;
+            if (Keyboard[Key.W]) cam.MoveXZ(spd, 0);
+            if (Keyboard[Key.S]) cam.MoveXZ(-spd, 0);
+            if (Keyboard[Key.A]) cam.MoveXZ(0, -spd);
+            if (Keyboard[Key.D]) cam.MoveXZ(0, spd);
+            if (Keyboard[Key.R]) cam.position.Y++;
+            if (Keyboard[Key.F]) cam.position.Y--;
+            if (mouseButtons[(int)MouseButton.Left])
+            {
+                cam.TurnXZ(Mouse.XDelta);
+                cam.LookUpXZ(Mouse.YDelta);
+            }
+            int tmp = Mouse.XDelta; tmp = Mouse.YDelta;
+        }
+
+        /// <summary>
+        /// Called when it is time to render the next frame.
+        /// </summary>
+        /// <param name="e">Contains timing information.</param>
+        public override void OnRenderFrame(RenderFrameEventArgs e)
+        {
+            base.OnRenderFrame(e);
+            Settings.NumOfObjects = 0;
+
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+
+            Texture.ActiveUnit(0);
+            printer.Begin();
+            if (MainClass.UseFonts) printer.Draw("hoh: " + Settings.NumOfObjects, font);
+            printer.End();
+            GL.MatrixMode(MatrixMode.Modelview);
+
+            SwapBuffers();
+        }
+
+    }
+}

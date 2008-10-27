@@ -1,0 +1,42 @@
+# Blender3D MTL File: skene.blend
+# Material Count: 4
+newmtl None_GRAPHITI.JPG
+Ns 0
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+map_Kd GRAPHITI.JPG
+
+
+newmtl None_CHRMWARP.JPG
+Ns 0
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+map_Kd CHRMWARP.JPG
+
+
+newmtl None_GRAVSTN.JPG
+Ns 0
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+map_Kd GRAVSTN.JPG
+
+
+newmtl None_JUPITER2.JPG
+Ns 0
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+map_Kd JUPITER2.JPG
+
+
