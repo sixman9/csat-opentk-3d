@@ -329,7 +329,7 @@ namespace CSat
             Vector3 rot = -(rotation + fixRotation);
             if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
             {
-                rot = rot * MathExt.HalfPI;
+                rot = rot * MathExt.PiOver180;
                 Matrix4 mx = Matrix4.RotateX(rot.X);
                 Matrix4 my = Matrix4.RotateY(rot.Y);
                 Matrix4 mz = Matrix4.RotateZ(rot.Z);
@@ -409,7 +409,7 @@ namespace CSat
             Vector3 rot = -(rotation + fixRotation);
             if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
             {
-                rot = rot * MathExt.HalfPI;
+                rot = rot * MathExt.PiOver180;
                 Matrix4 mx = Matrix4.RotateX(rot.X);
                 Matrix4 my = Matrix4.RotateY(rot.Y);
                 Matrix4 mz = Matrix4.RotateZ(rot.Z);
@@ -482,7 +482,7 @@ namespace CSat
             Vector3 rot = -(rotation + fixRotation);
             if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
             {
-                rot = rot * MathExt.HalfPI;
+                rot = rot * MathExt.PiOver180;
                 Matrix4 mx = Matrix4.RotateX(rot.X);
                 Matrix4 my = Matrix4.RotateY(rot.Y);
                 Matrix4 mz = Matrix4.RotateZ(rot.Z);

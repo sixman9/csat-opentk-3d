@@ -87,8 +87,8 @@ namespace CSat
          */
         public void MoveXZ(float f)
         {
-            position.X -= ((float)Math.Sin(rotation.Y * MathExt.HalfPI) * f);
-            position.Z -= ((float)Math.Cos(rotation.Y * MathExt.HalfPI) * f);
+            position.X -= ((float)Math.Sin(rotation.Y * MathExt.PiOver180) * f);
+            position.Z -= ((float)Math.Cos(rotation.Y * MathExt.PiOver180) * f);
         }
 
         /**
@@ -99,8 +99,8 @@ namespace CSat
          */
         public void StrafeXZ(float f)
         {
-            position.X += ((float)Math.Cos(-rotation.Y * MathExt.HalfPI) * f);
-            position.Z += ((float)Math.Sin(-rotation.Y * MathExt.HalfPI) * f);
+            position.X += ((float)Math.Cos(-rotation.Y * MathExt.PiOver180) * f);
+            position.Z += ((float)Math.Sin(-rotation.Y * MathExt.PiOver180) * f);
         }
 
         /**

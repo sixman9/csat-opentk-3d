@@ -32,7 +32,7 @@ namespace CSat
 {
     public class MathExt
     {
-        public static readonly float HalfPI = (float)(Math.PI / 180);
+        public static readonly float PiOver180 = (float)(Math.PI / 180);
 
 
         #region --- Calc plane, normals.. ---
