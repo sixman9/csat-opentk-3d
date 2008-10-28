@@ -45,11 +45,18 @@ namespace CSat
 {
     public class Material
     {
+        public Material()
+        {
+            if(!materials.Contains("defaultMaterial")) materials.Add("defaultMaterial", this);
+        }
+
         // materiaali taulukko, jokaisella materiaalilla pitää olla eri nimi.
         static Hashtable materials = new Hashtable();
 
         // materiaalin nimi
         public string name = null;
+
+        static string curMaterial = "";
 
         // texturet
         public Texture diffuseTex = null;
@@ -210,11 +217,8 @@ namespace CSat
                 }
             }
             if (tmpmat != null && materials.Contains(tmpmat.name) == false) materials.Add(tmpmat.name, tmpmat);
-
         }
 
-
-        static string curMaterial = "";
         /**
          * jos vaikka materiaalin tietoja muuttaa, ja se on käytössä,
          * tällä saa uudet asetukset käyttöön.
@@ -242,7 +246,7 @@ namespace CSat
             if (curMaterial == name) return;
 
             curMaterial = name;
-
+            
             GL.Materialv(MaterialFace.Front, MaterialParameter.Ambient, mat.ambientColor);
             GL.Materialv(MaterialFace.Front, MaterialParameter.Diffuse, mat.diffuseColor);
             GL.Materialv(MaterialFace.Front, MaterialParameter.Specular, mat.specularColor);

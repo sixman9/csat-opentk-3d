@@ -40,11 +40,10 @@ using OpenTK.Math;
 
 namespace CSLoader
 {
-
     public class MD5Model : CSat.ObjectInfo, CSat.IModel
     {
         private bool animated = false;
-        CSat.Vbo o3d;
+        CSat.Vbo vboData;
         private CSat.Vertex[] vertices;
 
         private int numJoints;
@@ -52,6 +51,7 @@ namespace CSLoader
         private int meshCount;
         private int numOfFaces;
         private Vector3[] finalVert;
+        private Vector3[] normals;
         private ArrayList meshes;
         private int totalNumOfVerts = 0;
 
@@ -76,7 +76,7 @@ namespace CSLoader
             public int numTris;
             public int numWeights;
             public MD5Vertex[] verts;
-            public Vector3[] faces;
+            public int[][] faces;
             public MD5Weight[] weights;
 
             public CSat.VBOInfo vi; // vbo aloituspaikka ja pituus
@@ -133,7 +133,7 @@ namespace CSLoader
 
         public void Dispose()
         {
-            o3d.vbo.Dispose();
+            vboData.vbo.Dispose();
 
             for (int q = 0; q < model.Length; q++)
             {
@@ -147,6 +147,26 @@ namespace CSLoader
         {
             this.ext = ext;
         }
+
+
+        int NumOfTextures = 1; // jos käytetään enemmän kuin 1 texturea, tätä pitää muuttaa.
+        // voi erikseen valita mitä texture unitteja käytetään jos multitexture
+        public void SetTextureUnits()
+        {
+            switch (numOfFaces)
+            {
+                case 1:
+                    vboData.vbo.UseTextureUnits(true, false, false);
+                    break;
+                case 2:
+                    vboData.vbo.UseTextureUnits(true, true, false);
+                    break;
+                case 3:
+                    vboData.vbo.UseTextureUnits(true, true, true);
+                    break;
+            }
+        }
+
 
         /**
          *  lataa md5 malli.
@@ -243,14 +263,16 @@ namespace CSLoader
                         if (ParseLine(ref t, line, "numtris %d"))
                         {
                             model[meshCount].numTris = t.ibuffer[0];
-                            model[meshCount].faces = new Vector3[model[meshCount].numTris];
+                            model[meshCount].faces = new int[model[meshCount].numTris][];
                             for (i = 0; i < model[meshCount].numTris; i++)
                             {
                                 line = file.ReadLine();
                                 ParseLine(ref t, line, "tri %d %d %d %d");
-                                model[meshCount].faces[t.ibuffer[0]].X = t.ibuffer[3]; // poly toisin päin
-                                model[meshCount].faces[t.ibuffer[0]].Y = t.ibuffer[2];
-                                model[meshCount].faces[t.ibuffer[0]].Z = t.ibuffer[1];
+
+                                model[meshCount].faces[t.ibuffer[0]] = new int[3];
+                                model[meshCount].faces[t.ibuffer[0]][0] = t.ibuffer[3]; // poly toisin päin
+                                model[meshCount].faces[t.ibuffer[0]][1] = t.ibuffer[2];
+                                model[meshCount].faces[t.ibuffer[0]][2] = t.ibuffer[1];
                             }
                         }
                         if (ParseLine(ref t, line, "numweights %d"))
@@ -282,9 +304,13 @@ namespace CSLoader
             for (int k = 0; k < numMesh; k++)
             {
                 finalVert = new Vector3[maxvert];
+                normals = new Vector3[maxvert];
             }
 
             skeleton = baseSkel;
+
+            updateAnimCount = FramesBetweenAnimUpdate;
+            updateNormalsCount = FramesBetweenNormalsUpdate;
 
             // prepare model for rendering
             PrepareMesh();
@@ -292,15 +318,15 @@ namespace CSLoader
             // luo vbo
             if (vbo == null)
             {
-                o3d.vbo = new CSat.VBO();
-                vbo = o3d.vbo;
+                vboData.vbo = new CSat.VBO();
+                vbo = vboData.vbo;
 
                 // varataan objektille (kaikille mesheille) tilaa
                 vbo.AllocVBO(totalNumOfVerts, totalNumOfVerts, BufferUsageHint.DynamicDraw);
             }
             else
             {
-                o3d.vbo = vbo;
+                vboData.vbo = vbo;
             }
 
             for (int q = 0; q < numMesh; q++)
@@ -311,8 +337,26 @@ namespace CSLoader
 
                 model[q].vi = vbo.LoadVBO(v, ind);
             }
-
             CSat.Log.WriteDebugLine("Model: " + name);
+
+            CSat.Material material = new CSat.Material();
+
+        }
+
+
+        MD5Animation curAnim;
+        public int FramesBetweenAnimUpdate = 1; // monenko framen jälkeen lasketaan uusi asento
+        int updateAnimCount = 0;
+        public int FramesBetweenNormalsUpdate = 3; // monenko framen välein päivitetään normaalit
+        int updateNormalsCount = 0;
+
+        public void UpdateNormals()
+        {
+            updateNormalsCount = FramesBetweenNormalsUpdate;
+        }
+        public void UpdateAnimation()
+        {
+            updateAnimCount = FramesBetweenAnimUpdate;
         }
 
         // Prepare mesh for rendering
@@ -321,8 +365,6 @@ namespace CSLoader
             totalNumOfVerts = 0;
             int i, j, k;
             meshes.Clear();
-            Vector3 tmpnormal = new Vector3(0, 0, 1); // TODO fix
-
 
             // Calculate the final position ingame position of all the model vertexes
             for (k = 0; k < numMesh; k++)
@@ -345,19 +387,29 @@ namespace CSLoader
                     }
                     finalVert[i] = finalVertex;
                 }
+
+                // aika laskea normaalit uudelleen?
+                if (updateNormalsCount == FramesBetweenNormalsUpdate)
+                {
+                    CSat.MathExt.CalcNormals(ref finalVert, ref model[k].faces, ref normals, false);
+                    updateNormalsCount = 0;
+                }
+                else updateAnimCount++;
+
                 int count = 0;
                 // Organize the final vertexes acording to the meshes triangles
                 for (i = 0; i < model[k].numTris; i++)
                 {
-                    vertices[count] = new CSat.Vertex(finalVert[(int)model[k].faces[i].X], tmpnormal, model[k].verts[(int)model[k].faces[i].X].uv);
-                    vertices[count + 1] = new CSat.Vertex(finalVert[(int)model[k].faces[i].Y], tmpnormal, model[k].verts[(int)model[k].faces[i].Y].uv);
-                    vertices[count + 2] = new CSat.Vertex(finalVert[(int)model[k].faces[i].Z], tmpnormal, model[k].verts[(int)model[k].faces[i].Z].uv);
+                    vertices[count] = new CSat.Vertex(finalVert[(int)model[k].faces[i][0]], normals[(int)model[k].faces[i][0]], model[k].verts[(int)model[k].faces[i][0]].uv);
+                    vertices[count + 1] = new CSat.Vertex(finalVert[(int)model[k].faces[i][1]], normals[(int)model[k].faces[i][1]], model[k].verts[(int)model[k].faces[i][1]].uv);
+                    vertices[count + 2] = new CSat.Vertex(finalVert[(int)model[k].faces[i][2]], normals[(int)model[k].faces[i][2]], model[k].verts[(int)model[k].faces[i][2]].uv);
+
                     count += 3;
                     totalNumOfVerts += 3;
                 }
                 meshes.Add(vertices);
 
-                if (o3d.vbo != null) o3d.vbo.Update(vertices, model[k].vi);
+                if (vboData.vbo != null) vboData.vbo.Update(vertices, model[k].vi);
 
             }
 
@@ -378,25 +430,38 @@ namespace CSLoader
             GL.Rotate(fixRotation.Y, 0, 1, 0);
             GL.Rotate(fixRotation.Z, 0, 0, 1);
 
-            o3d.vbo.BeginRender();
-
             int i = 0;
-            foreach (CSat.Vertex[] v in meshes)
+            // tarkista onko objekti näkökentässä
+            if (CSat.Frustum.ObjectInFrustum(position.X, position.Y, position.Z, bounds))
             {
-                // tarkista onko objekti näkökentässä
-                if (CSat.Frustum.ObjectInFrustum(position.X, position.Y, position.Z, bounds))
+                vboData.vbo.BeginRender();
+
+                CSat.Material.SetMaterial("defaultMaterial");
+                SetTextureUnits();
+                model[i].texture.Bind();
+
+                // lasketaanko uusi asento
+                if (updateAnimCount == FramesBetweenAnimUpdate)
                 {
-                    model[i].texture.Bind();
+                    // Interpolate skeletons between two frames
+                    InterpolateSkeletons(ref curAnim.skelFrames, curAnim.curFrame, curAnim.nextFrame,
+                              curAnim.numJoints,
+                              curAnim.lastTime * curAnim.frameRate);
 
-                    //Render_debug(v);
-                    o3d.vbo.Render(model[i].vi);
-                    i++;
-
-                    CSat.Settings.NumOfObjects++;
+                    PrepareMesh();
+                    updateAnimCount = 0;
                 }
+                else updateAnimCount++;
+
+                //Render_debug(v);
+                vboData.vbo.Render(model[i].vi);
+                i++;
+
+                CSat.Settings.NumOfObjects++;
+
+                vboData.vbo.EndRender();
             }
 
-            o3d.vbo.EndRender();
 
             // renderoidaan myös kaikki childit
             if (objects.Count != 0)
@@ -404,8 +469,8 @@ namespace CSLoader
                 base.RenderTree();
             }
 
-
             GL.PopMatrix();
+
         }
 
         void Render_debug(CSat.Vertex[] v)
@@ -563,19 +628,15 @@ namespace CSLoader
             }
         }
 
+
         public void Update(float time, ref MD5Animation md5anim)
         {
             if (animated)
             {
+                curAnim = md5anim;
+
                 /* Calculate current and next frames */
                 Animate(ref md5anim, time);
-
-                /* Interpolate skeletons between two frames */
-                InterpolateSkeletons(ref md5anim.skelFrames, md5anim.curFrame, md5anim.nextFrame,
-                          md5anim.numJoints,
-                          md5anim.lastTime * md5anim.frameRate);
-
-                PrepareMesh();
             }
             else
             {

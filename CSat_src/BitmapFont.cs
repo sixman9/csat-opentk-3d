@@ -23,6 +23,8 @@ email: matola@sci.fi
 */
 #endregion
 
+// TODO: kirjaimet display listiin / vbohon?
+
 /* 
  * fonttitiedoston pitää olla .PNG
  * 
@@ -38,9 +40,6 @@ email: matola@sci.fi
  (tulee <a href="http://irrlicht.sourceforge.net/">Irrlicht</a> 3d-enginen mukana)
  jolloin kirjainten ei tarvitse olla saman levyisiä.
  Löytyy myös (atm): https://archon2160.pbwiki.com/f/IrrFontTool.exe
- * 
- * todo:
- *  musta taustaväri läpinäkyväksi.
  * 
  */
 
@@ -100,11 +99,11 @@ namespace CSat
                 Bitmap CurrentBitmap = null;
 
                 CurrentBitmap = new Bitmap(Settings.TextureDir + fileName);
-                if (CurrentBitmap.PixelFormat == System.Drawing.Imaging.PixelFormat.Format24bppRgb)
+                if (CurrentBitmap.PixelFormat == System.Drawing.Imaging.PixelFormat.Format24bppRgb || CurrentBitmap.PixelFormat == System.Drawing.Imaging.PixelFormat.Format32bppArgb)
                 {
                     BitmapData Data = CurrentBitmap.LockBits(new Rectangle(0, 0, CurrentBitmap.Width, CurrentBitmap.Height), ImageLockMode.ReadOnly, CurrentBitmap.PixelFormat);
 
-                    SearchUV(ref Data);
+                    SearchUV(ref Data, (CurrentBitmap.PixelFormat == System.Drawing.Imaging.PixelFormat.Format24bppRgb) ? 3 : 4);
 
                     CurrentBitmap.UnlockBits(Data);
                 }
@@ -122,7 +121,7 @@ namespace CSat
             return (long)((r << 16) + (g << 8) + b);
         }
 
-        void SearchUV(ref BitmapData data)
+        void SearchUV(ref BitmapData data, int bpp)
         {
             int width = 0, height = 0, x = 0, y = 0;
             int ch = 0;
@@ -132,7 +131,7 @@ namespace CSat
                 // ota ylätarkistusväri
                 byte* ptr = (byte*)(data.Scan0);
                 long color1 = GetColor(*ptr, *(ptr + 1), *(ptr + 2));
-                ptr += 3;
+                ptr += bpp;
                 // ota alatarkistusväri
                 long color2 = GetColor(*ptr, *(ptr + 1), *(ptr + 2));
 
@@ -140,7 +139,7 @@ namespace CSat
                 ptr = (byte*)(data.Scan0);
                 for (int i = 0; i < data.Height; i++)
                 {
-                    ptr += data.Width * 3;
+                    ptr += data.Width * bpp;
                     height++;
                     long curcol = GetColor(*ptr, *(ptr + 1), *(ptr + 2));
                     if (curcol == color1) break;
@@ -161,8 +160,8 @@ namespace CSat
                             long b = 0;
 
                             // haetaan alanurkka
-                            ptr += data.Width * 3 * (height - 1);
-                            b += data.Width * 3 * (height - 1);
+                            ptr += data.Width * bpp * (height - 1);
+                            b += data.Width * bpp * (height - 1);
                             width = 0;
 
                             while (true)
@@ -172,14 +171,14 @@ namespace CSat
                                 {
                                     // kirjaimen tiedot talteen
                                     uv[ch] = new Rect((float)x / (float)data.Width,
-                                        (float)(y - 1) / (float)data.Height,
+                                        (float)(y - 2.5f) / (float)data.Height,
                                         (float)width / (float)data.Width,
-                                        (float)(height - 2) / (float)data.Height);
+                                        (float)(height - 4f) / (float)data.Height);
 
                                     break;
                                 }
-                                ptr += 3;
-                                b += 3;
+                                ptr += bpp;
+                                b += bpp;
                                 width++;
 
 
@@ -190,7 +189,7 @@ namespace CSat
                         }
                         x++;
                         if (x >= data.Width) break;
-                        ptr += 3;
+                        ptr += bpp;
 
                     }
 
@@ -198,7 +197,7 @@ namespace CSat
                     y -= height;
                     if (y >= data.Height) break;
                     ptr = (byte*)(data.Scan0);
-                    ptr += data.Width * 3 * (-y);
+                    ptr += data.Width * bpp * (-y);
 
                     if (ch >= chars.Length)
                     {
@@ -218,19 +217,24 @@ namespace CSat
             this.size = size * 100;
         }
 
-        public void Write(string str)
+        public void Write3D(string str)
         {
-            Write(curX, curY, str);
+            Write3D(curX, curY, str);
         }
 
-        public void Write(float x, float y, string str)
+        public void Write3D(float x, float y, string str)
         {
             curX = x;
             curY = y;
 
             fontTex.Bind();
+            GL.Disable(EnableCap.CullFace);
             GL.Enable(EnableCap.Texture2D);
             GL.Disable(EnableCap.Lighting);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            GL.Enable(EnableCap.AlphaTest);
+            GL.AlphaFunc(AlphaFunction.Greater, 0.1f);
             GL.PushMatrix();
 
             GL.Translate(x, y, 0);
@@ -284,6 +288,87 @@ namespace CSat
             }
 
             GL.PopMatrix();
+            GL.Enable(EnableCap.CullFace);
+            GL.Disable(EnableCap.Blend);
+            GL.Disable(EnableCap.AlphaTest);
+        }
+
+
+        public void Write(string str)
+        {
+            Write(curX, curY, str);
+        }
+        public void Write(float x, float y, string str)
+        {
+            size *= 5;
+            curX = x;
+            curY = y;
+
+            fontTex.Bind();
+            GL.Disable(EnableCap.CullFace);
+            GL.Enable(EnableCap.Texture2D);
+            GL.Disable(EnableCap.Lighting);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            GL.Enable(EnableCap.AlphaTest);
+            GL.AlphaFunc(AlphaFunction.Greater, 0.1f);
+            GL.PushMatrix();
+
+            GL.Translate(x, (float)Util.ScreeenHeight - (2*y), 0); // miks 2*y? 
+
+            float xp = curX, yp = curY;
+
+            for (int q = 0; q < str.Length; q++)
+            {
+                int ch;
+
+                // etsi kirjain
+                for (ch = 0; ch < chars.Length; ch++)
+                {
+                    if (str[q] == chars[ch])
+                    {
+                        break;
+                    }
+                }
+                if (str[q] == '\n')
+                {
+                    xp = curX;
+                    yp -= height * size;
+                    curY -= height * size;
+                    continue;
+                }
+
+                float u = uv[ch].x;
+                float v = uv[ch].y;
+                float w = uv[ch].w;
+                float h = uv[ch].h;
+                float wm = w * size;
+                float hm = h * size;
+
+                GL.Begin(BeginMode.Quads);
+
+                GL.TexCoord2(u, v);
+                GL.Vertex2(xp, yp);
+
+                GL.TexCoord2(u + w, v);
+                GL.Vertex2(xp + wm, yp);
+
+                GL.TexCoord2(u + w, v + h);
+                GL.Vertex2(xp + wm, yp + h + hm);
+
+                GL.TexCoord2(u, v + h);
+                GL.Vertex2(xp, yp + h + hm);
+
+                GL.End();
+
+                xp += wm;
+            }
+
+            GL.PopMatrix();
+            GL.Disable(EnableCap.Blend);
+            GL.Disable(EnableCap.AlphaTest);
+
+            size /= 5;
         }
 
 

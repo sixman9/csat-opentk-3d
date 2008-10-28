@@ -87,7 +87,7 @@ namespace CSat
         }
 
         static bool is3DMode = false;
-        static double _near = 0.1, _far = 1000;
+        public static double Near = 0.1, Far = 1000, Fov=45;
         public static int ScreenWidth = 800, ScreeenHeight = 600;
         public static void Set2DMode(int width, int height)
         {
@@ -109,13 +109,13 @@ namespace CSat
             is3DMode = true;
             ScreenWidth = width;
             ScreeenHeight = height;
-            _near = near;
-            _far = far;
+            Near = near;
+            Far = far;
 
             GL.Viewport(0, 0, width, height);
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadIdentity();
-            Glu.Perspective(45.0, (double)width / (double)height, near, far);
+            Glu.Perspective(Fov, (double)width / (double)height, near, far);
 
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
@@ -131,7 +131,7 @@ namespace CSat
         }
         public static void Resize()
         {
-            Resize(ScreenWidth, ScreeenHeight, _near, _far);
+            Resize(ScreenWidth, ScreeenHeight, Near, Far);
         }
         public static void Set2DMode()
         {
@@ -139,7 +139,7 @@ namespace CSat
         }
         public static void Set3DMode()
         {
-            Set3DMode(ScreenWidth, ScreeenHeight, _near, _far);
+            Set3DMode(ScreenWidth, ScreeenHeight, Near, Far);
         }
 
     }

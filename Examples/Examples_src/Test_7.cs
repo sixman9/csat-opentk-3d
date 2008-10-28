@@ -64,7 +64,7 @@ namespace CSatExamples
             Mouse.ButtonDown += MouseButtonDown;
             Mouse.ButtonUp += MouseButtonUp;
 
-            bfont.Load("times14.png");
+            bfont.Load("fonts/times14.png");
 
             SetupParticles(true, true, true);
 
@@ -124,7 +124,7 @@ namespace CSatExamples
             int tmp = Mouse.XDelta; tmp = Mouse.YDelta;
         }
 
-
+        float qq=0;
         /// <summary>
         /// Called when it is time to render the next frame.
         /// </summary>
@@ -135,8 +135,8 @@ namespace CSatExamples
             base.OnRenderFrame(e);
 
             cam.UpdateXZ();
-
             GL.Disable(EnableCap.Lighting);
+            Util.RenderGrid();
 
             // tapa1:
             // particles -partikkeliengine hoitaa sinne lisättyjen partikkelien
@@ -150,12 +150,16 @@ namespace CSatExamples
             GL.Translate(50, 5, 0);
 
             Texture.ActiveUnit(0);
-            bfont.Write(1, 1, "Eka testi!");
-            bfont.Write("\nMuutetaan paikkaa eik je?");
-            bfont.Write(10, 5, "Koordinaattei hei,\nainii ja rivinvaihto juu.");
-            bfont.Write(5, 10, "Semmost se o. The end.");
+            
+            bfont.Write3D(1, 0,"\nNew line..\n   stupid test.");
+            bfont.Write3D(10, 10, "Using coordinates,\nblaa bluu böä.");
+            bfont.Write3D(5, -10, "The end.");
 
-            Util.RenderGrid();
+            // 2d jutut kantsii pistää aina viimeisenä
+
+            Util.Set2DMode();
+            bfont.Write(21, qq += 2, "First BitmapFont test!");
+            Util.Set3DMode();
 
             SwapBuffers();
         }

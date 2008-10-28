@@ -82,7 +82,7 @@ namespace CSatExamples
             car2.position.Y = -0.2f;
             car2.position.Z = -15;
 
-            skybox.Load("sky_", "jpg", 100);
+            skybox.Load("sky/sky_", "jpg", 100);
 
             groundPlane.Load("2.jpg", null); //CHRMWARP.JPG", null);
 

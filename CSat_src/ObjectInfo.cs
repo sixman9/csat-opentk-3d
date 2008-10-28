@@ -127,7 +127,7 @@ namespace CSat
         }
 
 
-        // todo rotate
+        // todo 6dof rotate
 
     }
 }

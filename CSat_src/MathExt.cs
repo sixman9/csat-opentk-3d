@@ -70,9 +70,7 @@ namespace CSat
         // laske vertexnormaalit
         public static void CalcNormals(ref Vector3[] pos, ref int[][] faces, ref Vector3[] normals, bool flipNormals)
         {
-            int q;
-            int w;
-            int count = 0;
+            int q, w, count = 0;
             Vector3 outv = new Vector3();
             Vector3 c = new Vector3();
             float len;
@@ -125,6 +123,7 @@ namespace CSat
                 }
             }
         }
+
         #endregion
 
         // quaternion code:

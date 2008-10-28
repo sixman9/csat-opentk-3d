@@ -32,7 +32,6 @@ namespace CSat
     {
         void Load(string fileName, VBO vbo);
         void Render();
-
     }
 
     public class AnimatedModel : Group, IModel, ICloneable
@@ -68,7 +67,5 @@ namespace CSat
             o.objects = new ArrayList(objects);
             return o;
         }
-
-
     }
 }

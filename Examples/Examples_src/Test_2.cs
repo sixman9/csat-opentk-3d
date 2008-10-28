@@ -51,7 +51,7 @@ namespace CSatExamples
             GL.Enable(EnableCap.Light0);
 
             obj.Load("skene.obj", 20, 20, 20, null);
-            skybox.Load("sky2_", "jpg", 100);
+            skybox.Load("sky/sky2_", "jpg", 100);
             tex = Texture.Load("1.png");
 
             cam.position.Y = 10;

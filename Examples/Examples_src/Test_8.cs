@@ -15,7 +15,6 @@
  *  
  *  asetetaan myös valo. se pitää päivittää kameran päivityksen jälkeen.
  *  
- * md5 mallille ei lasketa vielä normaaleja joten se näyttää vaihtavan väriä kameran mukaan.. TODO
  * 
  */
 using System;
@@ -61,17 +60,17 @@ namespace CSatExamples
             GL.ShadeModel(ShadingModel.Smooth);
 
             Light.Enable();
-            light.position = new Vector3(-100, 100, 0);
+            light.position = new Vector3(50, 80, -100);
             light.UpdateColor(0);
             light.SetLight(0, true);
-            Light.Add(light); // lisää valo
-
+            Light.Add(light); // lisää valo (aurinko)
+            
 
             Mouse.ButtonDown += MouseButtonDown;
             Mouse.ButtonUp += MouseButtonUp;
 
             // Lataukset
-            skybox.Load("sky2_", "jpg", 100);
+            skybox.Load("sky/sky2_", "jpg", 100);
             world.Add(skybox); // skybox aina ekana koska se on kaikkien takana
 
             obj[0] = new Object3D("Head/head.obj2", null); // ladataan kerran

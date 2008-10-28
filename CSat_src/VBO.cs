@@ -236,7 +236,7 @@ namespace CSat
         public VBOInfo LoadVBO(Vertex[] verts, int[] indices)
         {
             VBOInfo vi;
-            vertexFlags |= 4;
+            vertexFlags |= 5;
 
             for (int q = 0; q < indices.Length; q++)
             {
@@ -276,9 +276,8 @@ namespace CSat
         // tilat päälle
         public void BeginRender()
         {
-            // jos vbo on jo poistettu.
             // jos lataa monta objektia samaan vbo:hon, poistaa yhden objektin niin se koko vbo häviää.
-            // tämä ilmoittamassa jos tulee semmoinen bugi.
+            // tämä ilmoittamassa jos niin on käynyt (ohjelmoijan pitää huolehtia ettei niin käy).
             if (vertexID == 0 || indexID == 0)
             {
                 throw new Exception("VBO destroyed!");
