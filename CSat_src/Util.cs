@@ -57,7 +57,7 @@ namespace CSat
             GL.Begin(BeginMode.Lines);
             for (int q = 0; q < 20; q++)
             {
-                GL.Vertex3(-100, 0, q * 10-100);
+                GL.Vertex3(-100, 0, q * 10 - 100);
                 GL.Vertex3(100, 0, q * 10 - 100);
 
                 GL.Vertex3(q * 10 - 100, 0, -100);
@@ -67,10 +67,11 @@ namespace CSat
 
         }
 
-        /**
-         * palauttaa str:stä float luvun.
-         * jos pisteen kanssa ei onnistu, kokeillaan pilkun kanssa.
-         */
+        /// <summary>
+        /// palauttaa str:stä float luvun. jos pisteen kanssa ei onnistu, kokeillaan pilkun kanssa.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static float GetFloat(string str)
         {
             float n;
@@ -87,7 +88,7 @@ namespace CSat
         }
 
         static bool is3DMode = false;
-        public static double Near = 0.1, Far = 1000, Fov=45;
+        public static double Near = 0.1, Far = 1000, Fov = 45;
         public static int ScreenWidth = 800, ScreeenHeight = 600;
         public static void Set2DMode(int width, int height)
         {

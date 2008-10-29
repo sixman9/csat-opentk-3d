@@ -35,16 +35,18 @@ namespace CSat
 
         public Camera()
         {
+            cam = this;
             name = "camera";
         }
         public Camera(string name)
         {
+            cam = this;
             this.name = name;
         }
 
-        /**
-         * p‰ivit‰ kameran paikka
-         */
+        /// <summary>
+        /// p‰ivit‰ kameran paikka XZ tasolla.
+        /// </summary>
         public void UpdateXZ()
         {
             GL.LoadIdentity();
@@ -56,10 +58,9 @@ namespace CSat
             GL.Translate(-position.X, -position.Y, -position.Z);
         }
 
-        /**
-         * p‰ivit‰ kameran paikka 
-         * (6DOF kamera)
-         */
+        /// <summary>
+        /// p‰ivit‰ kameran paikka (6DOF kamera)
+        /// </summary>
         public void Update6DOF()
         {
             GL.LoadIdentity();
@@ -69,18 +70,22 @@ namespace CSat
             Glu.LookAt(position.X, position.Y, position.Z, vp.X, vp.Y, vp.Z, up.X, up.Y, up.Z);
         }
 
-        /**
-         * k‰‰nn‰ kuvakulma pos:iin
-         */
+        /// <summary>
+        /// k‰‰nn‰ kuvakulma pos:iin
+        /// </summary>
+        /// <param name="pos"></param>
         public void LookAt(Vector3 pos)
         {
             GL.LoadIdentity();
             Glu.LookAt(position.X, position.Y, position.Z, pos.X, pos.Y, pos.Z, up.X, up.Y, up.Z);
         }
 
-        /**
-         * k‰‰nn‰ kuvakulma xyz:aan
-         */
+        /// <summary>
+        /// k‰‰nn‰ kuvakulma xyz:aan
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         public void LookAt(float x, float y, float z)
         {
             GL.LoadIdentity();

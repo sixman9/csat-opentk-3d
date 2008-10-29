@@ -142,9 +142,14 @@ namespace CSat
             return true;
         }
 
-        /**
-         * palauttaa etäisyyden kameraan jos pallo frustumissa, muuten 0.
-         */
+        /// <summary>
+        /// palauttaa etäisyyden kameraan jos pallo frustumissa, muuten 0.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <param name="radius"></param>
+        /// <returns></returns>
         public static float SphereInFrustum(float x, float y, float z, float radius)
         {
             float d = 0;
@@ -162,9 +167,14 @@ namespace CSat
             return d + radius;
         }
 
-        /**
-         * box testaus
-         */
+        /// <summary>
+        /// box testaus. onko laatikko edes osittain ruudulla. jos on, palauta true.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <param name="bb"></param>
+        /// <returns></returns>
         public static bool BoxInFrustum(float x, float y, float z, BoundingVolume bb)
         {
             int q;

@@ -21,11 +21,10 @@ namespace CSatExamples
 
     class Game3 : GameWindow
     {
+        Camera cam = new Camera();
         const int PART = 100; // montako partikkelia laitetaan savuun, räjähdykseen ja testiin
 
         static Random random = new Random();
-
-        Camera cam = new Camera();
 
         ITextPrinter printer = new TextPrinter();
         TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
@@ -146,7 +145,7 @@ namespace CSatExamples
             // tapa1:
             // particles -partikkeliengine hoitaa sinne lisättyjen partikkelien
             // renderoinnista. se sorttaa ne, hoitaa takaisinkutsut ym.
-            particles.Render(cam);
+            particles.Render();
 
             // tapa2:
             // renderoidaan 1 partikkelirykelmä, ei sortata, ei takaisinkutsua.

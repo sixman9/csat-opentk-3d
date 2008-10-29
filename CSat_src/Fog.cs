@@ -34,17 +34,22 @@ namespace CSat
     {
         static Vector3 color = new Vector3(0.3f, 0.2f, 0.5f);
 
-        /**
-         * aseta sumun väri
-         */
+        /// <summary>
+        /// aseta sumun väri
+        /// </summary>
+        /// <param name="color"></param>
         public static void SetColor(Vector3 color)
         {
             Fog.color = color;
         }
 
-        /**
-         * luo sumu
-         */
+        /// <summary>
+        /// luo sumu
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="density"></param>
         public static void CreateFog(FogMode mode, float start, float end, float density)
         {
             GL.Fog(FogParameter.FogMode, (int)mode);

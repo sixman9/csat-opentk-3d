@@ -49,25 +49,21 @@ namespace CSat
         float r;
         public float R { get { return r; } }
 
-        byte mode = Sphere; // miten tarkistetaan frustumiin (BOX/SPHERE)
-        public byte Mode
-        {
-            set { mode = value; }
-            get { return mode; }
-        }
+        public byte Mode = Sphere; // miten tarkistetaan frustumiin (BOX/SPHERE)
 
-        public void FindMinMax(Mesh m)
+        public void FindMinMax(Object3D o)
         {
-            for (int c = 0; c < m.vertexInd.Count; c++)
+            for (int c = 0; c < o.mesh.vertexInd.Count; c++)
             {
-                int q = (int)m.vertexInd[c];
-                if (m.object3d.Vertex[q].X < min.X) min.X = m.object3d.Vertex[q].X;
-                if (m.object3d.Vertex[q].Y < min.Y) min.Y = m.object3d.Vertex[q].Y;
-                if (m.object3d.Vertex[q].Z < min.Z) min.Z = m.object3d.Vertex[q].Z;
+                int q = (int)o.mesh.vertexInd[c];
+                if (o.Vertex[q].X < min.X) min.X = o.Vertex[q].X;
+                if (o.Vertex[q].Y < min.Y) min.Y = o.Vertex[q].Y;
+                if (o.Vertex[q].Z < min.Z) min.Z = o.Vertex[q].Z;
 
-                if (m.object3d.Vertex[q].X > max.X) max.X = m.object3d.Vertex[q].X;
-                if (m.object3d.Vertex[q].Y > max.Y) max.Y = m.object3d.Vertex[q].Y;
-                if (m.object3d.Vertex[q].Z > max.Z) max.Z = m.object3d.Vertex[q].Z;
+                if (o.Vertex[q].X > max.X) max.X = o.Vertex[q].X;
+                if (o.Vertex[q].Y > max.Y) max.Y = o.Vertex[q].Y;
+                if (o.Vertex[q].Z > max.Z) max.Z = o.Vertex[q].Z;
+
             }
         }
 
@@ -89,29 +85,27 @@ namespace CSat
         // objektin bounding box
         public void CalcObjectBounds(Object3D obj)
         {
-            for (int q = 0; q < obj.Meshes.Length; q++)
+            for (int q = 0; q < obj.Objects.Count; q++)
             {
-                FindMinMax(obj.Meshes[q]);
+                Object3D child = (Object3D)obj.Objects[q];
+                FindMinMax(child);
             }
             CalcR();
             SetCorners();
             CalcPlanes();
         }
 
-        // mesh bounding box
         public void CalcMeshBounds(Object3D obj)
         {
-            for (int q = 0; q < obj.Meshes.Length; q++)
-            {
-                min = new Vector3(99999, 99999, 99999);
-                max = new Vector3(-99999, -99999, -99999);
-                FindMinMax(obj.Meshes[q]);
+            min = new Vector3(99999, 99999, 99999);
+            max = new Vector3(-99999, -99999, -99999);
 
-                Vector3 v = new Vector3(max - min);
-                r = v.Length;
-                v.Scale(.5f, .5f, .5f);
-                obj.Meshes[q].center = new Vector3(min + v); // meshin keskipiste
-            }
+            FindMinMax(obj);
+
+            Vector3 v = new Vector3(max - min);
+            r = v.Length;
+            v.Scale(.5f, .5f, .5f);
+            obj.mesh.center = new Vector3(min + v); // meshin keskipiste
 
             SetCorners();
             CalcPlanes();

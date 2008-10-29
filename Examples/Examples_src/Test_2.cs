@@ -8,7 +8,7 @@
 
 /* 
  * 3D test
- * obj loading, skybox, multitexturing
+ * parent loading, skybox, multitexturing
  * 
  */
 
@@ -26,7 +26,6 @@ namespace CSatExamples
     class Game2 : GameWindow
     {
         Camera cam = new Camera();
-
         ITextPrinter printer = new TextPrinter();
         TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
 
@@ -50,7 +49,7 @@ namespace CSatExamples
             GL.Enable(EnableCap.Lighting);
             GL.Enable(EnableCap.Light0);
 
-            obj.Load("skene.obj", 20, 20, 20, null);
+            obj = new Object3D("skene.obj", 20, 20, 20);
             skybox.Load("sky/sky2_", "jpg", 100);
             tex = Texture.Load("1.png");
 
@@ -125,7 +124,7 @@ namespace CSatExamples
             GL.Clear(ClearBufferMask.DepthBufferBit);
             base.OnRenderFrame(e);
 
-            skybox.Render(cam);
+            skybox.Render(Camera.cam);
             cam.UpdateXZ();
             Frustum.CalculateFrustum();
 

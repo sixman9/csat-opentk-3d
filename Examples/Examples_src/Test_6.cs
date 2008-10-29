@@ -20,9 +20,8 @@ namespace CSatExamples
 
     class Game6 : GameWindow
     {
-        Billboard obj = new Billboard();
-
         Camera cam = new Camera();
+        Billboard obj = new Billboard();
 
         ITextPrinter printer = new TextPrinter();
         TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
@@ -46,7 +45,7 @@ namespace CSatExamples
             Mouse.ButtonDown += MouseButtonDown;
             Mouse.ButtonUp += MouseButtonUp;
 
-            obj.Load("1.png", null);
+            obj.Load("1.png");
 
             cam.position.Z = 100;
             cam.position.Y = 2;

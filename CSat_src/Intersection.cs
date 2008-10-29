@@ -49,7 +49,7 @@ namespace CSat
          */
         public static bool CheckIntersection(ref Vector3 start, ref Vector3 end, Object3D obj)
         {
-            // jos obj -objektia k‰‰nnetty
+            // jos parent -objektia k‰‰nnetty
             Matrix4 outm = new Matrix4();
             Vector3 rot = -(obj.rotation + obj.fixRotation);
             if (rot.X != 0 || rot.Y != 0 || rot.Z != 0)
@@ -62,10 +62,10 @@ namespace CSat
                 Matrix4.Mult(ref mx, ref my, out outm0);
                 Matrix4.Mult(ref outm0, ref mz, out outm);
             }
-
-            for (int q = 0; q < obj.Meshes.Length; q++)
+            for (int q = 0; q < obj.Objects.Count; q++)
             {
-                if (CheckIntersection(ref start, ref end, ref obj.Meshes[q], ref obj.position, ref rot, ref outm) == true) return true;
+                Object3D child = (Object3D)obj.Objects[q];
+                if (CheckIntersection(ref start, ref end, ref child, ref obj.position, ref rot, ref outm) == true) return true;
             }
             return false;
         }
@@ -74,7 +74,7 @@ namespace CSat
          * tarkista osuuko start->end vektori johonkin polyyn. 
          * palauttaa true jos osuu, muuten false.
          */
-        public static bool CheckIntersection(ref Vector3 start, ref Vector3 end, ref Mesh mesh, ref Vector3 position, ref Vector3 rotation, ref Matrix4 matrix)
+        public static bool CheckIntersection(ref Vector3 start, ref Vector3 end, ref Object3D obj, ref Vector3 position, ref Vector3 rotation, ref Matrix4 matrix)
         {
             Vector3 dir = new Vector3();
             dir = end - start;
@@ -84,13 +84,13 @@ namespace CSat
             dir.Normalize();
             //len *= 2;
 
-            for (int e = 0; e < mesh.vertexInd.Count / 3; e++)
+            for (int e = 0; e < obj.mesh.vertexInd.Count / 3; e++)
             {
                 int i = e * 3;
                 // tarkista kolmio
-                Vector3 v1 = mesh.object3d.Vertex[(int)mesh.vertexInd[i + 0]];
-                Vector3 v3 = mesh.object3d.Vertex[(int)mesh.vertexInd[i + 1]];
-                Vector3 v2 = mesh.object3d.Vertex[(int)mesh.vertexInd[i + 2]];
+                Vector3 v1 = obj.Vertex[(int)obj.mesh.vertexInd[i + 0]];
+                Vector3 v3 = obj.Vertex[(int)obj.mesh.vertexInd[i + 1]];
+                Vector3 v2 = obj.Vertex[(int)obj.mesh.vertexInd[i + 2]];
 
                 Vector3 vout;
                 if (Math.Abs(rotation.X + rotation.Y + rotation.Z) > 0.001f)
@@ -114,7 +114,6 @@ namespace CSat
                     return true;
                 }
             }
-
             return false;
         }
 

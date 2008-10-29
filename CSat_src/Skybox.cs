@@ -36,15 +36,18 @@ namespace CSat
             skybox.Dispose();
         }
 
-        /**
-         *  lataa skybox
-         *  skyName: skyboxin nimi, eli esim plainsky_  jos tiedostot on plainsky_front.jpg, plainsky_back.jpg jne
-         *  ext: tiedoston p‰‰te, eli jpg, png, dds, ..
-         */
+        /// <summary>
+        /// lataa skybox.
+        /// </summary>
+        /// <param name="skyName">skyboxin nimi, eli esim plainsky_  jos tiedostot on plainsky_front.jpg, plainsky_back.jpg jne</param>
+        /// <param name="ext">tiedoston p‰‰te, eli jpg, png, dds, ..</param>
+        /// <param name="scale"></param>
         public void Load(string skyName, string ext, float scale)
         {
-            skybox.Textured = false; // ‰l‰ lataa objektin textureita automaattisesti
-            skybox.Load("skybox.obj", scale, scale, scale, null); // lataa skybox
+            Object3D.Textured = false; // ‰l‰ lataa objektin textureita automaattisesti
+            skybox = new Object3D("skybox.obj", scale, scale, scale); // lataa skybox
+            Object3D.Textured = true; // seuraava saa ladatakin..
+
             skybox.BoundingMode(BoundingVolume.None);
             string[] side = { "bottom", "left", "back", "right", "top", "front" };
 
@@ -58,7 +61,7 @@ namespace CSat
                 newSkyTex = Texture.Load(fileName);
 
                 // etsi sivun materiaali
-                string mat = skybox.Meshes[q].materialName;
+                string mat = skybox.GetObject(q).mesh.materialName;
 
                 Material matInf = Material.GetMaterial(mat);
 

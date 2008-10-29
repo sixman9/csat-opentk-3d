@@ -13,27 +13,6 @@
  *  kuvat piirretään niiden keskipisteestä. 
  */
 
-/*
-2D piirto:
-   // vain 1 kuva
-   Object2D t=new ObjecT2D();
-   t.Load("kuva.jpg");
-   t.Render();  // piirrä
-
-
-   // kuvajoukko samassa vbo:ssa
-   VBO aliens=new VBO();
-   aliens.AllocVBO(1000, 1000, BufferUsageHint.StaticDraw);
-   Object2D[] t=new Object2D [3];
-  
-   // ladataan kuvat ja lisätään kuvan tiedot (lev,kor) aliens vbo:hon
-   Object2D t[0]=new Object2D(); t[0].Load("alien1.jpg", aliens);
-   Object2D t[1]=new Object2D(); t[1].Load("alien2.jpg", aliens);
-   Object2D t[2]=new Object2D(); t[2].Load("alien3.jpg", aliens);
-   aliens.BeginRender(); // aseta renderointiasetukset
-   foreach(Texture t in t) t.Render(aliens);
-   aliens.EndRender(); // asetukset pois
- */
 using System;
 using System.Drawing;
 using CSat;
@@ -53,8 +32,6 @@ namespace CSatExamples
         Object2D t1 = new Object2D();
         Object2D[] tx = new Object2D[3];
 
-        VBO vbot = new VBO();
-
         public Game1(int width, int height) : base(width, height, GraphicsMode.Default, "2D test") { }
 
         /// <summary>Load resources here.</summary>
@@ -70,15 +47,14 @@ namespace CSatExamples
             GL.ShadeModel(ShadingModel.Smooth);
 
             // lataa kuva
-            t1.Load("back.jpg", null);
+            t1.Load("back.jpg");
 
             // lataa 3 kuvaa ja pistä ne samaan vbo:hon (niiden kokotiedot)
             string[] images = { "1.png", "2.png", "3.png" };
-            vbot.AllocVBO(1000, 1000, BufferUsageHint.StaticDraw);
             for (int q = 0; q < 3; q++)
             {
                 tx[q] = new Object2D();
-                tx[q].Load(images[q], vbot);
+                tx[q].Load(images[q]);
             }
 
             Util.Set2DMode();
@@ -90,7 +66,6 @@ namespace CSatExamples
             font.Dispose();
             t1.Dispose();
             for (int q = 0; q < 3; q++) tx[q].Dispose();
-            vbot.Dispose();
 
         }
         #endregion
@@ -118,7 +93,7 @@ namespace CSatExamples
 
 
         float angle = 0;
-        int q = 0;
+
         /// <summary>
         /// Called when it is time to render the next frame.
         /// </summary>
@@ -130,19 +105,15 @@ namespace CSatExamples
 
             t1.Render2D(Width / 2 + 20, Height / 2, 0, 2, 2);
 
-            vbot.BeginRender();
-            {
-                tx[0].Set(Width / 2, Height / 2, angle, 2 * (float)Math.Sin((float)angle), 2 * (float)Math.Sin((float)angle));
-                tx[0].Render2D(vbot);
-                tx[1].Render2D(100, Height-50, angle, 1, 1, vbot);
-                tx[2].Render2D(Width - 100, 100, -angle, 1, 1, vbot);
-            }
-            vbot.EndRender();
+            tx[0].Set(Width / 2, Height / 2, angle, 2 * (float)Math.Sin((float)angle), 2 * (float)Math.Sin((float)angle));
+            tx[0].Render2D();
+            tx[1].Render2D(100, Height - 50, angle, 1, 1);
+            tx[2].Render2D(Width - 100, 100, -angle, 1, 1);
 
             angle += (float)e.Time * 5;
 
             Texture.ActiveUnit(0);
-            
+
             printer.Begin();
             if (MainClass.UseFonts) printer.Draw("2D test", font);
             printer.End();

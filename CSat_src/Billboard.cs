@@ -37,7 +37,7 @@ namespace CSat
         }
         public Billboard(string textureFileName)
         {
-            Load(textureFileName, null);
+            Load(textureFileName);
         }
 
         public static float AlphaMin = 0.1f;
@@ -79,7 +79,7 @@ namespace CSat
 
         public static void BillboardRender(Object2D obj)
         {
-            obj.O2D.vbo.Render();
+            obj.Render();
         }
 
         public new void Render()
@@ -89,10 +89,10 @@ namespace CSat
 
         public void RenderBillboard(float x, float y, float z, float size)
         {
-            BillboardBegin(tex2d, x, y, z, size);
+            BillboardBegin(texture, x, y, z, size);
             GL.Enable(EnableCap.AlphaTest);
             GL.AlphaFunc(AlphaFunction.Greater, AlphaMin);
-            o2d.vbo.Render();
+            vbo.Render();
             BillboardEnd();
         }
 

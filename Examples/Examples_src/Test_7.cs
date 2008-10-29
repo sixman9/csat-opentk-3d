@@ -25,11 +25,10 @@ namespace CSatExamples
 
     class Game7 : GameWindow
     {
+        Camera cam = new Camera();
         const int PART = 5;
 
         static Random random = new Random();
-
-        Camera cam = new Camera();
 
         BitmapFont bfont = new BitmapFont();
 
@@ -141,7 +140,7 @@ namespace CSatExamples
             // tapa1:
             // particles -partikkeliengine hoitaa sinne lisättyjen partikkelien
             // renderoinnista. se sorttaa ne, hoitaa takaisinkutsut ym.
-            particles.Render(cam);
+            particles.Render();
 
             // tapa2:
             // renderoidaan 1 partikkelirykelmä, ei sortata, ei takaisinkutsua.

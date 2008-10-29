@@ -52,11 +52,11 @@ namespace CSat
         }
 
         protected ArrayList objects = new ArrayList();
-        public Object Objects
+        public ArrayList Objects
         {
             get
             {
-                return objects.ToArray();
+                return objects;
             }
         }
 
@@ -89,10 +89,15 @@ namespace CSat
             return null;
         }
 
-        /** 
-         * palauttaa true jos vektori oldpos->newpos välissä poly. sopii esim kameralle
-         * dontTestThis - objekti jota ei testata (eli liikuteltava objekti tai null jos esim kamera)
-         */
+        /// <summary>
+        /// palauttaa true jos vektori oldpos->newpos välissä poly. sopii esim kameralle
+        /// dontTestThis - objekti jota ei testata (eli liikuteltava objekti tai null jos esim kamera)
+        /// 
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="dontTestThis"></param>
+        /// <returns></returns>
         public bool CheckCollision(Vector3 start, Vector3 end, ref Object3D dontTestThis)
         {
             Vector3 len = start - end;
@@ -111,9 +116,13 @@ namespace CSat
             return false;
         }
 
-        /**
-         * palauttaa true jos objektin boundingboxin joku vertexi osuu johonkin polyyn
-         */
+        /// <summary>
+        /// palauttaa true jos objektin boundingboxin joku vertexi osuu johonkin polyyn
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public bool CheckCollisionBB(Vector3 start, Vector3 end, ref Object3D obj)
         {
             Vector3 len = start - end;
@@ -141,7 +150,7 @@ namespace CSat
                         // tarkistetaan bounding boxin kulmat, yrittääkö läpäistä jonkun polyn
                         for (int c = 0; c < 8; c++)
                         {
-                            Vector3 v = obj.ObjectBoundingVolume.Corner[c];
+                            Vector3 v = obj.objectGroupBoundingVolume.Corner[c];
 
                             Vector3 vout;
                             if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
@@ -166,12 +175,10 @@ namespace CSat
         }
 
 
-
-
-        /** 
-         * laske objekteille paikat. pitää kutsua jos 
-         * on liittänyt objekteihin toisia objekteja.
-         */
+        /// <summary>
+        /// laske objekteille paikat. pitää kutsua jos 
+        /// on liittänyt objekteihin toisia objekteja.
+        /// </summary>
         public void CalculatePositions()
         {
             GL.PushMatrix();

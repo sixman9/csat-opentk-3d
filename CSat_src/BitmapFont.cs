@@ -314,7 +314,7 @@ namespace CSat
             GL.AlphaFunc(AlphaFunction.Greater, 0.1f);
             GL.PushMatrix();
 
-            GL.Translate(x, (float)Util.ScreeenHeight - (2*y), 0); // miks 2*y? 
+            GL.Translate(x, (float)Util.ScreeenHeight - (2 * y), 0); // miks 2*y? 
 
             float xp = curX, yp = curY;
 

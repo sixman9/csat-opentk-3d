@@ -43,25 +43,28 @@ namespace CSat
         public Vector3 view;
         public Vector3 front, right, up;
 
-        /**
-         * k‰‰nn‰ y-akselin ymp‰ri
-         */
+        /// <summary>
+        /// k‰‰nn‰ y-akselin ymp‰ri
+        /// </summary>
+        /// <param name="f"></param>
         public void TurnXZ(float f)
         {
             rotation.Y -= f;
         }
 
-        /**
-         * k‰‰nn‰ x-akselin ymp‰ri
-         */
+        /// <summary>
+        /// k‰‰nn‰ x-akselin ymp‰ri
+        /// </summary>
+        /// <param name="f"></param>
         public void LookUpXZ(float f)
         {
             rotation.X -= f;
         }
 
-        /**
-         * k‰‰nn‰ z-akselin ymp‰ri
-         */
+        /// <summary>
+        /// k‰‰nn‰ z-akselin ymp‰ri
+        /// </summary>
+        /// <param name="f"></param>
         public void RollXZ(float f)
         {
             rotation.Z -= f;
@@ -79,37 +82,35 @@ namespace CSat
             }
         }
 
-        /**
-         * liikuta objektia xz tasossa
-         * 
-         * @param f
-         *                paljonko liikutaan eteen/taaksep‰in
-         */
+        /// <summary>
+        /// liikuta objektia xz tasossa
+        /// </summary>
+        /// <param name="f">paljonko liikutaan eteen/taaksep‰in</param>
         public void MoveXZ(float f)
         {
             position.X -= ((float)Math.Sin(rotation.Y * MathExt.PiOver180) * f);
             position.Z -= ((float)Math.Cos(rotation.Y * MathExt.PiOver180) * f);
         }
 
-        /**
-         * liikuta xz-tasossa
-         * 
-         * @param f
-         *                paljonko liikutaan sivuttais suunnassa
-         */
+        /// <summary>
+        /// liikuta xz-tasossa
+        /// </summary>
+        /// <param name="f">paljonko liikutaan sivuttain</param>
         public void StrafeXZ(float f)
         {
             position.X += ((float)Math.Cos(-rotation.Y * MathExt.PiOver180) * f);
             position.Z += ((float)Math.Sin(-rotation.Y * MathExt.PiOver180) * f);
         }
 
-        /**
+        /*
          * Metodit t‰ysin vapaaseen liikkumiseen (6DOF)
          * 
          */
-        /**
-         * eteenp‰in/taaksep‰in f/-f
-         */
+
+        /// <summary>
+        /// eteenp‰in/taaksep‰in f/-f
+        /// </summary>
+        /// <param name="f"></param>
         public void MoveForward(float f)
         {
             f = -f;

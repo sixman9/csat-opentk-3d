@@ -20,7 +20,6 @@ namespace CSatExamples
     class Game9 : GameWindow
     {
         Camera cam = new Camera();
-
         ITextPrinter printer = new TextPrinter();
         TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
 

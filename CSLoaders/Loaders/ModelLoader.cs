@@ -42,8 +42,9 @@ namespace CSLoader
 {
     public class MD5Model : CSat.ObjectInfo, CSat.IModel
     {
+        public int NumOfTextures = 1; // jos käytetään enemmän kuin 1 texturea, tätä pitää muuttaa.
+
         private bool animated = false;
-        CSat.Vbo vboData;
         private CSat.Vertex[] vertices;
 
         private int numJoints;
@@ -53,7 +54,6 @@ namespace CSLoader
         private Vector3[] finalVert;
         private Vector3[] normals;
         private ArrayList meshes;
-        private int totalNumOfVerts = 0;
 
         CSat.BoundingVolume bounds = new CSat.BoundingVolume();
 
@@ -79,7 +79,7 @@ namespace CSLoader
             public int[][] faces;
             public MD5Weight[] weights;
 
-            public CSat.VBOInfo vi; // vbo aloituspaikka ja pituus
+            public CSat.VBO vbo;
         }
         private MD5Mesh[] model;
 
@@ -133,11 +133,10 @@ namespace CSLoader
 
         public void Dispose()
         {
-            vboData.vbo.Dispose();
-
             for (int q = 0; q < model.Length; q++)
             {
                 model[q].texture.Dispose();
+                model[q].vbo.Dispose();
             }
         }
 
@@ -148,31 +147,11 @@ namespace CSLoader
             this.ext = ext;
         }
 
-
-        int NumOfTextures = 1; // jos käytetään enemmän kuin 1 texturea, tätä pitää muuttaa.
-        // voi erikseen valita mitä texture unitteja käytetään jos multitexture
-        public void SetTextureUnits()
-        {
-            switch (numOfFaces)
-            {
-                case 1:
-                    vboData.vbo.UseTextureUnits(true, false, false);
-                    break;
-                case 2:
-                    vboData.vbo.UseTextureUnits(true, true, false);
-                    break;
-                case 3:
-                    vboData.vbo.UseTextureUnits(true, true, true);
-                    break;
-            }
-        }
-
-
-        /**
-         *  lataa md5 malli.
-         *  vbo:  varattu vbo tai null jos varataan vain 3d-mallin viemä tila
-         */
-        public void Load(string fileName, CSat.VBO vbo)
+        /// <summary>
+        /// lataa md5 malli.
+        /// </summary>
+        /// <param name="fileName"></param>
+        public void Load(string fileName)
         {
             name = fileName;
 
@@ -242,7 +221,7 @@ namespace CSLoader
                             textureName = textureName.Replace(",", ".");
                         }
 
-                        // Read mesh data
+                        // Read obj data
                         if (ParseLine(ref t, line, "numverts %d"))
                         {
                             model[meshCount].numVert = t.ibuffer[0];
@@ -315,40 +294,20 @@ namespace CSLoader
             // prepare model for rendering
             PrepareMesh();
 
-            // luo vbo
-            if (vbo == null)
-            {
-                vboData.vbo = new CSat.VBO();
-                vbo = vboData.vbo;
-
-                // varataan objektille (kaikille mesheille) tilaa
-                vbo.AllocVBO(totalNumOfVerts, totalNumOfVerts, BufferUsageHint.DynamicDraw);
-            }
-            else
-            {
-                vboData.vbo = vbo;
-            }
-
             for (int q = 0; q < numMesh; q++)
             {
                 CSat.Vertex[] v = (CSat.Vertex[])meshes[q];
                 int[] ind = new int[v.Length];
                 for (int w = 0; w < ind.Length; w++) ind[w] = w;
 
-                model[q].vi = vbo.LoadVBO(v, ind);
+                // luo vbo ja datat sinne
+                model[q].vbo = new CSat.VBO(BufferUsageHint.DynamicDraw);
+                model[q].vbo.DataToVBO(v, ind);
             }
+
             CSat.Log.WriteDebugLine("Model: " + name);
-
             CSat.Material material = new CSat.Material();
-
         }
-
-
-        MD5Animation curAnim;
-        public int FramesBetweenAnimUpdate = 1; // monenko framen jälkeen lasketaan uusi asento
-        int updateAnimCount = 0;
-        public int FramesBetweenNormalsUpdate = 3; // monenko framen välein päivitetään normaalit
-        int updateNormalsCount = 0;
 
         public void UpdateNormals()
         {
@@ -359,10 +318,9 @@ namespace CSLoader
             updateAnimCount = FramesBetweenAnimUpdate;
         }
 
-        // Prepare mesh for rendering
+        // Prepare obj for rendering
         void PrepareMesh()
         {
-            totalNumOfVerts = 0;
             int i, j, k;
             meshes.Clear();
 
@@ -405,11 +363,10 @@ namespace CSLoader
                     vertices[count + 2] = new CSat.Vertex(finalVert[(int)model[k].faces[i][2]], normals[(int)model[k].faces[i][2]], model[k].verts[(int)model[k].faces[i][2]].uv);
 
                     count += 3;
-                    totalNumOfVerts += 3;
                 }
                 meshes.Add(vertices);
 
-                if (vboData.vbo != null) vboData.vbo.Update(vertices, model[k].vi);
+                if (model[k].vbo != null) model[k].vbo.Update(vertices);
 
             }
 
@@ -430,36 +387,44 @@ namespace CSLoader
             GL.Rotate(fixRotation.Y, 0, 1, 0);
             GL.Rotate(fixRotation.Z, 0, 0, 1);
 
-            int i = 0;
             // tarkista onko objekti näkökentässä
             if (CSat.Frustum.ObjectInFrustum(position.X, position.Y, position.Z, bounds))
             {
-                vboData.vbo.BeginRender();
-
-                CSat.Material.SetMaterial("defaultMaterial");
-                SetTextureUnits();
-                model[i].texture.Bind();
-
-                // lasketaanko uusi asento
-                if (updateAnimCount == FramesBetweenAnimUpdate)
+                for (int i = 0; i < model.Length; i++)
                 {
-                    // Interpolate skeletons between two frames
-                    InterpolateSkeletons(ref curAnim.skelFrames, curAnim.curFrame, curAnim.nextFrame,
-                              curAnim.numJoints,
-                              curAnim.lastTime * curAnim.frameRate);
+                    switch (NumOfTextures)
+                    {
+                        case 1: model[i].vbo.UseTextureUnits(true, false, false); break;
+                        case 2: model[i].vbo.UseTextureUnits(true, true, false); break;
+                        case 3: model[i].vbo.UseTextureUnits(true, true, true); break;
+                    }
 
-                    PrepareMesh();
-                    updateAnimCount = 0;
+                    model[i].vbo.BeginRender();
+
+                    CSat.Material.SetMaterial("defaultMaterial");
+
+                    model[i].texture.Bind();
+
+                    // lasketaanko uusi asento
+                    if (updateAnimCount == FramesBetweenAnimUpdate)
+                    {
+                        // Interpolate skeletons between two frames
+                        InterpolateSkeletons(ref curAnim.skelFrames, curAnim.curFrame, curAnim.nextFrame,
+                                  curAnim.numJoints,
+                                  curAnim.lastTime * curAnim.frameRate);
+
+                        PrepareMesh();
+                        updateAnimCount = 0;
+                    }
+                    else updateAnimCount++;
+
+                    //Render_debug(v);
+                    model[i].vbo.Render();
+
+                    CSat.Settings.NumOfObjects++;
+
+                    model[i].vbo.EndRender();
                 }
-                else updateAnimCount++;
-
-                //Render_debug(v);
-                vboData.vbo.Render(model[i].vi);
-                i++;
-
-                CSat.Settings.NumOfObjects++;
-
-                vboData.vbo.EndRender();
             }
 
 
@@ -487,9 +452,21 @@ namespace CSLoader
         // animation code
         MD5Joint[] skeleton = null;
 
-        /**
-         * Build skeleton for a given frame data.
-         */
+        MD5Animation curAnim;
+        public int FramesBetweenAnimUpdate = 1; // monenko framen jälkeen lasketaan uusi asento
+        int updateAnimCount = 0;
+        public int FramesBetweenNormalsUpdate = 3; // monenko framen välein päivitetään normaalit
+        int updateNormalsCount = 0;
+
+        /// <summary>
+        /// luo luuranko.
+        /// </summary>
+        /// <param name="jointInfos"></param>
+        /// <param name="baseFrame"></param>
+        /// <param name="animFrameData"></param>
+        /// <param name="frameIndex"></param>
+        /// <param name="num_joints"></param>
+        /// <param name="md5anim"></param>
         void BuildFrameSkeleton(ref MD5JointInfo[] jointInfos,
                     ref MD5BaseFrameJoint[] baseFrame,
                     ref float[] animFrameData,
@@ -577,11 +554,14 @@ namespace CSLoader
             }
         }
 
-
-
-        /**
-         * Smoothly interpolate two skeletons
-         */
+        /// <summary>
+        /// laske luurangolle asento.
+        /// </summary>
+        /// <param name="skel"></param>
+        /// <param name="curFrame"></param>
+        /// <param name="nextFrame"></param>
+        /// <param name="num_joints"></param>
+        /// <param name="interp"></param>
         void InterpolateSkeletons(ref MD5Joint[,] skel, int curFrame, int nextFrame,
                       int num_joints, float interp)
         {
@@ -602,10 +582,7 @@ namespace CSLoader
             }
         }
 
-        /**
-         * Perform animation related computations.  Calculate the current and
-         * next frames, given a delta time.
-         */
+        // laskemisia
         void Animate(ref MD5Animation anim, float dt)
         {
             int maxFrames = anim.numFrames - 1;
@@ -646,9 +623,11 @@ namespace CSLoader
 
         }
 
-        /**
-         * Load an MD5 animation from file.
-         */
+        /// <summary>
+        /// lataa md5-animaatio. 
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="anim"></param>
         public void LoadAnim(string fileName, ref MD5Animation anim)
         {
             if (fileName == null || fileName == "") return;

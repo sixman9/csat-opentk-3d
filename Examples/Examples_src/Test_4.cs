@@ -18,11 +18,9 @@ using OpenTK.Platform;
 
 namespace CSatExamples
 {
-
     class Game4 : GameWindow
     {
         Camera cam = new Camera();
-
         ITextPrinter printer = new TextPrinter();
         TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
 
@@ -45,8 +43,8 @@ namespace CSatExamples
             GL.ShadeModel(ShadingModel.Smooth);
             GL.Disable(EnableCap.Lighting);
 
-            // model.UseExt(".jpg"); // jos .mesh tiedostossa textureilla ei ole päätettä
-            model.Load("Ugly/Ukko.mesh", null);
+            // model.UseExt(".jpg"); // jos .obj tiedostossa textureilla ei ole päätettä
+            model.Load("Ugly/Ukko.mesh");
             model.LoadAnim("Ugly/Ukko_walk.anim", ref anim[0]);
             model.LoadAnim("Ugly/Ukko_action1.anim", ref anim[1]);
             model.LoadAnim("Ugly/Ukko_action2.anim", ref anim[2]);

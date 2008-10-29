@@ -31,14 +31,12 @@ namespace CSatExamples
     class Game5 : GameWindow
     {
         Camera cam = new Camera();
-
         ITextPrinter printer = new TextPrinter();
         TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
 
         Skybox skybox = new Skybox();
         Object3D car = new Object3D();
         Object3D car2 = new Object3D();
-        VBO vbot = new VBO();
         Object2D groundPlane = new Object2D();
 
         CarInfo carinfo;
@@ -53,7 +51,6 @@ namespace CSatExamples
         public override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            vbot.AllocVBO(2000, 2000, BufferUsageHint.StaticDraw);
 
             GL.ClearColor(System.Drawing.Color.Blue);
             GL.Enable(EnableCap.DepthTest);
@@ -72,11 +69,11 @@ namespace CSatExamples
             carinfo.down = 0.1f;
             carinfo.max = 5;
 
-            car.Load("car.obj", 2, 2, 2, vbot);
+            car = new Object3D("car.obj", 2, 2, 2);
             car.fixRotation.Y = -90;
             car.rotation.Y = 90;
 
-            car2.Load("truck.obj", 1, 1, 1, vbot);
+            car2 = new Object3D("truck.obj", 1, 1, 1);
             car2.rotation.Y = 90;
             car2.position.X = -10;
             car2.position.Y = -0.2f;
@@ -84,15 +81,13 @@ namespace CSatExamples
 
             skybox.Load("sky/sky_", "jpg", 100);
 
-            groundPlane.Load("2.jpg", null); //CHRMWARP.JPG", null);
+            groundPlane.Load("2.jpg");
 
             cam.position.Z = 15;
             cam.position.Y = 2;
 
             Mouse.ButtonDown += MouseButtonDown;
             Mouse.ButtonUp += MouseButtonUp;
-
-            vbot.PrintInfo();
 
             // lisätään autot maailmaan että coll.det. onnistuu
             world.Add(car);

@@ -39,13 +39,15 @@ namespace CSat
         public Object3D()
         {
         }
-        public Object3D(string fileName, VBO vbo)
+
+        public Object3D(string fileName)
         {
-            Load(fileName, 1, 1, 1, vbo);
+            Load(fileName, 1, 1, 1);
         }
-        public Object3D(string fileName, float xs, float ys, float zs, VBO vbo)
+
+        public Object3D(string fileName, float xs, float ys, float zs)
         {
-            Load(fileName, xs, ys, zs, vbo);
+            Load(fileName, xs, ys, zs);
         }
 
         object ICloneable.Clone()
@@ -60,13 +62,10 @@ namespace CSat
             return o;
         }
 
-        Mesh[] meshes;
-        public Mesh[] Meshes
-        {
-            get { return meshes; }
-        }
+        public MeshData mesh = new MeshData();
 
-        Vector3[] vertex, normal;
+        Vector3[] vertex;
+        Vector3[] normal;
         Vector2[] uv;
 
         public Vector3[] Vertex
@@ -75,56 +74,44 @@ namespace CSat
         }
 
         // ladataanko texturet
-        bool textured = true;
-        public bool Textured
-        {
-            set { textured = value; }
-        }
+        public static bool Textured = true;
 
-        Vbo vboData;
+        VBO vbo;
 
-        BoundingVolume objectBoundingVolume = new BoundingVolume(); // objektin alue
-        public BoundingVolume ObjectBoundingVolume { get { return objectBoundingVolume; } }
+        public BoundingVolume objectGroupBoundingVolume = null; // objektin alue
 
         public void Dispose()
         {
-            vboData.vbo.Dispose();
-
-            for (int q = 0; q < meshes.Length; q++)
+            for (int q = 0; q < objects.Count; q++)
             {
-                Material.Dispose(Meshes[q].materialName);
+                Object3D child = (Object3D)objects[q];
+                Material.Dispose(child.mesh.materialName);
+                child.vbo.Dispose();
             }
-
         }
 
-
-        bool staticObject = false;
-        // renderointi erilailla, tämä nopeampi (meshejä ei voi animoida)
-        public void LoadStatic(string fileName, VBO vbo)
+        /// <summary>
+        /// lataa .obj tiedosto
+        /// </summary>
+        /// <param name="fileName"></param>
+        public void Load(string fileName)
         {
-            staticObject = true;
-            Load(fileName, vbo);
-        }
-        public void LoadStatic(string fileName, float xs, float ys, float zs, VBO vbo)
-        {
-            staticObject = true;
-            Load(fileName, xs, ys, zs, vbo);
+            Load(fileName, 1, 1, 1);
         }
 
-
-        /**
-         *  lataa .obj tiedosto
-         */
-        public void Load(string fileName, VBO vbo)
+        /// <summary>
+        /// lataa .obj tiedosto
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="xs"></param>
+        /// <param name="ys"></param>
+        /// <param name="zs"></param>
+        public void Load(string fileName, float xs, float ys, float zs)
         {
-            Load(fileName, 1, 1, 1, vbo);
-        }
+            Object3D parent = this;
 
-        /**
-         *  lataa .obj tiedosto
-         */
-        public void Load(string fileName, float xs, float ys, float zs, VBO vbo)
-        {
+            Object3D child = null;
+
             string dir = Settings.DataDir;
             if (fileName.Contains("\\"))
             {
@@ -137,10 +124,8 @@ namespace CSat
                 dir = dir + fileName.Substring(0, l + 1);
             }
 
-            name = fileName; // objektin nimeksi sama kuin tiedostonimi
+            parent.name = fileName; // objektin nimeksi sama kuin tiedostonimi
             fileName = Settings.DataDir + fileName;
-
-            int totalVerts = 0;
 
             // tiedosto muistiin
             string data = new System.IO.StreamReader(fileName).ReadToEnd();
@@ -152,7 +137,6 @@ namespace CSat
 
                 int numOfVerts = 0, numOfUV = 0, numOfMeshes = 0, numOfNormals = 0; // lukumäärät
                 int cvert = 0, cuv = 0, cnorm = 0; // countterit
-                int curMesh = -1;
 
                 // käsitellään rivi kerrallaan, ensin laskemalla tarvittavat,
                 // eli montako meshiä, vertex lkm, uv lkm, normal lkm
@@ -166,10 +150,9 @@ namespace CSat
                     if (ln[0] == "vn") numOfNormals++;
                 }
                 // varataan tilaa
-                meshes = new Mesh[numOfMeshes];
-                vertex = new Vector3[numOfVerts];
-                normal = new Vector3[numOfNormals];
-                uv = new Vector2[numOfUV];
+                parent.vertex = new Vector3[numOfVerts];
+                parent.normal = new Vector3[numOfNormals];
+                parent.uv = new Vector2[numOfUV];
 
                 // lue kaikki datat objektiin ja indexit mesheihin
                 for (int q = 0; q < lines.Length; q++)
@@ -179,42 +162,44 @@ namespace CSat
                     string[] ln = line.Split(' '); // pilko datat
                     if (ln[0] == "v") // vertex x y z
                     {
-                        float x = (Util.GetFloat(ln[1]) - meshes[curMesh].pivotPoint.X) * xs;
-                        float y = (Util.GetFloat(ln[2]) - meshes[curMesh].pivotPoint.Y) * ys;
-                        float z = (Util.GetFloat(ln[3]) - meshes[curMesh].pivotPoint.Z) * zs;
-                        vertex[cvert++] = new Vector3(x, y, z);
+                        float x = (Util.GetFloat(ln[1]) - child.position.X) * xs;
+                        float y = (Util.GetFloat(ln[2]) - child.position.Y) * ys;
+                        float z = (Util.GetFloat(ln[3]) - child.position.Z) * zs;
+                        parent.vertex[cvert++] = new Vector3(x, y, z);
                         continue;
                     }
 
                     if (ln[0] == "vn") // normal x y z
                     {
-                        normal[cnorm++] = new Vector3(Util.GetFloat(ln[1]), Util.GetFloat(ln[2]), Util.GetFloat(ln[3]));
+                        parent.normal[cnorm++] = new Vector3(Util.GetFloat(ln[1]), Util.GetFloat(ln[2]), Util.GetFloat(ln[3]));
                         continue;
                     }
 
                     if (ln[0] == "vt") // texcoord u v
                     {
-                        uv[cuv++] = new Vector2(Util.GetFloat(ln[1]), Util.GetFloat(ln[2]));
+                        parent.uv[cuv++] = new Vector2(Util.GetFloat(ln[1]), Util.GetFloat(ln[2]));
                         continue;
                     }
 
                     // uusi objekti
                     if (ln[0] == "o" || ln[0] == "g")
                     {
-                        curMesh++;
-                        meshes[curMesh] = new Mesh();
+                        if (child != null) parent.Add(child); // talteen
 
-                        meshes[curMesh].name = ln[1];
-                        meshes[curMesh].object3d = this;
+                        child = new Object3D();
+                        child.name = ln[1];
+                        // child osoittamaan parentissa oleviin vertexeihin, uvihin ja normaleihin
+                        child.vertex = parent.vertex;
+                        child.normal = parent.normal;
+                        child.uv = parent.uv;
 
                         // seuraavalla rivillä on #POS jos käytetty obj2 exportteria
                         if (lines[q + 1].Contains("#POS"))
                         {
-                            // otetaan meshin paikka talteen (pivot point)
+                            // otetaan meshin paikka talteen
                             string[] spos = lines[q + 1].Split(' ');
-                            meshes[curMesh].pivotPoint = new Vector3(Util.GetFloat(spos[1]), Util.GetFloat(spos[2]), Util.GetFloat(spos[3]));
-
-                            Log.WriteDebugLine(meshes[curMesh].name + " POS: " + meshes[curMesh].pivotPoint.ToString());
+                            child.position = new Vector3(Util.GetFloat(spos[1]), Util.GetFloat(spos[2]), Util.GetFloat(spos[3]));
+                            Log.WriteDebugLine(child.name + " POS: " + child.position.ToString());
                         }
 
                         continue;
@@ -223,25 +208,28 @@ namespace CSat
                     // materiaali
                     if (ln[0] == "usemtl")
                     {
-                        // jos kesken meshin materiaali vaihtuu, luodaan uusi mesh johon loput facet
+                        // jos kesken meshin materiaali vaihtuu, luodaan uusi obj johon loput facet
                         if (lines[q - 1].StartsWith("f"))
                         {
-                            curMesh++;
-                            meshes[curMesh] = new Mesh();
+                            parent.Add(child);
+                            Vector3 tmpPos = child.position;
 
-                            meshes[curMesh].pivotPoint = meshes[curMesh - 1].pivotPoint;
+                            child = new Object3D();
+                            child.position = tmpPos; // samaa objektia, niin sama position
 
-                            meshes[curMesh].object3d = this;
+                            // child osoittamaan parentissa oleviin vertexeihin, uvihin ja normaleihin
+                            child.vertex = parent.vertex;
+                            child.normal = parent.normal;
+                            child.uv = parent.uv;
                         }
 
-                        meshes[curMesh].materialName = ln[1];
+                        child.mesh.materialName = ln[1];
                         continue;
                     }
 
                     if (ln[0] == "f")
                     {
-                        totalVerts += 3;
-                        meshes[curMesh].AddFace(line);
+                        child.mesh.AddFace(line);
                         continue;
                     }
 
@@ -250,7 +238,7 @@ namespace CSat
                     {
                         try
                         {
-                            Material.Load(dir + ln[1], textured);
+                            Material.Load(dir + ln[1], Textured);
                         }
                         catch (Exception e)
                         {
@@ -260,57 +248,31 @@ namespace CSat
                 }
             }
 
+            if (child != null) parent.Add(child);
 
-            /*
-             * kamat vbo:hon:
-             * 
-             *  jos on alunperin luotu vbo ja annettu parametrina,
-             *  käytetään sitä, muuten luodaan objektin kaikkien meshien
-             *  viemän verran tilaa ja kopsataan objekti sinne.
-             * 
-             */
-            if (vbo == null)
+            // luo joka objektille vbo ja kopsaa datat sinne
+            for (int q = 0; q < parent.objects.Count; q++)
             {
-                vboData.vbo = new VBO();
-                vbo = vboData.vbo;
+                child = (Object3D)parent.objects[q];
+                child.vbo = new VBO();
+                child.vbo.DataToVBO(parent.vertex, parent.normal, parent.uv, null, null, null, ref child.mesh);
 
-                // varataan objektille (kaikille mesheille) tilaa
-                vbo.AllocVBO(totalVerts, totalVerts, BufferUsageHint.StaticDraw);
-            }
-            else
-            {
-                vboData.vbo = vbo;
+                child.mesh.boundingVolume.CalcMeshBounds(child);
             }
 
-            // kopsataan datat
-            for (int q = 0; q < meshes.Length; q++)
-            {
-                meshes[q].vboInfo = vbo.LoadVBO(vertex, normal, uv, null, null, null, meshes[q]);
+            // objektiryhmän bbox/sphere
+            parent.objectGroupBoundingVolume = new BoundingVolume();
+            parent.objectGroupBoundingVolume.CalcObjectBounds(parent);
 
-                // ota bbox/sphere joka meshille. laskee myös meshien keskipisteet.
-                meshes[q].meshBoundingVolume.CalcMeshBounds(this);
-            }
+            Log.WriteDebugLine("Object " + parent.name + "  meshes: " + parent.objects.Count);
 
-            // ota bounding box/sphere objektille
-            objectBoundingVolume.CalcObjectBounds(this);
-
-            Log.WriteDebugLine("Object " + name + "  meshes: " + meshes.Length);
         }
 
-
-        // renderoi objekti, joko static tai animoitava, riippuen kummalla tavalla latas
+        /// <summary>
+        /// renderoi objekti
+        /// </summary>
         public new void Render()
         {
-            if (staticObject) RenderStatic();
-            else RenderMeshes();
-        }
-
-
-        /**
-         * renderoi meshit
-         */
-        public void RenderMeshes()
-        {
             GL.PushMatrix();
 
             // liikuta haluttuun kohtaan
@@ -337,17 +299,20 @@ namespace CSat
                 Matrix4.Mult(ref mx, ref my, out outm0);
                 Matrix4.Mult(ref outm0, ref mz, out rotationMatrix);
             }
+            
+            // childin child ... renderoidaan myös kaikki childit
+            base.RenderTree();
 
-            vboData.vbo.BeginRender();
-            for (int q = 0; q < meshes.Length; q++)
+            // jos löytyy rendattavaa
+            if (vbo != null)
             {
-                Mesh m = (Mesh)meshes[q];
+                vbo.BeginRender();
 
                 // tarkista onko objekti näkökentässä
-                if (Frustum.ObjectInFrustum(wpos.X, wpos.Y, wpos.Z, objectBoundingVolume))
+                //if (Frustum.ObjectInFrustum(wpos.X, wpos.Y, wpos.Z, objectGroupBoundingVolume))
                 {
                     // jos objektia käännetty, pitää laskea mesheille uudet keskipisteet
-                    Vector3 vout, center = m.center;
+                    Vector3 vout, center = mesh.center;
                     if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
                     {
                         vout = MathExt.VectorMatrixMult(ref center, ref rotationMatrix);
@@ -355,198 +320,75 @@ namespace CSat
                     }
 
                     // onko meshi näkökentässä
-                    if (Frustum.ObjectInFrustum(wpos.X + center.X, wpos.Y + center.Y, wpos.Z + center.Z, m.meshBoundingVolume))
+                    //if (Frustum.ObjectInFrustum(wpos.X + child.mesh.center.X, wpos.Y + child.mesh.center.Y, wpos.Z + child.mesh.center.Z, child.mesh.boundingVolume))
                     {
-                        GL.PushMatrix();
-                        GL.Translate(m.pivotPoint);
-                        GL.Rotate(m.rotation.W, m.rotation.X, m.rotation.Y, m.rotation.Z);
-
-                        if (m.doubleSided) GL.Disable(EnableCap.CullFace);
-                        Material.SetMaterial(m.materialName);
-                        vboData.vbo.Render(m.vboInfo);
-                        if (m.doubleSided) GL.Enable(EnableCap.CullFace);
+                        if (mesh.doubleSided) GL.Disable(EnableCap.CullFace);
+                        Material.SetMaterial(mesh.materialName);
+                        vbo.Render();
+                        if (mesh.doubleSided) GL.Enable(EnableCap.CullFace);
                         Settings.NumOfObjects++;
-
-                        GL.PopMatrix();
-
-
                     }
                 }
+                vbo.EndRender();
 
-            }
-            vboData.vbo.EndRender();
-
-            // renderoidaan myös kaikki childit
-            if (objects.Count != 0)
-            {
-                base.RenderTree();
             }
 
             GL.PopMatrix();
         }
 
-
-        /**
-         * renderoi staticobject eli meshejä ei voi erikseen animoida (pyöritellä ym)
-         */
-        public void RenderStatic()
+        /// <summary>
+        /// ota haluttu mesh.
+        /// </summary>
+        /// <param name="index"></param>
+        public Object3D GetObject(int index)
         {
-            GL.PushMatrix();
-
-            // liikuta haluttuun kohtaan
-            GL.Translate(position.X, position.Y, position.Z);
-            GL.Rotate(rotation.X, 1, 0, 0);
-            GL.Rotate(rotation.Y, 0, 1, 0);
-            GL.Rotate(rotation.Z, 0, 0, 1);
-
-            // korjaa asento
-            GL.Rotate(fixRotation.X, 1, 0, 0);
-            GL.Rotate(fixRotation.Y, 0, 1, 0);
-            GL.Rotate(fixRotation.Z, 0, 0, 1);
-
-            // jos objektia käännetty
-            Matrix4 rotationMatrix = new Matrix4();
-            Vector3 rot = -(rotation + fixRotation);
-            if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
-            {
-                rot = rot * MathExt.PiOver180;
-                Matrix4 mx = Matrix4.RotateX(rot.X);
-                Matrix4 my = Matrix4.RotateY(rot.Y);
-                Matrix4 mz = Matrix4.RotateZ(rot.Z);
-                Matrix4 outm0;
-                Matrix4.Mult(ref mx, ref my, out outm0);
-                Matrix4.Mult(ref outm0, ref mz, out rotationMatrix);
-            }
-
-            vboData.vbo.BeginRender();
-            for (int q = 0; q < meshes.Length; q++)
-            {
-                Mesh m = (Mesh)meshes[q];
-
-                // tarkista onko objekti näkökentässä
-                if (Frustum.ObjectInFrustum(wpos.X, wpos.Y, wpos.Z, objectBoundingVolume))
-                {
-                    // jos objektia käännetty, pitää laskea mesheille uudet keskipisteet
-                    Vector3 vout, center = m.center;
-                    if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
-                    {
-                        vout = MathExt.VectorMatrixMult(ref center, ref rotationMatrix);
-                        center = vout;
-                    }
-
-                    // onko meshi näkökentässä
-                    if (Frustum.ObjectInFrustum(wpos.X + center.X, wpos.Y + center.Y, wpos.Z + center.Z, m.meshBoundingVolume))
-                    {
-                        if (m.doubleSided) GL.Disable(EnableCap.CullFace);
-                        Material.SetMaterial(m.materialName);
-                        vboData.vbo.Render(m.vboInfo);
-                        if (m.doubleSided) GL.Enable(EnableCap.CullFace);
-                        Settings.NumOfObjects++;
-                    }
-                }
-
-            }
-            vboData.vbo.EndRender();
-
-            // renderoidaan myös kaikki childit
-            if (objects.Count != 0)
-            {
-                base.RenderTree();
-            }
-
-            GL.PopMatrix();
+            return (Object3D)objects[index];
         }
-
-        /**
-         * renderoi haluttu mesh
-         */
-        public void Render(int meshNumber)
+        /// <summary>
+        /// ota haluttu mesh nimen perusteella.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public Object3D GetObject(string name)
         {
-            if (meshNumber < 0 || meshNumber >= meshes.Length) return;
-
-            GL.PushMatrix();
-
-            // liikuta haluttuun kohtaan
-            GL.Translate(position.X, position.Y, position.Z);
-            GL.Rotate(rotation.X, 1, 0, 0);
-            GL.Rotate(rotation.Y, 0, 1, 0);
-            GL.Rotate(rotation.Z, 0, 0, 1);
-
-            // korjaa asento
-            GL.Rotate(fixRotation.X, 1, 0, 0);
-            GL.Rotate(fixRotation.Y, 0, 1, 0);
-            GL.Rotate(fixRotation.Z, 0, 0, 1);
-
-            // jos objektia käännetty
-            Matrix4 rotationMatrix = new Matrix4();
-            Vector3 rot = -(rotation + fixRotation);
-            if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
+            for (int q = 0; q < objects.Count; q++)
             {
-                rot = rot * MathExt.PiOver180;
-                Matrix4 mx = Matrix4.RotateX(rot.X);
-                Matrix4 my = Matrix4.RotateY(rot.Y);
-                Matrix4 mz = Matrix4.RotateZ(rot.Z);
-                Matrix4 outm0;
-                Matrix4.Mult(ref mx, ref my, out outm0);
-                Matrix4.Mult(ref outm0, ref mz, out rotationMatrix);
+                Object3D o = (Object3D)objects[q];
+                if (o.name == name) return (Object3D)objects[q];
             }
-
-            vboData.vbo.BeginRender();
-            //for (int q = 0; q < meshes.Length; q++)
-            int q = meshNumber;
-            {
-                Mesh m = (Mesh)meshes[q];
-
-                // tarkista onko objekti näkökentässä
-                if (Frustum.ObjectInFrustum(wpos.X, wpos.Y, wpos.Z, objectBoundingVolume))
-                {
-                    // jos objektia käännetty, pitää laskea mesheille uudet keskipisteet
-                    Vector3 vout, center = m.center;
-                    if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
-                    {
-                        vout = MathExt.VectorMatrixMult(ref center, ref rotationMatrix);
-                        center = vout;
-                    }
-
-                    // onko meshi näkökentässä
-                    if (Frustum.ObjectInFrustum(wpos.X + center.X, wpos.Y + center.Y, wpos.Z + center.Z, m.meshBoundingVolume))
-                    {
-                        Material.SetMaterial(m.materialName);
-                        vboData.vbo.Render(m.vboInfo);
-
-                        Settings.NumOfObjects++;
-                    }
-
-                }
-
-            }
-            vboData.vbo.EndRender();
-
-            // renderoidaan myös kaikki childit
-            if (objects.Count != 0)
-            {
-                base.RenderTree();
-            }
-
-            GL.PopMatrix();
+            return null;
         }
 
 
 
-        // voi erikseen valita mitä texture unitteja käytetään jos multitexture
+        /// <summary>
+        /// voi erikseen valita mitä texture unitteja käytetään jos multitexture
+        /// </summary>
+        /// <param name="t0"></param>
+        /// <param name="t1"></param>
+        /// <param name="t2"></param>
         public void UseTextureUnits(bool t0, bool t1, bool t2)
         {
-            if (textured) vboData.vbo.UseTextureUnits(t0, t1, t2);
-            else vboData.vbo.UseTextureUnits(false, false, false);
+            for (int q = 0; q < objects.Count; q++)
+            {
+                Object3D child = (Object3D)objects[q];
+                if (Textured) child.vbo.UseTextureUnits(t0, t1, t2);
+                else child.vbo.UseTextureUnits(false, false, false);
+            }
         }
 
-        /**
-         *  1==box, 2==sphere
-         *  
-         */
+
+        /// <summary>
+        /// valitse testausmoodi: BoundingVolume.None, BoundingVolume.Box, BoundingVolume.Sphere
+        /// </summary>
+        /// <param name="mode"></param>
         public void BoundingMode(byte mode)
         {
-            for (int q = 0; q < meshes.Length; q++) meshes[q].meshBoundingVolume.Mode = mode;
+            for (int q = 0; q < objects.Count; q++)
+            {
+                Object3D child = (Object3D)objects[q];
+                child.mesh.boundingVolume.Mode = mode;
+            }
         }
 
 
@@ -559,41 +401,28 @@ namespace CSat
         {
             if (meshNumber == -1)
             {
-                for (int q = 0; q < meshes.Length; q++)
+                for (int q = 0; q < objects.Count; q++)
                 {
-                    meshes[q].doubleSided = doubleSided;
+                    Object3D child = (Object3D)objects[q];
+                    child.mesh.doubleSided = doubleSided;
                 }
             }
-            else meshes[meshNumber].doubleSided = doubleSided;
+            else
+            {
+                Object3D child = (Object3D)objects[meshNumber];
+                child.mesh.doubleSided = doubleSided;
+            }
         }
-
-        /// <summary>
-        /// yksittäisen meshin asento. xyz akseli ja w angle
-        /// </summary>
-        /// <param name="meshNumber"></param>
-        /// <param name="rotation"></param>
-        public void SetMeshRotation(int meshNumber, Vector4 rotation)
-        {
-            meshes[meshNumber].rotation = rotation;
-        }
-
-
     }
 
-    public class Mesh
+    public class MeshData
     {
         public string name = ""; // meshin nimi
         public string materialName = ""; // materiaalin nimi
 
-        public BoundingVolume meshBoundingVolume = new BoundingVolume();
+        public BoundingVolume boundingVolume = new BoundingVolume();
         public Vector3 center = new Vector3(0, 0, 0);
-        public Vector3 pivotPoint = new Vector3(0, 0, 0);
-        public Vector4 rotation = new Vector4(0, 0, 0, 0);
-
-        public VBOInfo vboInfo; // vbo aloituspaikka ja pituus
         public GLSL shader = new GLSL();
-
-        public Object3D object3d = null; // linkki objektiin mihin tämä mesh kuuluu
 
         public bool doubleSided = false;
 

@@ -113,7 +113,7 @@ namespace CSat
         // jos vielä joku käyttää tätä texturea, ettei mennä poistamaan sitä väärään aikaan!
         int textureCount = 0;
 
-        TextureTarget target; // texture2d, cubemap
+        TextureTarget target; // texture, cubemap
 
         static uint bind = 0; // mikä texture bindattu
         public void Bind()
@@ -126,10 +126,10 @@ namespace CSat
             }
         }
 
-        /** 
-         * aseta texture haluttuun textureunittiin
-         * 
-         */
+        /// <summary>
+        /// aseta texture haluttuun textureunittiin
+        /// </summary>
+        /// <param name="textureUnit"></param>
         public void Bind(int textureUnit)
         {
             bind = 0;
@@ -144,9 +144,10 @@ namespace CSat
             GL.BindTexture(TextureTarget.Texture2D, textureID);
         }
 
-        /**
-         * poista texture käytöstä tietystä textureunitista
-         */
+        /// <summary>
+        /// poista texture käytöstä tietystä textureunitista
+        /// </summary>
+        /// <param name="textureUnit"></param>
         public static void UnBind(int textureUnit)
         {
             bind = 0;
@@ -155,18 +156,20 @@ namespace CSat
             GL.BindTexture(TextureTarget.Texture2D, 0);
         }
 
-        /**
-         * aseta aktiivinen textureunitti
-         */
+        /// <summary>
+        /// aseta aktiivinen textureunitti
+        /// </summary>
+        /// <param name="textureUnit"></param>
         public static void ActiveUnit(int textureUnit)
         {
             GL.ActiveTexture(TextureUnit.Texture0 + textureUnit);
         }
 
-        /**
-         * lataa texture
-         * 
-         */
+        /// <summary>
+        /// lataa texture
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public static Texture Load(string fileName)
         {
             return Load(fileName, true);
@@ -174,7 +177,6 @@ namespace CSat
 
         public static Texture Load(string fileName, bool useTexDir)
         {
-
             // jos texture on jo ladattu, ei ladata uudelleen
             if ((Texture)textures[fileName] != null)
             {
@@ -232,7 +234,6 @@ namespace CSat
             LoadFromDiskGDI = loadGDI;
             LoadFromDiskDDS = loadDDS;
         }
-
 
     }
 }

@@ -47,7 +47,7 @@ namespace CSat
     {
         public Material()
         {
-            if(!materials.Contains("defaultMaterial")) materials.Add("defaultMaterial", this);
+            if (!materials.Contains("defaultMaterial")) materials.Add("defaultMaterial", this);
         }
 
         // materiaali taulukko, jokaisella materiaalilla pitää olla eri nimi.
@@ -110,10 +110,11 @@ namespace CSat
             materials.Clear();
         }
 
-
-        /**
-         * lataa materiaalitiedot
-         */
+        /// <summary>
+        /// lataa materiaalitiedot
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="loadTextures"></param>
         public static void Load(string fileName, bool loadTextures)
         {
             // tiedosto muistiin
@@ -219,19 +220,20 @@ namespace CSat
             if (tmpmat != null && materials.Contains(tmpmat.name) == false) materials.Add(tmpmat.name, tmpmat);
         }
 
-        /**
-         * jos vaikka materiaalin tietoja muuttaa, ja se on käytössä,
-         * tällä saa uudet asetukset käyttöön.
-         */
+        /// <summary>
+        /// jos vaikka materiaalin tietoja muuttaa, ja se on käytössä, tällä saa uudet asetukset käyttöön.
+        /// </summary>
+        /// <param name="name"></param>
         public static void ForceSetMaterial(string name)
         {
             curMaterial = "";
             SetMaterial(name);
         }
 
-        /**
-         * aseta name-niminen materiaali ellei jo käytössä
-         */
+        /// <summary>
+        /// aseta name-niminen materiaali ellei jo käytössä
+        /// </summary>
+        /// <param name="name"></param>
         public static void SetMaterial(string name)
         {
             if (name == null) return;
@@ -246,7 +248,7 @@ namespace CSat
             if (curMaterial == name) return;
 
             curMaterial = name;
-            
+
             GL.Materialv(MaterialFace.Front, MaterialParameter.Ambient, mat.ambientColor);
             GL.Materialv(MaterialFace.Front, MaterialParameter.Diffuse, mat.diffuseColor);
             GL.Materialv(MaterialFace.Front, MaterialParameter.Specular, mat.specularColor);

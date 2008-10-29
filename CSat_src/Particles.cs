@@ -52,8 +52,10 @@ namespace CSat
             }
         }
 
-        public void Render(Camera cam)
+        public void Render()
         {
+            Camera cam = Camera.cam;
+
             List<SortedList> slist = new List<SortedList>();
 
             GL.Enable(EnableCap.Texture2D);
@@ -76,7 +78,7 @@ namespace CSat
                     }
                     else // rendataan se nyt, ei lis‰t‰ sortattavaks
                     {
-                        Billboard.BillboardBegin(p.obj.Tex2D, p.pos.X, p.pos.Y, p.pos.Z, p.size);
+                        Billboard.BillboardBegin(p.obj.Texture2D, p.pos.X, p.pos.Y, p.pos.Z, p.size);
                         if (p.callBack != null) p.callBack(p);
                         Billboard.BillboardRender(p.obj);
                         Billboard.BillboardEnd();
@@ -87,7 +89,6 @@ namespace CSat
             }
             GL.Disable(EnableCap.AlphaTest);
 
-
             slist.Sort(delegate(SortedList z1, SortedList z2) { return z2.len.CompareTo(z1.len); });
 
             // rendataan l‰pikuultavat
@@ -96,7 +97,7 @@ namespace CSat
             {
                 Particle p = ((SortedList)slist[q]).part;
 
-                Billboard.BillboardBegin(p.obj.Tex2D, p.pos.X, p.pos.Y, p.pos.Z, p.size);
+                Billboard.BillboardBegin(p.obj.Texture2D, p.pos.X, p.pos.Y, p.pos.Z, p.size);
                 if (p.callBack != null) p.callBack(p);
                 Billboard.BillboardRender(p.obj);
                 Billboard.BillboardEnd();
@@ -159,19 +160,21 @@ namespace CSat
             parts.Add(p);
         }
 
-        /**
-         * aseta partikkeliobjekti.
-         * jos isTranslucent==true, partikkelit on l‰pikuultavia ja pit‰‰ sortata.
-         */
+        /// <summary>
+        /// aseta partikkeliobjekti.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="isTranslucent">jos true, partikkelit on l‰pikuultavia (pit‰‰ sortata)</param>
         public void SetObject(Object2D obj, bool isTranslucent)
         {
             this.obj = obj;
             this.isTranslucent = isTranslucent;
         }
 
-        /**
-         * p‰ivit‰ partikkelit
-         */
+        /// <summary>
+        /// p‰ivit‰ partikkelit
+        /// </summary>
+        /// <param name="time"></param>
         public void Update(float time)
         {
             for (int q = 0; q < parts.Count; q++)
@@ -193,15 +196,14 @@ namespace CSat
             }
         }
 
-
-        /**
-         * piirr‰ partikkelit. ei sortata eik‰ ole callbackia.
-         */
+        /// <summary>
+        /// piirr‰ partikkelit. ei sortata eik‰ ole callbackia.
+        /// </summary>
         public void Render()
         {
             GL.DepthMask(false);
             GL.Enable(EnableCap.Texture2D);
-            obj.Tex2D.Bind();
+            obj.Texture2D.Bind();
 
             GL.Disable(EnableCap.CullFace);
             GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.EnableBit | AttribMask.PolygonBit);

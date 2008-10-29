@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 email: matola@sci.fi
 */
 #endregion
+//#define MOREDEBUG
 
 using System;
 using OpenTK.Graphics;
@@ -31,7 +32,8 @@ namespace CSat
 {
     public struct Vertex
     {
-        public Vector2 uv1, uv2, uv3; // 3 texturekoordinaattia max
+        public Vector2 uv1, uv2; // 2 texturekoordinaattia max
+        public Vector2 temp; // tilaa viem‰s, mit‰s t‰h‰n.
         public Vector3 normal;
         public Vector4 color;
         public Vector3 vertex;
@@ -43,28 +45,10 @@ namespace CSat
             this.uv1 = uv1;
             color = new Vector4(1, 1, 1, 1);
             uv2 = uv1;
-            uv3 = uv1;
+            temp = uv1;
         }
 
     } // 64 tavua
-
-    public struct VBOInfo
-    {
-        public int vertPos, indexPos;
-        public int indexLen;
-
-        public override string ToString()
-        {
-            return "(" + vertPos + " " + indexPos + " " + indexLen + ")";
-        }
-
-    }
-
-    public struct Vbo
-    {
-        public VBO vbo;
-        public VBOInfo vi;
-    }
 
 
     public class VBO
@@ -73,30 +57,22 @@ namespace CSat
 
         private int vertexID = 0, indexID = 0;
         private BufferUsageHint usage = BufferUsageHint.StaticDraw;
-        private short vertexFlags = 0;
+        private short vertexFlags = 0; // liput, mit‰ kaikkea k‰ytet‰‰n (normal, uv, color)
+        int numOfIndices = 0;
 
-        private int vertPos = 0, indexPos = 0;
-        private int vertLen = 0, indexLen = 0;
-
-        private int allocatedVertSize = 0, allocatedIndSize = 0;
-
-        public void PrintInfo()
+        public VBO() { }
+        public VBO(BufferUsageHint usage)
         {
-            Log.WriteDebugLine("vbo [vertices: " + vertLen + " | indices: " + indexLen + "]");
+            this.usage = usage;
         }
 
-
-        /**
-         * luo fbo
-         * 
-         * monelleko vertexille ja indexille varataan tilaa
-         */
-        public void AllocVBO(int vertSize, int indSize, BufferUsageHint usage)
+        /// <summary>
+        /// luo VBO. monelleko vertexille ja indexille varataan tilaa
+        /// </summary>
+        /// <param name="vertSize"></param>
+        /// <param name="indSize"></param>
+        void AllocVBO(int vertSize, int indSize)
         {
-            allocatedVertSize = vertSize;
-            allocatedIndSize = indSize;
-
-            this.usage = usage;
             GL.GenBuffers(1, out vertexID);
             GL.BindBuffer(BufferTarget.ArrayBuffer, vertexID);
             GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertSize * VERTEX_SIZE), null, usage);
@@ -104,6 +80,11 @@ namespace CSat
             GL.GenBuffers(1, out indexID);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, indexID);
             GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indSize * sizeof(int)), null, usage);
+
+            numOfIndices = indSize;
+#if MOREDEBUG
+            Log.WriteDebugLine("AllocVBO: (verts:" + vertSize + " indices:" + indSize + ")");
+#endif
         }
 
         public void Dispose()
@@ -114,15 +95,17 @@ namespace CSat
             indexID = 0;
         }
 
-
-
-        /**
-         * kopioi objekti vbo:hon
-         * 
-         * jos muistia ei ole varattu AllocVBO:lla, varataan vain sen verran mit‰ objekti vie.
-         * palauttaa muistialueiden alkukohdat ja pituudet
-         */
-        public VBOInfo LoadVBO(Vector3[] vertices, Vector3[] normals, Vector2[] uvs1, Vector2[] uvs2, Vector2[] uvs3, Vector4[] colors, Mesh mesh)
+        /// <summary>
+        /// kopioi objekti vbo:hon
+        /// </summary>
+        /// <param name="vertices"></param>
+        /// <param name="normals"></param>
+        /// <param name="uvs1"></param>
+        /// <param name="uvs2"></param>
+        /// <param name="uvs3"></param>
+        /// <param name="colors"></param>
+        /// <param name="mesh"></param>
+        public void DataToVBO(Vector3[] vertices, Vector3[] normals, Vector2[] uvs1, Vector2[] uvs2, Vector2[] uvs3, Vector4[] colors, ref MeshData mesh)
         {
             int[] ind = new int[mesh.vertexInd.Count];
             Vector3[] vert = new Vector3[ind.Length];
@@ -139,20 +122,21 @@ namespace CSat
             // index taulukko
             for (int q = 0; q < ind.Length; q++) ind[q] = q;
 
-            return LoadVBO(vert, ind, norm, uv, null, null, null);
+            DataToVBO(vert, ind, norm, uv, null, null, null);
         }
 
-
-
-        /**
-         * kopioi objekti vbo:hon
-         * 
-         * jos muistia ei ole varattu AllocVBO:lla, varataan vain sen verran mit‰ objekti vie.
-         * palauttaa muistialueiden alkukohdat ja pituudet
-         */
-        public VBOInfo LoadVBO(Vector3[] vertices, int[] indices, Vector3[] normals, Vector2[] uvs1, Vector2[] uvs2, Vector2[] uvs3, Vector4[] colors)
+        /// <summary>
+        /// kopioi objekti vbo:hon
+        /// </summary>
+        /// <param name="vertices"></param>
+        /// <param name="indices"></param>
+        /// <param name="normals"></param>
+        /// <param name="uvs1"></param>
+        /// <param name="uvs2"></param>
+        /// <param name="temp"></param>
+        /// <param name="colors"></param>
+        public void DataToVBO(Vector3[] vertices, int[] indices, Vector3[] normals, Vector2[] uvs1, Vector2[] uvs2, Vector2[] temp, Vector4[] colors)
         {
-            VBOInfo vi;
             Vertex[] verts = new Vertex[vertices.Length];
 
             // koppaa vertex infot Vertexiin
@@ -182,7 +166,6 @@ namespace CSat
                 {
                     verts[q].uv1 = uvs1[q];
                     verts[q].uv2 = uvs1[q];
-                    verts[q].uv3 = uvs1[q];
                 }
                 vertexFlags |= 4;
             }
@@ -194,90 +177,37 @@ namespace CSat
                 }
                 vertexFlags |= 8;
             }
-            if (uvs3 != null)
-            {
-                for (int q = 0; q < uvs3.Length; q++)
-                {
-                    verts[q].uv3 = uvs3[q];
-                }
-                vertexFlags |= 16;
-            }
 
-            for (int q = 0; q < indices.Length; q++)
-            {
-                indices[q] += vertLen;
-            }
-
-
-            vi.vertPos = vertPos;
-            vi.indexPos = indexLen;
+            AllocVBO(verts.Length, indices.Length);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, vertexID);
-            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)vertPos, (IntPtr)(verts.Length * VERTEX_SIZE), verts);
-            vertLen += verts.Length;
-            vertPos += (VERTEX_SIZE * verts.Length);
+            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, (IntPtr)(verts.Length * VERTEX_SIZE), verts);
 
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, indexID);
-            GL.BufferSubData(BufferTarget.ElementArrayBuffer, (IntPtr)indexPos, (IntPtr)(indices.Length * sizeof(int)), indices);
-            indexLen += indices.Length;
-            indexPos += (indices.Length * sizeof(int));
-
-            vi.indexLen = indices.Length;
-
-            if (vertLen > allocatedVertSize || indexLen > allocatedIndSize)
-            {
-                throw new Exception("VBO: allocated vertex or index buffer too small! vertlen: " + vertLen + "/" + allocatedVertSize +
-                    " indlen: " + indexLen + "/" + allocatedIndSize);
-            }
-
-            return vi;
+            GL.BufferSubData(BufferTarget.ElementArrayBuffer, (IntPtr)0, (IntPtr)(indices.Length * sizeof(int)), indices);
         }
 
-        public VBOInfo LoadVBO(Vertex[] verts, int[] indices)
+        public void DataToVBO(Vertex[] verts, int[] indices)
         {
-            VBOInfo vi;
             vertexFlags |= 5;
-
-            for (int q = 0; q < indices.Length; q++)
-            {
-                indices[q] += vertLen;
-            }
-
-            vi.vertPos = vertPos;
-            vi.indexPos = indexLen;
+            AllocVBO(verts.Length, indices.Length);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, vertexID);
-            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)vertPos, (IntPtr)(verts.Length * VERTEX_SIZE), verts);
-            vertLen += verts.Length;
-            vertPos += (VERTEX_SIZE * verts.Length);
+            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, (IntPtr)(verts.Length * VERTEX_SIZE), verts);
 
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, indexID);
-            GL.BufferSubData(BufferTarget.ElementArrayBuffer, (IntPtr)indexPos, (IntPtr)(indices.Length * sizeof(int)), indices);
-            indexLen += indices.Length;
-            indexPos += (indices.Length * sizeof(int));
-
-            vi.indexLen = indices.Length;
-
-            if (vertLen > allocatedVertSize || indexLen > allocatedIndSize)
-            {
-                throw new Exception("VBO: allocated vertex or index buffer too small! vertlen: " + vertLen + "/" + allocatedVertSize +
-                    " indlen: " + indexLen + "/" + allocatedIndSize);
-            }
-
-            return vi;
+            GL.BufferSubData(BufferTarget.ElementArrayBuffer, (IntPtr)0, (IntPtr)(indices.Length * sizeof(int)), indices);
         }
 
-        public void Update(Vertex[] verts, VBOInfo vi)
+        public void Update(Vertex[] verts)
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, vertexID);
-            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)vi.vertPos, (IntPtr)(vi.indexLen * VERTEX_SIZE), verts);
+            GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, (IntPtr)(numOfIndices * VERTEX_SIZE), verts);
         }
 
         // tilat p‰‰lle
         public void BeginRender()
         {
-            // jos lataa monta objektia samaan vbo:hon, poistaa yhden objektin niin se koko vbo h‰vi‰‰.
-            // t‰m‰ ilmoittamassa jos niin on k‰ynyt (ohjelmoijan pit‰‰ huolehtia ettei niin k‰y).
             if (vertexID == 0 || indexID == 0)
             {
                 throw new Exception("VBO destroyed!");
@@ -336,15 +266,9 @@ namespace CSat
         public void Render()
         {
             BeginRender();
-            GL.DrawElements(BeginMode.Triangles, indexLen, DrawElementsType.UnsignedInt, IntPtr.Zero);
+            GL.DrawElements(BeginMode.Triangles, numOfIndices, DrawElementsType.UnsignedInt, IntPtr.Zero);
             EndRender();
         }
-
-        public void Render(VBOInfo vi)
-        {
-            GL.DrawRangeElements(BeginMode.Triangles, 0, 0, vi.indexLen, DrawElementsType.UnsignedInt, (IntPtr)(vi.indexPos * 4));
-        }
-
 
         // tilat pois p‰‰lt‰
         public void EndRender()

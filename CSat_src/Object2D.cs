@@ -45,46 +45,36 @@ namespace CSat
         }
         public Object2D(string textureFileName)
         {
-            Load(textureFileName, null);
+            Load(textureFileName);
         }
 
-        protected Texture tex2d = new Texture();
-        public Texture Tex2D // jos halutaan texturetiedot 2d-objektista esim bindausta varten
+        protected Texture texture = new Texture();
+        public Texture Texture2D // jos halutaan texturetiedot 2d-objektista esim bindausta varten
         {
-            get { return tex2d; }
+            get { return texture; }
         }
 
-        /** structi joka löytyy object3d.cs:stä. pitää ylhäällä tiedot aloituskohdasta
-         * ja pituudesta.
-         */
-        protected Vbo o2d;
-        public Vbo O2D
-        {
-            get { return o2d; }
-        }
+        protected VBO vbo;
 
         void Bind()
         {
-            tex2d.Bind();
+            texture.Bind();
         }
 
-        /**
-         * lataa kuva.
-         * 
-         * jos vbo==null, varataan sen verran kun tarvis, muuten lisätään
-         * valmiiksi varattuun vbo:hon (varattu AllocVBO:lla)
-         * 
-         */
-        public void Load(string fileName, VBO vbo)
+        /// <summary>
+        /// lataa kuva.
+        /// </summary>
+        /// <param name="fileName"></param>
+        public void Load(string fileName)
         {
             name = fileName;
 
-            tex2d = Texture.Load(fileName);
+            texture = Texture.Load(fileName);
 
             int[] ind = new int[] { 0, 1, 3, 1, 2, 3 };
 
-            int w = tex2d.Width / 2;
-            int h = tex2d.Height / 2;
+            int w = texture.Width / 2;
+            int h = texture.Height / 2;
 
             Vector3[] vs = new Vector3[]
 			{
@@ -102,16 +92,8 @@ namespace CSat
 				new Vector2(0,0)
 			};
 
-            // ei aikaisemmin varattua aluetta, varataan tässä
-            if (vbo == null)
-            {
-                o2d.vbo = new VBO();
-                vbo = o2d.vbo;
-                vbo.AllocVBO(4, 6, BufferUsageHint.StaticDraw);
-            }
-            else o2d.vbo = vbo;
-
-            o2d.vi = vbo.LoadVBO(vs, ind, null, uv, null, null, null);
+            vbo = new VBO();
+            vbo.DataToVBO(vs, ind, null, uv, null, null, null);
 
             // scale
             view.X = 1;
@@ -121,13 +103,17 @@ namespace CSat
 
         public void Dispose()
         {
-            tex2d.Dispose();
+            texture.Dispose();
         }
 
-        /** 
-         * aseta haluttu kohta, haluttu asento ja koko (sx==1 sy==1 niin normaali koko)
-         * x,y on kuvan keskikohta
-         */
+        /// <summary>
+        /// aseta haluttu kohta, haluttu asento ja koko (sx==1 sy==1 niin normaali koko) x,y on kuvan keskikohta
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="rotate"></param>
+        /// <param name="sx"></param>
+        /// <param name="sy"></param>
         public void Set(int x, int y, float rotate, float sx, float sy)
         {
             position.X = x;
@@ -148,9 +134,9 @@ namespace CSat
             view.Y = sy;
         }
 
-        /**
-         * aseta blend 
-         */
+        /// <summary>
+        /// alpha käyttöön.
+        /// </summary>
         public static void SetBlend()
         {
             GL.Disable(EnableCap.Lighting);
@@ -161,7 +147,7 @@ namespace CSat
         // voi erikseen valita mitä texture unittei käytetään jos multitexture
         public void UseTextureUnits(bool t0, bool t1, bool t2)
         {
-            o2d.vbo.UseTextureUnits(t0, t1, t2);
+            vbo.UseTextureUnits(t0, t1, t2);
         }
 
         public void Render3D()
@@ -173,12 +159,6 @@ namespace CSat
 
         // renderoi 2d tason 3d maailmaan
         public void Render3D(float x, float y, float z, float rx, float ry, float rz, float sx, float sy)
-        {
-            Render3D(x, y, z, rx, ry, rz, sx, sy, null);
-        }
-
-        // renderoi 2d tason 3d maailmaan
-        public void Render3D(float x, float y, float z, float rx, float ry, float rz, float sx, float sy, VBO vbo)
         {
             GL.PushMatrix();
 
@@ -193,8 +173,8 @@ namespace CSat
             GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.EnableBit | AttribMask.PolygonBit);
             SetBlend();
 
-            tex2d.Bind();
-            if (vbo == null) o2d.vbo.Render(); else vbo.Render(o2d.vi);
+            texture.Bind();
+            vbo.Render();
             GL.PopAttrib();
 
             // renderoidaan myös kaikki childit
@@ -207,48 +187,40 @@ namespace CSat
             GL.PopMatrix();
         }
 
-        /**
-         * piirrä kuva 
-         */
-        public void Render2D()
-        {
-            Render2D(null);
-        }
-
         public void Render2D(int x, int y, float rotate, float sx, float sy, VBO vbo)
         {
             Set(x, y, rotate, sx, sy);
-            Render2D(vbo);
+            Render2D();
         }
         public void Render2D(int x, int y, float rotate, float sx, float sy)
         {
             Set(x, y, rotate, sx, sy);
-            Render2D(null);
+            Render2D();
         }
 
-
-        /**
-         * piirrä kuvajoukko vbo:sta.
-         * kutsuvassa metodissa käydään kuvajoukko läpi
-         *   for(q=0; q<pics.Length; q++) texture[q].Render(pictures);
-         * jossa pictures on vbo
-         */
-        public void Render2D(VBO vbo)
+        public void Render2D()
         {
             GL.PushMatrix();
 
-            GL.Translate(position.X, Util.ScreeenHeight-position.Y, 0);
+            GL.Translate(position.X, Util.ScreeenHeight - position.Y, 0);
             GL.Rotate(rotation.Z, 0, 0, 1);
             GL.Scale(view.X, view.Y, 1);
 
             GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.EnableBit | AttribMask.PolygonBit);
             SetBlend();
-            tex2d.Bind();
-            if (vbo == null) o2d.vbo.Render(); else vbo.Render(o2d.vi);
+            texture.Bind();
+
+            vbo.Render();
+
             GL.PopAttrib();
+
             GL.PopMatrix();
         }
 
+        public new void Render()
+        {
+            vbo.Render();
+        }
 
     }
 }

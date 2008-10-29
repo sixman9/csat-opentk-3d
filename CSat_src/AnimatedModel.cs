@@ -22,7 +22,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 email: matola@sci.fi
 */
 #endregion
-
+/*
+ * käytetään kun halutaan liittää MD5 model worldiin.
+ * 
+ * MD5Model model = new MD5Model();
+ * AnimatedModel uglyModel
+ * 
+ * model.Load("Ugly/Ukko.mesh");
+ * uglyModel = new AnimatedModel((IModel)model);
+ * world.Add(uglyModel);
+ * 
+ */
 using System;
 using System.Collections;
 
@@ -30,7 +40,7 @@ namespace CSat
 {
     public interface IModel
     {
-        void Load(string fileName, VBO vbo);
+        void Load(string fileName);
         void Render();
     }
 
@@ -51,9 +61,9 @@ namespace CSat
             model.Render();
         }
 
-        public void Load(string fileName, VBO vbo)
+        public void Load(string fileName)
         {
-            model.Load(fileName, vbo);
+            model.Load(fileName);
         }
 
         object ICloneable.Clone()

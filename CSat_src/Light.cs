@@ -65,9 +65,11 @@ namespace CSat
             GL.Disable(EnableCap.Lighting);
         }
 
-        /**
-         * aseta valon tila ja paikka ettei se liiku kameran mukana
-         */
+        /// <summary>
+        /// aseta valon tila ja paikka ettei se liiku kameran mukana
+        /// </summary>
+        /// <param name="lightNum"></param>
+        /// <param name="enable"></param>
         public void SetLight(int lightNum, bool enable)
         {
             if (enable == false)

@@ -5,7 +5,7 @@
  * See license.txt for licensing details.
  */
 #endregion
-/**
+/*
  *  ladataan objekteja ja md5 malleja.
  *  liitetään objekteja toisiinsa ja pyöritellään.
  *  
@@ -32,6 +32,8 @@ namespace CSatExamples
 {
     class Game8 : GameWindow
     {
+        Camera cam = new Camera();
+
         Group world = new Group("world"); // tänne lisäillään kaikki kamat
 
         Skybox skybox = new Skybox();
@@ -58,22 +60,24 @@ namespace CSatExamples
             GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
             GL.Enable(EnableCap.CullFace);
             GL.ShadeModel(ShadingModel.Smooth);
+            GL.Enable(EnableCap.ColorMaterial);
 
             Light.Enable();
             light.position = new Vector3(50, 80, -100);
             light.UpdateColor(0);
             light.SetLight(0, true);
             Light.Add(light); // lisää valo (aurinko)
-            
 
             Mouse.ButtonDown += MouseButtonDown;
             Mouse.ButtonUp += MouseButtonUp;
 
             // Lataukset
+            for (int q = 0; q < 10; q++) obj[q] = new Object3D();
+
             skybox.Load("sky/sky2_", "jpg", 100);
             world.Add(skybox); // skybox aina ekana koska se on kaikkien takana
-
-            obj[0] = new Object3D("Head/head.obj2", null); // ladataan kerran
+            
+            obj[0] = new Object3D("Head/head.obj2"); // ladataan kerran
             obj[0].position.Z = -2;
 
             // tehdään muutama kopio, siirretään vierekkäin
@@ -89,17 +93,17 @@ namespace CSatExamples
             obj[4] = obj[0].Clone();
             obj[4].position.X = 20;
 
-            obj[5] = new Object3D("Head/arm.obj2", null);
-            obj[6] = new Object3D("Head/saw.obj2", null);
-            obj[5].Add(obj[6]); // liitä saha käteen
-            obj[1].Add(obj[5]); // ja käsi toiseen päähän           
-
+            obj[5] = new Object3D("Head/arm.obj2");
+            obj[6] = new Object3D("Head/saw.obj2");
+            obj[5].Add(obj[6]); // liitä terä käteen
+            obj[1].Add(obj[5]); // ja käsi päähän
+          
             // lisää kamat worldiin
             for (int q = 0; q < 4; q++) // EI 5 ja 6 koska ne on liitetty jo
                 world.Add(obj[q]);
 
             // rumilus
-            model.Load("Ugly/Ukko.mesh", null);
+            model.Load("Ugly/Ukko.mesh");
             model.LoadAnim("Ugly/Ukko_action2.anim", ref anim[0]);
             model.position.X = -4;
             model.fixRotation.X = -90; // ukko on "makaavassa" asennossa joten nostetaan se fixRotationilla pystyyn.
@@ -109,14 +113,14 @@ namespace CSatExamples
             uglyModel = new AnimatedModel((IModel)model);
             world.Add(uglyModel);
 
-            obj[4] = new Object3D("scene1.obj", .2f, .2f, .2f, null);
+            obj[4] = new Object3D("scene1.obj", .2f, .2f, .2f);
             obj[4].position.X = 10;
             obj[4].fixRotation.X = -90;
             obj[4].SetDoubleSided(8, true); // katos pitää pistää 2 puoliseks, muuten se ei näy alhaalta päin
             world.Add(obj[4]);
 
-            Camera.cam.position.Y = 5;
-            Camera.cam.position.Z = 15;
+            cam.position.Y = 5;
+            cam.position.Z = 15;
 
             Util.Set3DMode();
         }
@@ -156,16 +160,16 @@ namespace CSatExamples
             // ohjaus
             float spd = 1;
             if (Keyboard[Key.ShiftLeft]) spd = 2;
-            if (Keyboard[Key.W]) Camera.cam.MoveXZ(spd, 0);
-            if (Keyboard[Key.S]) Camera.cam.MoveXZ(-spd, 0);
-            if (Keyboard[Key.A]) Camera.cam.MoveXZ(0, -spd);
-            if (Keyboard[Key.D]) Camera.cam.MoveXZ(0, spd);
-            if (Keyboard[Key.R]) Camera.cam.position.Y++;
-            if (Keyboard[Key.F]) Camera.cam.position.Y--;
+            if (Keyboard[Key.W]) cam.MoveXZ(spd, 0);
+            if (Keyboard[Key.S]) cam.MoveXZ(-spd, 0);
+            if (Keyboard[Key.A]) cam.MoveXZ(0, -spd);
+            if (Keyboard[Key.D]) cam.MoveXZ(0, spd);
+            if (Keyboard[Key.R]) cam.position.Y++;
+            if (Keyboard[Key.F]) cam.position.Y--;
             if (mouseButtons[(int)MouseButton.Left])
             {
-                Camera.cam.TurnXZ(Mouse.XDelta);
-                Camera.cam.LookUpXZ(Mouse.YDelta);
+                cam.TurnXZ(Mouse.XDelta);
+                cam.LookUpXZ(Mouse.YDelta);
             }
             int tmp = Mouse.XDelta; tmp = Mouse.YDelta;
 
@@ -176,16 +180,32 @@ namespace CSatExamples
             obj[2].rotation.Y -= (float)e.Time * 10;
             obj[3].rotation.Y += (float)Math.Sin((float)e.Time * 100) * 10;
 
-            // saha
-            obj[6].SetMeshRotation(0, new Vector4(0, 0, 1, obj[0].rotation.Y * 5));
-            //obj[6].rotation.Z = obj[0].rotation.Y * 5;
-
             // ja hullu ukko huittisista eiku pyörii vaa
-            model.rotation.Y -= (float)e.Time * 100;
+            model.rotation.Y -= (float)e.Time * 50;
+
+            /*
+             *  obj[6].position määrää sahan paikan. 
+             *  Objects[0] paikassa on itse saha-objekti ja pyörittämällä sen z:aa, se pyörii
+             *  nollapisteensä ympäri.
+             *  
+             *  eli:
+             *  root <-paikka, rotation, .-
+             *    child <-saha-objekti + paikka, rotation, .-
+             */
+            // saha
+            // ((Object3D)obj[6].Objects[0]).rotation.Z = obj[0].rotation.Y * 5; // 1.tapa
+            obj[6].GetObject(0).rotation.Z = obj[0].rotation.Y * 5; // 2.tapa
+
 
             // arm
             obj[5].rotation.Y = obj[1].rotation.Y / 5;
 
+            // TODO FIX---
+            // prob: seuraavat ei toimi vielä, eli vaikka saha on kädessä, se ei liiku kun kättä liikuttaa.
+            //obj[5].GetObject(0).rotation.Z = obj[1].rotation.Y / 2;
+            //obj[5].GetObject(3).rotation.Z = -obj[1].rotation.Y / 2;
+            //obj[5].rotation.Z = obj[1].rotation.Y / 5; // tällä tavalla pysyy kädessä mutta pyöritys menee pöydän 0 pisteen ympäri.
+            // TODO FIX---
         }
 
         /// <summary>
@@ -198,7 +218,7 @@ namespace CSatExamples
             Settings.NumOfObjects = 0;
             base.OnRenderFrame(e);
 
-            Camera.cam.UpdateXZ();
+            cam.UpdateXZ();
             Frustum.CalculateFrustum();
             Light.UpdateLights(); // päivitä valot kameran asettamisen jälkeen
 

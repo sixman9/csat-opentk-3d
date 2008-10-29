@@ -107,6 +107,8 @@ namespace CSatExamples
                 game.WindowState = OpenTK.WindowState.Normal;
             }
 
+            Camera.cam = new Camera(); // resetoi kamera
+
             PrintInfo();
             game.Run(30.0, 0.0);
 
@@ -115,7 +117,7 @@ namespace CSatExamples
 
 
             Log.WriteDebugLine("Test finished..");
-
+            
             game = null;
 
             GC.Collect();
