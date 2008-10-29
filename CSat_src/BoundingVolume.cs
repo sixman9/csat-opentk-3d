@@ -40,36 +40,45 @@ namespace CSat
         public Vector3 Min { get { return min; } }
         public Vector3 Max { get { return max; } }
 
-        Vector3[] corner = new Vector3[8]; // kulmat
+        /// <summary>
+        /// bboxin kulmat
+        /// </summary>
+        Vector3[] corner = new Vector3[8];
         public Vector3[] Corner { get { return corner; } }
 
-        // bounding boxin normaalit "sisällepäin"
+        /// <summary>
+        /// bounding boxin normaalit "sisällepäin"
+        /// </summary>
         Vector4[] planes = new Vector4[6];
 
-        float r;
+        float r = 999999;
         public float R { get { return r; } }
 
-        public byte Mode = Sphere; // miten tarkistetaan frustumiin (BOX/SPHERE)
+        /// <summary>
+        /// miten tarkistetaan frustumiin (Box/Sphere)
+        /// </summary>
+        public byte Mode = Sphere;
 
-        public void FindMinMax(Object3D o)
+        public void FindMinMax(Object3D o, Vector3 pos)
         {
-            for (int c = 0; c < o.mesh.vertexInd.Count; c++)
+            for (int c = 0; c < o.vertexInd.Count; c++)
             {
-                int q = (int)o.mesh.vertexInd[c];
-                if (o.Vertex[q].X < min.X) min.X = o.Vertex[q].X;
-                if (o.Vertex[q].Y < min.Y) min.Y = o.Vertex[q].Y;
-                if (o.Vertex[q].Z < min.Z) min.Z = o.Vertex[q].Z;
+                int q = (int)o.vertexInd[c];
+                Vector3 v = o.Vertex[q] + pos;
 
-                if (o.Vertex[q].X > max.X) max.X = o.Vertex[q].X;
-                if (o.Vertex[q].Y > max.Y) max.Y = o.Vertex[q].Y;
-                if (o.Vertex[q].Z > max.Z) max.Z = o.Vertex[q].Z;
+                if (v.X < min.X) min.X = v.X;
+                if (v.Y < min.Y) min.Y = v.Y;
+                if (v.Z < min.Z) min.Z = v.Z;
 
+                if (v.X > max.X) max.X = v.X;
+                if (v.Y > max.Y) max.Y = v.Y;
+                if (v.Z > max.Z) max.Z = v.Z;
             }
         }
 
         public void CalcR()
         {
-            Vector3 v = new Vector3(max - min);
+            Vector3 v = max - min;
             r = v.Length;
         }
 
@@ -82,30 +91,40 @@ namespace CSat
             CalcPlanes();
         }
 
-        // objektin bounding box
-        public void CalcObjectBounds(Object3D obj)
+        /// <summary>
+        /// ota objektin + childien bounding box.
+        /// 
+        /// jos objekteja liittää toisiinsa, tämä pitäis suorittaa että lasketaan uusi bbox.
+        /// </summary>
+        /// <param name="obj"></param>
+        public void CalcBounds(Object3D obj)
         {
             for (int q = 0; q < obj.Objects.Count; q++)
             {
                 Object3D child = (Object3D)obj.Objects[q];
-                FindMinMax(child);
+                FindMinMax(child, obj.position);
+                CalcBounds(child);
             }
             CalcR();
             SetCorners();
             CalcPlanes();
         }
 
+        /// <summary>
+        /// ota objektin bounding box
+        /// </summary>
+        /// <param name="obj"></param>
         public void CalcMeshBounds(Object3D obj)
         {
             min = new Vector3(99999, 99999, 99999);
             max = new Vector3(-99999, -99999, -99999);
 
-            FindMinMax(obj);
+            FindMinMax(obj, new Vector3(0, 0, 0));
 
-            Vector3 v = new Vector3(max - min);
+            Vector3 v = max - min;
             r = v.Length;
             v.Scale(.5f, .5f, .5f);
-            obj.mesh.center = new Vector3(min + v); // meshin keskipiste
+            obj.objCenter = min + v; // objektin keskipiste
 
             SetCorners();
             CalcPlanes();
@@ -145,7 +164,13 @@ namespace CSat
             corner[7].Y = min.Y;
         }
 
-        // jos vertex on jonkun tason "takana", vartex ei ole boxissa. normaalit osoittaa "sisäänpäin".
+        /// <summary>
+        /// jos vertex on jonkun tason "takana", vartex ei ole boxissa. normaalit osoittaa "sisäänpäin".
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <returns></returns>
         public bool PointInBox(float x, float y, float z)
         {
             // tasoyhtälö: A*x + B*y + C*z + D = 0

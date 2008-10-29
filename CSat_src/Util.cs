@@ -35,12 +35,16 @@ namespace CSat
         {
             Texture.DisposeAll();
             Material.DisposeAll();
+            Light.DisposeAll();
+            GLSL.DisposeAll();
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
 
-        // ristikkoviritelmä
+        /// <summary>
+        /// ristikkoviritelmä
+        /// </summary>
         public static void RenderGrid()
         {
             GL.LineWidth(2);
@@ -141,6 +145,19 @@ namespace CSat
         public static void Set3DMode()
         {
             Set3DMode(ScreenWidth, ScreeenHeight, Near, Far);
+        }
+
+        public static void CheckGLError(string className)
+        {
+            ErrorCode error = ErrorCode.NoError;
+
+            GL.Finish();
+
+            error = GL.GetError();
+            if (error != ErrorCode.NoError)
+            {
+                throw new ArgumentException(className+": "+Glu.ErrorString(error)+" ("+error+")");
+            }
         }
 
     }

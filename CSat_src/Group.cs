@@ -29,7 +29,7 @@ email: matola@sci.fi
  * 
  * hoitaa myös objektien törmäystarkistukset ja groupin rendauksen.
  * 
- * object2d renderoidaan vain render3d metodilla, ei render2d.
+ * jos groupissa Object2D objekteja, ne renderoidaan sen Render3D metodilla.
  * 
  */
 
@@ -60,124 +60,9 @@ namespace CSat
             }
         }
 
-        public void Add(Object obj)
-        {
-            objects.Add(obj);
-            Log.WriteDebugLine(obj + " added to " + groupName + ".");
-        }
-
-        public void Remove(Object obj)
-        {
-            objects.Remove(obj);
-            Log.WriteDebugLine(obj + " removed from " + groupName + ".");
-        }
-
-        public void Remove(string name)
-        {
-            objects.Remove(SearchObject(name));
-            Log.WriteDebugLine(name + " removed from " + groupName + ".");
-        }
-
-        public Object SearchObject(string name)
-        {
-            for (int q = 0; q < objects.Count; q++)
-            {
-                Object3D o = (Object3D)objects[q];
-                if (o.Name == name)
-                    return o;
-            }
-            return null;
-        }
 
         /// <summary>
-        /// palauttaa true jos vektori oldpos->newpos välissä poly. sopii esim kameralle
-        /// dontTestThis - objekti jota ei testata (eli liikuteltava objekti tai null jos esim kamera)
-        /// 
-        /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        /// <param name="dontTestThis"></param>
-        /// <returns></returns>
-        public bool CheckCollision(Vector3 start, Vector3 end, ref Object3D dontTestThis)
-        {
-            Vector3 len = start - end;
-            if (len.X == 0 && len.Y == 0 && len.Z == 0) return false;
-
-            for (int q = 0; q < objects.Count; q++)
-            {
-                if (objects[q] is Object3D)
-                {
-                    if (objects[q] != dontTestThis)
-                        if (Intersection.CheckIntersection(ref start, ref end, (Object3D)objects[q]) == true) return true;
-
-                }
-
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// palauttaa true jos objektin boundingboxin joku vertexi osuu johonkin polyyn
-        /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public bool CheckCollisionBB(Vector3 start, Vector3 end, ref Object3D obj)
-        {
-            Vector3 len = start - end;
-            if (len.X == 0 && len.Y == 0 && len.Z == 0) return false;
-
-            for (int q = 0; q < objects.Count; q++)
-            {
-                if (objects[q] is Object3D)
-                {
-                    if (objects[q] != obj)
-                    {
-                        // jos objekti käännetty (rotation ja/tai fixRotation != 0), pitää ottaa huomioon ja kääntää bounding boxia.
-                        Matrix4 outm = new Matrix4();
-                        Vector3 rot = -(obj.rotation + obj.fixRotation);
-                        if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
-                        {
-                            rot = rot * MathExt.PiOver180;
-                            Matrix4 mx = Matrix4.RotateX(rot.X);
-                            Matrix4 my = Matrix4.RotateY(rot.Y);
-                            Matrix4 mz = Matrix4.RotateZ(rot.Z);
-                            Matrix4 outm0;
-                            Matrix4.Mult(ref mx, ref my, out outm0);
-                            Matrix4.Mult(ref outm0, ref mz, out outm);
-                        }
-                        // tarkistetaan bounding boxin kulmat, yrittääkö läpäistä jonkun polyn
-                        for (int c = 0; c < 8; c++)
-                        {
-                            Vector3 v = obj.objectGroupBoundingVolume.Corner[c];
-
-                            Vector3 vout;
-                            if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
-                            {
-                                vout = MathExt.VectorMatrixMult(ref v, ref outm);
-                            }
-                            else vout = v;
-
-                            vout = vout + obj.position;
-                            Vector3 endv = vout + len;
-
-                            if (Intersection.CheckIntersection(ref vout, ref endv, (Object3D)objects[q]) == true)
-                            {
-                                return true;
-                            }
-                        }
-
-                    }
-                }
-            }
-            return false;
-        }
-
-
-        /// <summary>
-        /// laske objekteille paikat. pitää kutsua jos 
-        /// on liittänyt objekteihin toisia objekteja.
+        /// laske objekteille paikat. pitää kutsua jos on liittänyt objekteihin toisia objekteja.
         /// </summary>
         public void CalculatePositions()
         {
@@ -221,10 +106,127 @@ namespace CSat
             }
         }
 
+        /// <summary>
+        /// renderoi kaikki mitä grouppiin kuuluu
+        /// </summary>
         public void Render()
         {
             CalculatePositions();
             RenderTree();
+        }
+
+        public void Add(Object obj)
+        {
+            objects.Add(obj);
+            Log.WriteDebugLine(obj + " added to " + groupName + ".");
+        }
+
+        public void Remove(Object obj)
+        {
+            objects.Remove(obj);
+            Log.WriteDebugLine(obj + " removed from " + groupName + ".");
+        }
+
+        public void Remove(string name)
+        {
+            objects.Remove(SearchObject(name));
+            Log.WriteDebugLine(name + " removed from " + groupName + ".");
+        }
+
+        public Object SearchObject(string name)
+        {
+            for (int q = 0; q < objects.Count; q++)
+            {
+                Object3D o = (Object3D)objects[q];
+                if (o.Name == name)
+                    return o;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// palauttaa true jos vektori oldpos->newpos välissä poly. sopii esim kameralle
+        /// dontTestThis - objekti jota ei testata (eli liikuteltava objekti tai null jos esim kamera)
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="dontTestThis"></param>
+        /// <returns></returns>
+        public bool CheckCollision(Vector3 start, Vector3 end, ref Object3D dontTestThis)
+        {
+            Vector3 len = start - end;
+            if (len.X == 0 && len.Y == 0 && len.Z == 0) return false;
+
+            for (int q = 0; q < objects.Count; q++)
+            {
+                if (objects[q] is Object3D)
+                {
+                    if (objects[q] != dontTestThis)
+                        if (Intersection.CheckIntersection(ref start, ref end, (Object3D)objects[q]) == true) return true;
+
+                }
+
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// palauttaa true jos objektin boundingboxin joku vertexi osuu johonkin polyyn
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public bool CheckCollisionBB(Vector3 start, Vector3 end, ref Object3D obj)
+        {
+            Vector3 len = start - end;
+            if (len.X == 0 && len.Y == 0 && len.Z == 0) return false;
+
+            for (int q = 0; q < objects.Count; q++)
+            {
+                if (objects[q] is Object3D) // todo  animatedmodelia ei tsekata, vielä
+                {
+                    if (objects[q] != obj)
+                    {
+                        // jos objekti käännetty (rotation ja/tai fixRotation != 0), pitää ottaa huomioon ja kääntää bounding boxia.
+                        Matrix4 outm = new Matrix4();
+                        Vector3 rot = -(obj.rotation + obj.fixRotation);
+                        if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
+                        {
+                            rot = rot * MathExt.PiOver180;
+                            Matrix4 mx = Matrix4.RotateX(rot.X);
+                            Matrix4 my = Matrix4.RotateY(rot.Y);
+                            Matrix4 mz = Matrix4.RotateZ(rot.Z);
+                            Matrix4 outm0;
+                            Matrix4.Mult(ref mx, ref my, out outm0);
+                            Matrix4.Mult(ref outm0, ref mz, out outm);
+                        }
+                        // tarkistetaan bounding boxin kulmat, yrittääkö läpäistä jonkun polyn
+                        for (int c = 0; c < 8; c++)
+                        {
+                            Vector3 v = obj.objectGroupBoundingVolume.Corner[c];
+//                            Vector3 v = obj.boundingVolume.Corner[c];
+
+                            Vector3 vout;
+                            if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
+                            {
+                                vout = MathExt.VectorMatrixMult(ref v, ref outm);
+                            }
+                            else vout = v;
+
+                            vout = vout + obj.position;
+                            Vector3 endv = vout + len;
+
+                            if (Intersection.CheckIntersection(ref vout, ref endv, (Object3D)objects[q]) == true)
+                            {
+                                return true;
+                            }
+                        }
+
+                    }
+                }
+            }
+            return false;
         }
 
         public void RenderTree()

@@ -124,7 +124,7 @@ namespace CSatExamples
             GL.Clear(ClearBufferMask.DepthBufferBit);
             base.OnRenderFrame(e);
 
-            skybox.Render(Camera.cam);
+            skybox.Render();
             cam.UpdateXZ();
             Frustum.CalculateFrustum();
 

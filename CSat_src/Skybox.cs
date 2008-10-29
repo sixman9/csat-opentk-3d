@@ -61,7 +61,7 @@ namespace CSat
                 newSkyTex = Texture.Load(fileName);
 
                 // etsi sivun materiaali
-                string mat = skybox.GetObject(q).mesh.materialName;
+                string mat = skybox.GetObject(q).materialName;
 
                 Material matInf = Material.GetMaterial(mat);
 

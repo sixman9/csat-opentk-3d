@@ -12,18 +12,27 @@ using CSat;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Input;
+using OpenTK.Math;
 using OpenTK.Platform;
+
 
 namespace CSatExamples
 {
-
     class Game9 : GameWindow
     {
         Camera cam = new Camera();
         ITextPrinter printer = new TextPrinter();
         TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
 
-        public Game9(int width, int height) : base(width, height, GraphicsMode.Default, "xxx") { }
+        const int OBJS = 20;
+
+        Object3D toonBall = new Object3D(), toonStar=new Object3D();
+        Object3D[] objs = new Object3D[OBJS];
+
+        Group world = new Group("world");
+        Light light = new Light();
+
+        public Game9(int width, int height) : base(width, height, GraphicsMode.Default, "GLSL test") { }
 
         /// <summary>Load resources here.</summary>
         public override void OnLoad(EventArgs e)
@@ -36,12 +45,45 @@ namespace CSatExamples
             GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
             GL.Enable(EnableCap.CullFace);
             GL.ShadeModel(ShadingModel.Smooth);
-            GL.Enable(EnableCap.Lighting);
-            GL.Enable(EnableCap.Light0);
+
+            Light.Enable();
+            light.position = new Vector3(80, 20, 0);
+            light.UpdateColor(0);
+            light.SetLight(0, true);
+            Light.Add(light); // lisää valo (aurinko)
+            light.rotation=new Vector3(0, 0, -40);
 
             Mouse.ButtonDown += MouseButtonDown;
             Mouse.ButtonUp += MouseButtonUp;
 
+            cam.position.Y = 1;
+            cam.position.Z = 2;
+
+            toonBall.Load("ball.obj");
+            toonStar.Load("star.obj");
+            Random random = new Random();
+            for (int q = 0; q < OBJS; q++)
+            {
+                // nämä käyttää toon shaderia (kirjoitettu .mtl tiedostoon)
+                if(q<OBJS/2) objs[q] = toonBall.Clone(); 
+                else objs[q] = toonStar.Clone();
+
+                objs[q].position.X = random.Next(20)-10;
+                objs[q].position.Y = random.Next(20)-10;
+                objs[q].position.Z = random.Next(20)-10;
+
+                // käytetäänkö lightingiä vai ei mitään..random päättäköön.
+                if (random.Next(10) < 5) objs[q].LoadShader("lighting.vert", "lighting.frag");
+                else objs[q].LoadShader("", ""); // ei shaderia
+            }
+            for (int q = 0; q < OBJS; q++) toonBall.Add(objs[q]); // lisäätään obut toonballiin joka on maailmankaikkeuden keskipiste
+
+            // toonBall bbox pitää laskea uudelleen koska siihen ollaan lisätty tavaraa.
+            toonBall.objectGroupBoundingVolume.CalcBounds(toonBall);
+            
+            world.Add(toonBall);
+            
+            Util.Set3DMode();
         }
 
         bool[] mouseButtons = new bool[5];
@@ -52,6 +94,7 @@ namespace CSatExamples
         public override void OnUnload(EventArgs e)
         {
             font.Dispose();
+            Util.ClearArrays(); // poistaa kaikki materiaalit ja texturet
 
         }
         #endregion
@@ -91,6 +134,13 @@ namespace CSatExamples
                 cam.LookUpXZ(Mouse.YDelta);
             }
             int tmp = Mouse.XDelta; tmp = Mouse.YDelta;
+
+            toonBall.rotation += new Vector3(1.2f, 1.5f, 0.3f);
+
+            // valolla on samat metodit liikuttamiseen kuin objekteilla joten 
+            // pisteetään valo liikkumaan ympäyrää
+            light.MoveXZ(4);
+            light.rotation.Y += 4f;
         }
 
         /// <summary>
@@ -103,13 +153,26 @@ namespace CSatExamples
             Settings.NumOfObjects = 0;
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            cam.UpdateXZ();
+            Frustum.CalculateFrustum();
+            Light.UpdateLights(); // päivitä valot kameran asettamisen jälkeen
 
+            world.Render();
+
+            // valon paikalle pallo:
+            Vector3 tmp = objs[0].position;
+            objs[0].position = light.position;
+            objs[0].Render();
+            objs[0].position = tmp;
 
             Texture.ActiveUnit(0);
+
+            Light.Disable();
             printer.Begin();
-            if (MainClass.UseFonts) printer.Draw("hoh: " + Settings.NumOfObjects, font);
+            if (MainClass.UseFonts) printer.Draw("Objs: " + Settings.NumOfObjects, font);
             printer.End();
             GL.MatrixMode(MatrixMode.Modelview);
+            Light.Enable();
 
             SwapBuffers();
         }

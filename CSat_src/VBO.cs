@@ -57,7 +57,11 @@ namespace CSat
 
         private int vertexID = 0, indexID = 0;
         private BufferUsageHint usage = BufferUsageHint.StaticDraw;
-        private short vertexFlags = 0; // liput, mit‰ kaikkea k‰ytet‰‰n (normal, uv, color)
+        
+        /// <summary>
+        /// liput, mit‰ kaikkea k‰ytet‰‰n (normal, uv, color)
+        /// </summary>
+        private short vertexFlags = 0; 
         int numOfIndices = 0;
 
         public VBO() { }
@@ -104,19 +108,19 @@ namespace CSat
         /// <param name="uvs2"></param>
         /// <param name="uvs3"></param>
         /// <param name="colors"></param>
-        /// <param name="mesh"></param>
-        public void DataToVBO(Vector3[] vertices, Vector3[] normals, Vector2[] uvs1, Vector2[] uvs2, Vector2[] uvs3, Vector4[] colors, ref MeshData mesh)
+        /// <param name="obj"></param>
+        public void DataToVBO(Vector3[] vertices, Vector3[] normals, Vector2[] uvs1, Vector2[] uvs2, Vector2[] uvs3, Vector4[] colors, ref Object3D obj)
         {
-            int[] ind = new int[mesh.vertexInd.Count];
+            int[] ind = new int[obj.vertexInd.Count];
             Vector3[] vert = new Vector3[ind.Length];
             Vector3[] norm = new Vector3[ind.Length];
             Vector2[] uv = new Vector2[ind.Length];
 
             for (int q = 0; q < ind.Length; q++)
             {
-                vert[q] = vertices[(int)mesh.vertexInd[q]];
-                norm[q] = normals[(int)mesh.normalInd[q]];
-                uv[q] = uvs1[(int)mesh.uvInd[q]];
+                vert[q] = vertices[(int)obj.vertexInd[q]];
+                norm[q] = normals[(int)obj.normalInd[q]];
+                uv[q] = uvs1[(int)obj.uvInd[q]];
             }
 
             // index taulukko
@@ -185,6 +189,8 @@ namespace CSat
 
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, indexID);
             GL.BufferSubData(BufferTarget.ElementArrayBuffer, (IntPtr)0, (IntPtr)(indices.Length * sizeof(int)), indices);
+
+            Util.CheckGLError("VBO");
         }
 
         public void DataToVBO(Vertex[] verts, int[] indices)
@@ -197,6 +203,8 @@ namespace CSat
 
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, indexID);
             GL.BufferSubData(BufferTarget.ElementArrayBuffer, (IntPtr)0, (IntPtr)(indices.Length * sizeof(int)), indices);
+
+            Util.CheckGLError("VBO");
         }
 
         public void Update(Vertex[] verts)
@@ -205,8 +213,10 @@ namespace CSat
             GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)0, (IntPtr)(numOfIndices * VERTEX_SIZE), verts);
         }
 
-        // tilat p‰‰lle
-        public void BeginRender()
+        /// <summary>
+        /// tilat p‰‰lle. pit‰‰ kutsua ennen Renderi‰.
+        /// </summary>
+         public void BeginRender()
         {
             if (vertexID == 0 || indexID == 0)
             {
@@ -255,7 +265,12 @@ namespace CSat
 
         }
 
-        // voi erikseen valita mit‰ texture unittei k‰ytet‰‰n jos multitexture
+        /// <summary>
+         /// voi erikseen valita mit‰ texture unittei k‰ytet‰‰n jos multitexture
+        /// </summary>
+        /// <param name="t0"></param>
+        /// <param name="t1"></param>
+        /// <param name="t2"></param>
         public void UseTextureUnits(bool t0, bool t1, bool t2)
         {
             if (t0) vertexFlags |= 4; else vertexFlags &= ~4;
@@ -263,6 +278,9 @@ namespace CSat
             if (t2) vertexFlags |= 16; else vertexFlags &= ~16;
         }
 
+        /// <summary>
+        /// renderoi vbo
+        /// </summary>
         public void Render()
         {
             BeginRender();
@@ -270,7 +288,9 @@ namespace CSat
             EndRender();
         }
 
-        // tilat pois p‰‰lt‰
+        /// <summary>
+        /// tilat pois p‰‰lt‰
+        /// </summary>
         public void EndRender()
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);

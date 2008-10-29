@@ -30,7 +30,8 @@ namespace CSatExamples
             listBox1.Items.Add("Billboard");
             listBox1.Items.Add("BitmapFont");
             listBox1.Items.Add("Group test");
-            listBox1.Items.Add("empty");
+            listBox1.Items.Add("GLSL test");
+            listBox1.Items.Add("-empty-");
             listBox1.SelectedIndex = 0;
 
             textBox1.Lines = new string[] { "Moving:", "A D W S", "R F (up/down)", "shift - run", "", "Push mouse button to rotate the camera." };
@@ -89,6 +90,9 @@ namespace CSatExamples
                 case 9:
                     game = new Game9(width, height);
                     break;
+                case 10:
+                    game = new Game10(width, height);
+                    break;
             }
 
             // fullscreen?
@@ -117,7 +121,7 @@ namespace CSatExamples
 
 
             Log.WriteDebugLine("Test finished..");
-            
+
             game = null;
 
             GC.Collect();

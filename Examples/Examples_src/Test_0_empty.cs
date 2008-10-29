@@ -41,6 +41,11 @@ namespace CSatExamples
             Mouse.ButtonUp += MouseButtonUp;
 
             Util.Set3DMode();
+
+
+            // lataa kamat
+
+
         }
 
         bool[] mouseButtons = new bool[5];
@@ -49,6 +54,7 @@ namespace CSatExamples
 
         public override void OnUnload(EventArgs e)
         {
+            font.Dispose();
             Util.ClearArrays(); // poistaa kaikki materiaalit ja texturet
 
         }
@@ -88,6 +94,8 @@ namespace CSatExamples
 
             cam.UpdateXZ();
             Frustum.CalculateFrustum();
+            //Light.UpdateLights();
+
 
 
             // rendataas jotain

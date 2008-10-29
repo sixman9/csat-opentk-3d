@@ -36,11 +36,11 @@ using OpenTK.Graphics;
 
 namespace CSat
 {
-
     public class Texture
     {
-
-        // Vapauta kaikki resurssit kun kutsutaan Disposea
+        /// <summary>
+        /// Vapauta kaikki resurssit kun kutsutaan Disposea
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
@@ -83,10 +83,14 @@ namespace CSat
             textures.Clear();
         }
 
-        // texture taulukko
+        /// <summary>
+        /// texture taulukko jossa kaikki ladatut texturet
+        /// </summary>
         public static Hashtable textures = new Hashtable();
 
-        // textureparametrit, k‰ytet‰‰n latauksen yhteydess‰
+        /*
+         * textureparametrit, k‰ytet‰‰n latauksen yhteydess‰
+         */ 
         public static TextureMagFilter MagnificationFilter = TextureMagFilter.Linear;
         public static TextureMinFilter MinificationFilter = TextureMinFilter.Linear;
         public static TextureWrapMode WrapModeS = TextureWrapMode.Repeat;
@@ -108,14 +112,22 @@ namespace CSat
             get { return height; }
         }
 
-        // aina kun ladataan texture, t‰t‰ lis‰t‰‰n. useampi objekti voi k‰ytt‰‰ samaa
-        // texturea jolloin t‰m‰ on k‰yttˆjen lkm. kun objekteja poistetaan, katsotaan
-        // jos viel‰ joku k‰ytt‰‰ t‰t‰ texturea, ettei menn‰ poistamaan sit‰ v‰‰r‰‰n aikaan!
+        /// <summary>
+        /// aina kun ladataan texture, t‰t‰ lis‰t‰‰n. useampi objekti voi k‰ytt‰‰ samaa
+        /// texturea jolloin t‰m‰ on k‰yttˆjen lkm. kun objekteja poistetaan, katsotaan
+        /// jos viel‰ joku k‰ytt‰‰ t‰t‰ texturea, ettei menn‰ poistamaan sit‰ v‰‰r‰‰n aikaan!
+        /// </summary>
         int textureCount = 0;
 
-        TextureTarget target; // texture, cubemap
+        /// <summary>
+        /// texture, cubemap
+        /// </summary>
+        TextureTarget target; 
 
-        static uint bind = 0; // mik‰ texture bindattu
+        /// <summary>
+        /// mik‰ texture bindattu
+        /// </summary>
+        static uint bind = 0;
         public void Bind()
         {
             if (textureID != bind)
@@ -224,7 +236,9 @@ namespace CSat
             return t;
         }
 
-        // kuvien lataajat.
+        /*
+         * kuvien lataajat.
+         */ 
         public delegate void LoadFromDiskCallback(string filename, out uint texturehandle, out TextureTarget dimension, TextureMinFilter minFilter, TextureMagFilter magFilter, TextureWrapMode wrapS, TextureWrapMode wrapT);
         public static LoadFromDiskCallback LoadFromDiskGDI = _loadfromdisk;
         public static LoadFromDiskCallback LoadFromDiskDDS = _loadfromdisk;

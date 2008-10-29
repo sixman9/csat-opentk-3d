@@ -119,8 +119,14 @@ namespace CSat
             NormalizePlane(frustum, FRONT);
         }
 
-        // tasojen normaalit osoittaa sis‰‰np‰in joten jos testattava vertex on
-        // kaikkien tasojen "edess‰", se on ruudulla ja rendataan
+        /// <summary>
+        /// tasojen normaalit osoittaa sis‰‰np‰in joten jos testattava vertex on
+        /// kaikkien tasojen "edess‰", se on ruudulla ja rendataan
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <returns></returns>
         public static bool PointInFrustum(float x, float y, float z)
         {
             // tasoyht‰lˆ: A*x + B*y + C*z + D = 0
@@ -230,6 +236,8 @@ namespace CSat
 
         public static bool ObjectInFrustum(float x, float y, float z, BoundingVolume ba)
         {
+            if (ba == null) return true;
+
             // mode: mik‰ testaus tehd‰‰n
             switch (ba.Mode)
             {

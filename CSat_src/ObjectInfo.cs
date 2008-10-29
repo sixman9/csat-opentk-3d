@@ -24,21 +24,36 @@ email: matola@sci.fi
 #endregion
 
 using System;
+using OpenTK.Graphics;
 using OpenTK.Math;
 
 namespace CSat
 {
-
     public class ObjectInfo : Group
     {
-        protected string name; // objektin nimi
+        /// <summary>
+        /// objektin nimi
+        /// </summary>
+        protected string name; 
         public string Name { get { return name; } }
 
-        public Vector3 position; // objektin paikka
-        public Vector3 rotation; // objektin asento
-        public Vector3 fixRotation; // jos tarvii korjata asento ennen liikuttelua ja k‰‰nt‰mist‰
+        /// <summary>
+        /// objektin paikka
+        /// </summary>
+        public Vector3 position;
+        /// <summary>
+        /// objektin asento
+        /// </summary>
+        public Vector3 rotation;
+        /// <summary>
+        /// jos tarvii korjata asento ennen liikuttelua ja k‰‰nt‰mist‰
+        /// </summary>
+        public Vector3 fixRotation;
 
-        public Vector3 wpos; // world coords
+        /// <summary>
+        /// world coords (k‰ytet‰‰n vain enginess‰)
+        /// </summary>
+        public Vector3 wpos;
 
         public Vector3 view;
         public Vector3 front, right, up;
@@ -107,6 +122,8 @@ namespace CSat
          * 
          */
 
+        
+        /* 
         /// <summary>
         /// eteenp‰in/taaksep‰in f/-f
         /// </summary>
@@ -126,9 +143,10 @@ namespace CSat
         {
             position += (up * f);
         }
-
+        */
 
         // todo 6dof rotate
+
 
     }
 }

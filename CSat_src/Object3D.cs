@@ -55,14 +55,29 @@ namespace CSat
             return this.Clone();
         }
 
+        /// <summary>
+        /// Palauttaa objektin kloonin.
+        /// </summary>
+        /// <returns></returns>
         public Object3D Clone()
         {
-            Object3D o = (Object3D)this.MemberwiseClone();
-            o.objects = new ArrayList(objects);
-            return o;
-        }
+            Object3D clone = (Object3D)this.MemberwiseClone();
 
-        public MeshData mesh = new MeshData();
+            // eri grouppi eli kloonatut objektit voi lisäillä grouppiin mitä tahtoo
+            // sen vaikuttamatta alkuperäiseen.
+            clone.objects = new ArrayList(objects);
+            clone.materialName = materialName;
+            //clone.shader = new GLSL();
+
+            for (int q = 0; q < objects.Count; q++)
+            {
+                Object3D child = (Object3D)objects[q];
+                clone.objects[q] = child.Clone();
+
+            }
+
+            return clone;
+        }
 
         Vector3[] vertex;
         Vector3[] normal;
@@ -73,25 +88,33 @@ namespace CSat
             get { return vertex; }
         }
 
-        // ladataanko texturet
+        /// <summary>
+        /// ladataanko texturet
+        /// </summary>
         public static bool Textured = true;
 
         VBO vbo;
 
-        public BoundingVolume objectGroupBoundingVolume = null; // objektin alue
+        /// <summary>
+        /// koko objektin alue
+        /// </summary>
+        public BoundingVolume objectGroupBoundingVolume = null;
 
+        /// <summary>
+        /// tuhoa objekti
+        /// </summary>
         public void Dispose()
         {
             for (int q = 0; q < objects.Count; q++)
             {
                 Object3D child = (Object3D)objects[q];
-                Material.Dispose(child.mesh.materialName);
+                Material.Dispose(child.materialName);
                 child.vbo.Dispose();
             }
         }
 
         /// <summary>
-        /// lataa .obj tiedosto
+        /// lataa .obj/.obj2 tiedosto
         /// </summary>
         /// <param name="fileName"></param>
         public void Load(string fileName)
@@ -100,7 +123,7 @@ namespace CSat
         }
 
         /// <summary>
-        /// lataa .obj tiedosto
+        /// lataa .obj/.obj2 tiedosto
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="xs"></param>
@@ -126,6 +149,7 @@ namespace CSat
 
             parent.name = fileName; // objektin nimeksi sama kuin tiedostonimi
             fileName = Settings.DataDir + fileName;
+            bool path = false; // jos reitti
 
             // tiedosto muistiin
             string data = new System.IO.StreamReader(fileName).ReadToEnd();
@@ -188,6 +212,19 @@ namespace CSat
 
                         child = new Object3D();
                         child.name = ln[1];
+
+                        // Nimessä voi olla ohjeita mitä muuta halutaan, esim:
+                        // * Path_reitti1  jolloin ei ladata objektia mutta reitti jota pitkin kamera/objektit voi kulkea.
+                        // * BBox_nimi/BSphere_nimi jolloin tämä onkin nimi-objektin bounding box/sphere.
+                        if (child.name.Contains("Path_"))
+                        {
+                            path = true;
+                        }
+                        else if (child.name.Contains("BBox_") || child.name.Contains("BSphere_"))
+                        {
+                            // TODO
+                        }
+
                         // child osoittamaan parentissa oleviin vertexeihin, uvihin ja normaleihin
                         child.vertex = parent.vertex;
                         child.normal = parent.normal;
@@ -223,13 +260,13 @@ namespace CSat
                             child.uv = parent.uv;
                         }
 
-                        child.mesh.materialName = ln[1];
+                        child.materialName = ln[1];
                         continue;
                     }
 
                     if (ln[0] == "f")
                     {
-                        child.mesh.AddFace(line);
+                        child.AddFace(line);
                         continue;
                     }
 
@@ -250,21 +287,37 @@ namespace CSat
 
             if (child != null) parent.Add(child);
 
-            // luo joka objektille vbo ja kopsaa datat sinne
-            for (int q = 0; q < parent.objects.Count; q++)
+            // pathille ei luoda objektia, se on vain kasa vertexejä
+            if (path == false)
             {
-                child = (Object3D)parent.objects[q];
-                child.vbo = new VBO();
-                child.vbo.DataToVBO(parent.vertex, parent.normal, parent.uv, null, null, null, ref child.mesh);
+                // luo joka objektille vbo ja kopsaa datat sinne
+                for (int q = 0; q < parent.objects.Count; q++)
+                {
+                    child = (Object3D)parent.objects[q];
+                    child.vbo = new VBO();
+                    child.vbo.DataToVBO(parent.vertex, parent.normal, parent.uv, null, null, null, ref child);
 
-                child.mesh.boundingVolume.CalcMeshBounds(child);
+                    child.boundingVolume.CalcMeshBounds(child);
+
+                    // lataa glsl koodit
+                    string shader = Material.GetMaterial(child.materialName).shaderName;
+                    if (shader != "")
+                    {
+                        child.shader = new GLSL();
+                        child.shader.Load(shader + ".vert", shader + ".frag");
+                        child.useShader = true;
+                    }
+
+                }
+
+                // koko objektin alue
+                parent.objectGroupBoundingVolume = new BoundingVolume();
+                parent.objectGroupBoundingVolume.CalcBounds(parent);
+
+                Log.WriteDebugLine("Object: " + parent.name + "  meshes: " + parent.objects.Count);
+
             }
-
-            // objektiryhmän bbox/sphere
-            parent.objectGroupBoundingVolume = new BoundingVolume();
-            parent.objectGroupBoundingVolume.CalcObjectBounds(parent);
-
-            Log.WriteDebugLine("Object " + parent.name + "  meshes: " + parent.objects.Count);
+            else Log.WriteDebugLine("Path: " + parent.name);
 
         }
 
@@ -299,20 +352,18 @@ namespace CSat
                 Matrix4.Mult(ref mx, ref my, out outm0);
                 Matrix4.Mult(ref outm0, ref mz, out rotationMatrix);
             }
-            
-            // childin child ... renderoidaan myös kaikki childit
-            base.RenderTree();
 
-            // jos löytyy rendattavaa
-            if (vbo != null)
+            // tarkista onko objekti näkökentässä
+            if (Frustum.ObjectInFrustum(wpos.X, wpos.Y, wpos.Z, objectGroupBoundingVolume))
             {
-                vbo.BeginRender();
+                // childin child ... renderoidaan myös kaikki childit
+                base.RenderTree();
 
-                // tarkista onko objekti näkökentässä
-                //if (Frustum.ObjectInFrustum(wpos.X, wpos.Y, wpos.Z, objectGroupBoundingVolume))
+                // jos löytyy rendattavaa
+                if (vbo != null)
                 {
-                    // jos objektia käännetty, pitää laskea mesheille uudet keskipisteet
-                    Vector3 vout, center = mesh.center;
+                    // jos objektia käännetty, pitää laskea objekteille uudet keskipisteet
+                    Vector3 vout, center = objCenter;
                     if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
                     {
                         vout = MathExt.VectorMatrixMult(ref center, ref rotationMatrix);
@@ -320,16 +371,23 @@ namespace CSat
                     }
 
                     // onko meshi näkökentässä
-                    //if (Frustum.ObjectInFrustum(wpos.X + child.mesh.center.X, wpos.Y + child.mesh.center.Y, wpos.Z + child.mesh.center.Z, child.mesh.boundingVolume))
+                    if (Frustum.ObjectInFrustum(wpos.X + objCenter.X, wpos.Y + objCenter.Y, wpos.Z + objCenter.Z, boundingVolume))
                     {
-                        if (mesh.doubleSided) GL.Disable(EnableCap.CullFace);
-                        Material.SetMaterial(mesh.materialName);
+                        vbo.BeginRender();
+
+                        if (doubleSided) GL.Disable(EnableCap.CullFace);
+                        Material.SetMaterial(materialName);
+                        if (shader != null && useShader) shader.UseProgram();
                         vbo.Render();
-                        if (mesh.doubleSided) GL.Enable(EnableCap.CullFace);
+                        if (shader != null && useShader) shader.DontUseProgram();
+
+                        if (doubleSided) GL.Enable(EnableCap.CullFace);
                         Settings.NumOfObjects++;
+
+                        vbo.EndRender();
                     }
                 }
-                vbo.EndRender();
+
 
             }
 
@@ -337,7 +395,7 @@ namespace CSat
         }
 
         /// <summary>
-        /// ota haluttu mesh.
+        /// hae objekti
         /// </summary>
         /// <param name="index"></param>
         public Object3D GetObject(int index)
@@ -345,7 +403,7 @@ namespace CSat
             return (Object3D)objects[index];
         }
         /// <summary>
-        /// ota haluttu mesh nimen perusteella.
+        /// ota haluttu objekti nimen perusteella.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -387,7 +445,7 @@ namespace CSat
             for (int q = 0; q < objects.Count; q++)
             {
                 Object3D child = (Object3D)objects[q];
-                child.mesh.boundingVolume.Mode = mode;
+                child.boundingVolume.Mode = mode;
             }
         }
 
@@ -395,38 +453,91 @@ namespace CSat
         /// <summary>
         /// Asettaa meshien 2 puolisuuden, eli ei cullata polyja.
         /// </summary>
-        /// <param name="meshNumber">halutun meshin index, tai -1 niin kaikki</param>
+        /// <param name="meshNumber">halutun meshin nimi, tai * niin kaikki</param>
         /// <param name="doubleSided">true/false asetetaanko/poistetaanko 2 puolisuus </param>
-        public void SetDoubleSided(int meshNumber, bool doubleSided)
+        public void SetDoubleSided(string name, bool doubleSided)
         {
-            if (meshNumber == -1)
+            if (name == "*") // muuta kaikki 2 puoliseks
             {
                 for (int q = 0; q < objects.Count; q++)
                 {
                     Object3D child = (Object3D)objects[q];
-                    child.mesh.doubleSided = doubleSided;
+                    child.doubleSided = doubleSided;
                 }
             }
             else
             {
-                Object3D child = (Object3D)objects[meshNumber];
-                child.mesh.doubleSided = doubleSided;
+                Object3D child = GetObject(name);
+                child.doubleSided = doubleSided;
             }
         }
-    }
 
-    public class MeshData
-    {
-        public string name = ""; // meshin nimi
-        public string materialName = ""; // materiaalin nimi
+        /// <summary>
+        /// lataa shaderit.
+        /// jos meshnamessa on * merkki, ladataan shaderi kaikkiin mesheihin
+        /// joissa on fileName nimessä, eli esim  box*  lataa box1, box2, jne mesheihin shaderin.
+        /// </summary>
+        /// <param name="meshName"></param>
+        /// <param name="vertexShader"></param>
+        /// <param name="fragmentShader"></param>
+        public void LoadShader(string meshName, string vertexShader, string fragmentShader)
+        {
+            for (int q = 0; q < objects.Count; q++)
+            {
+                Object3D child = (Object3D)objects[q];
+
+                if (meshName.Contains("*"))
+                {
+                    meshName = meshName.Trim('*');
+                    if (child.name.Contains(meshName))
+                    {
+                        child.shader = new GLSL();
+                        child.shader.Load(vertexShader, fragmentShader);
+                        child.useShader = true;
+                    }
+                }
+                else if (child.name.Equals(meshName))
+                {
+                    child.shader = new GLSL();
+                    child.shader.Load(vertexShader, fragmentShader);
+                    child.useShader = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// lataa shaderit ja käytä koko objektissa.
+        /// </summary>
+        /// <param name="vertexShader"></param>
+        /// <param name="fragmentShader"></param>
+        public void LoadShader(string vertexShader, string fragmentShader)
+        {
+            bool use = true;
+            if (vertexShader == "" && fragmentShader == "")
+            {
+                use = false;
+            }
+            for (int q = 0; q < objects.Count; q++)
+            {
+                Object3D child = (Object3D)objects[q];
+                if (use == true)
+                {
+                    child.shader = new GLSL();
+                    child.shader.Load(vertexShader, fragmentShader);
+                }
+                child.useShader = use;
+            }
+        }
+
+        public string materialName = "";
 
         public BoundingVolume boundingVolume = new BoundingVolume();
-        public Vector3 center = new Vector3(0, 0, 0);
-        public GLSL shader = new GLSL();
+        public Vector3 objCenter = new Vector3(0, 0, 0);
+        public GLSL shader = null;
+        public bool useShader = false;
 
         public bool doubleSided = false;
 
-        // indexit
         public ArrayList vertexInd = new ArrayList(), normalInd = new ArrayList(), uvInd = new ArrayList();
 
         public void AddFace(string line)
@@ -464,7 +575,7 @@ namespace CSat
                 normalInd.Add(Int32.Parse(ln[6]) - 1);
                 normalInd.Add(Int32.Parse(ln[9]) - 1);
             }
-
         }
+
     }
 }

@@ -53,7 +53,13 @@ namespace CSat
             outv.W = -((v1.X * ((v2.Y * v3.Z) - (v3.Y * v2.Z))) + (v2.X * ((v3.Y * v1.Z) - (v1.Y * v3.Z))) + (v3.X * ((v1.Y * v2.Z) - (v2.Y * v1.Z))));
         }
 
-        // laske tasolle normaali
+        /// <summary>
+        /// laske tasolle normaali
+        /// </summary>
+        /// <param name="v1"></param>
+        /// <param name="v2"></param>
+        /// <param name="v3"></param>
+        /// <param name="outv"></param>
         public static void CalcNormal(ref Vector3 v1, ref Vector3 v2, ref Vector3 v3, out Vector3 outv)
         {
             float RelX1 = v2.X - v1.X;
@@ -67,7 +73,13 @@ namespace CSat
             outv.Z = (RelX1 * RelY2) - (RelY1 * RelX2);
         }
 
-        // laske vertexnormaalit
+        /// <summary>
+        /// laske vertexnormaalit
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="faces"></param>
+        /// <param name="normals"></param>
+        /// <param name="flipNormals"></param>
         public static void CalcNormals(ref Vector3[] pos, ref int[][] faces, ref Vector3[] normals, bool flipNormals)
         {
             int q, w, count = 0;

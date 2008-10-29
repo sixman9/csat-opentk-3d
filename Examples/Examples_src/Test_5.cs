@@ -5,8 +5,8 @@
  * See license.txt for licensing details.
  */
 #endregion
-// intersection test
-// 2 autoo liikkuu ja jos ohjattava törmää toiseen, sekin pysähtyy.
+// collision detection test
+// 2 autoa liikkuu ja jos ohjattava törmää toiseen, sekin pysähtyy.
 // bounding boxeilla tsekataan, välillä autot menee toistensa läpi.
 
 // valo + sumu
@@ -106,6 +106,7 @@ namespace CSatExamples
         #region OnUnload
         public override void OnUnload(EventArgs e)
         {
+            font.Dispose();
             Util.ClearArrays();
         }
         #endregion

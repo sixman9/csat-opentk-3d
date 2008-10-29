@@ -49,7 +49,7 @@ namespace CSat
         }
 
         protected Texture texture = new Texture();
-        public Texture Texture2D // jos halutaan texturetiedot 2d-objektista esim bindausta varten
+        public Texture Texture2D
         {
             get { return texture; }
         }
@@ -144,7 +144,12 @@ namespace CSat
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
         }
 
-        // voi erikseen valita mitä texture unittei käytetään jos multitexture
+        /// <summary>
+        /// voi erikseen valita mitä texture unittei käytetään jos multitexture
+        /// </summary>
+        /// <param name="t0"></param>
+        /// <param name="t1"></param>
+        /// <param name="t2"></param>
         public void UseTextureUnits(bool t0, bool t1, bool t2)
         {
             vbo.UseTextureUnits(t0, t1, t2);
@@ -157,7 +162,17 @@ namespace CSat
                 view.X, view.Y);
         }
 
-        // renderoi 2d tason 3d maailmaan
+        /// <summary>
+        /// renderoi 2d tason 3d maailmaan
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <param name="rx"></param>
+        /// <param name="ry"></param>
+        /// <param name="rz"></param>
+        /// <param name="sx"></param>
+        /// <param name="sy"></param>
         public void Render3D(float x, float y, float z, float rx, float ry, float rz, float sx, float sy)
         {
             GL.PushMatrix();
@@ -170,20 +185,19 @@ namespace CSat
             GL.Rotate(rz, 0, 0, 1);
             GL.Scale(sx, sy, 1);
 
+            // rendaa childit jos on
+            base.RenderTree(); 
+
             GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.EnableBit | AttribMask.PolygonBit);
             SetBlend();
 
-            texture.Bind();
-            vbo.Render();
-            GL.PopAttrib();
-
-            // renderoidaan myös kaikki childit
-            for (int c = 0; c < objects.Count; c++)
+            if (vbo != null)
             {
-                Group g = (Group)objects[c];
-                g.Render();
+                texture.Bind();
+                vbo.Render();
             }
-
+            
+            GL.PopAttrib();
             GL.PopMatrix();
         }
 

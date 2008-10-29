@@ -32,7 +32,9 @@ namespace CSat
 {
     public class Light : ObjectInfo
     {
-        // valot
+        /// <summary>
+        /// valotaulukko. kaikki valot lisätään tähän
+        /// </summary>
         public static ArrayList lights = new ArrayList();
         public Vector3 diffuse = new Vector3(1, 1, 1);
         public Vector3 specular = new Vector3(0.5f, 0.5f, 0.5f);
@@ -42,18 +44,18 @@ namespace CSat
 
         public static void Add(Light light)
         {
-            Log.WriteDebugLine("Light added..");
             lights.Add(light);
+            Log.WriteDebugLine("Light added..");
         }
-        public static void Remove(Light light)
+        public static void Dispose(Light light)
         {
-            Log.WriteDebugLine("Light removed..");
             lights.Remove(light);
+            Log.WriteDebugLine("Light removed..");
         }
-        public static void RemoveLights()
+        public static void DisposeAll()
         {
-            Log.WriteDebugLine("All lights removed..");
             lights.Clear();
+            Log.WriteDebugLine("All lights removed..");
         }
 
         public static void Enable()
@@ -90,7 +92,9 @@ namespace CSat
             GL.Lightv(LightName.Light0 + lightNum, LightParameter.Specular, new float[] { specular.X, specular.Y, specular.Z });
         }
 
-        // päivitä kaikki valot
+        /// <summary>
+        /// päivitä kaikki valot
+        /// </summary>
         public static void UpdateLights()
         {
             for (int q = 0; q < lights.Count; q++)

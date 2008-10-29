@@ -28,19 +28,16 @@ using OpenTK.Math;
 
 namespace CSat
 {
-
     public class Camera : ObjectInfo
     {
-        public static Camera cam = new Camera();
+        public static Camera cam = null;
 
         public Camera()
         {
-            cam = this;
             name = "camera";
         }
         public Camera(string name)
         {
-            cam = this;
             this.name = name;
         }
 
@@ -49,12 +46,11 @@ namespace CSat
         /// </summary>
         public void UpdateXZ()
         {
+            Camera.cam = this;
             GL.LoadIdentity();
-
             GL.Rotate(-rotation.X, 1.0f, 0, 0);
             GL.Rotate(-rotation.Y, 0, 1.0f, 0);
             GL.Rotate(-rotation.Z, 0, 0, 1.0f);
-
             GL.Translate(-position.X, -position.Y, -position.Z);
         }
 
@@ -63,6 +59,8 @@ namespace CSat
         /// </summary>
         public void Update6DOF()
         {
+            Camera.cam = this;
+
             GL.LoadIdentity();
 
             Vector3 vp; // view point
@@ -76,6 +74,7 @@ namespace CSat
         /// <param name="pos"></param>
         public void LookAt(Vector3 pos)
         {
+            Camera.cam = this;
             GL.LoadIdentity();
             Glu.LookAt(position.X, position.Y, position.Z, pos.X, pos.Y, pos.Z, up.X, up.Y, up.Z);
         }
@@ -88,6 +87,7 @@ namespace CSat
         /// <param name="z"></param>
         public void LookAt(float x, float y, float z)
         {
+            Camera.cam = this;
             GL.LoadIdentity();
             Glu.LookAt(position.X, position.Y, position.Z, x, y, z, up.X, up.Y, up.Z);
         }

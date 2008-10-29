@@ -1,125 +1,178 @@
-newmtl Material__1
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd brick4.jpg
-newmtl Material__2
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd brick4.jpg
-newmtl Material__3
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd brick4.jpg
-newmtl Material__4
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd brick4.jpg
-newmtl Material__5
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd JUPITER2.jpg
-newmtl Material__6
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd JUPITER2.jpg
-newmtl Material__7
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd JUPITER2.jpg
-newmtl Material__8
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd JUPITER2.jpg
-newmtl Material__9
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd GRAVSTN.jpg
-newmtl Material__10
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd 2.jpg
-newmtl Material__11
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd tex.jpg
-newmtl Material__12
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd grey_concrete_off.jpg
-newmtl Explorer_Default
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-newmtl Material__13
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd 2.jpg
-newmtl Material__14
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd part.jpg
-newmtl Material__15
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd part.jpg
-newmtl Material__16
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd part.jpg
-newmtl Material__17
-	 Ka 0.117647 0.117647 0.117647
-	 Kd 0.752941 0.752941 0.752941
-	 Ks 0.752941 0.752941 0.752941
-	 illum 2
-	 Ns 8
-	 map_Kd grey_concrete_off.jpg
+# Blender3D MTL File: 
+# Material Count: 16
+newmtl Material__10_2.jpg
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.602353 0.602353 0.602353
+Ks 0.376471 0.376471 0.376471
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd 2.jpg
+
+
+newmtl Material__8_JUPITER2.jpg
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.602353 0.602353 0.602353
+Ks 0.376471 0.376471 0.376471
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd JUPITER2.jpg
+
+
+newmtl Material__7_JUPITER2.jpg
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.602353 0.602353 0.602353
+Ks 0.376471 0.376471 0.376471
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd JUPITER2.jpg
+
+
+newmtl Material__6_JUPITER2.jpg
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.602353 0.602353 0.602353
+Ks 0.376471 0.376471 0.376471
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd JUPITER2.jpg
+
+
+newmtl Material__11_tex.jpg
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.602353 0.602353 0.602353
+Ks 0.376471 0.376471 0.376471
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd tex.jpg
+
+
+newmtl Material__3_brick4.jpg
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.602353 0.602353 0.602353
+Ks 0.376471 0.376471 0.376471
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd brick4.jpg
+
+
+newmtl Material__4_brick4.jpg
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.602353 0.602353 0.602353
+Ks 0.376471 0.376471 0.376471
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd brick4.jpg
+
+
+newmtl Material__15_part.jpg
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.602353 0.602353 0.602353
+Ks 0.376471 0.376471 0.376471
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd part.jpg
+
+
+newmtl Material__9_GRAVSTN.jpg
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.602353 0.602353 0.602353
+Ks 0.376471 0.376471 0.376471
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd GRAVSTN.jpg
+
+
+newmtl Material__12_grey_concrete_off.jpg
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.602353 0.602353 0.602353
+Ks 0.376471 0.376471 0.376471
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd grey_concrete_off.jpg
+
+
+newmtl Material__1_brick4.jpg
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.602353 0.602353 0.602353
+Ks 0.376471 0.376471 0.376471
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd brick4.jpg
+
+
+newmtl Material__5_JUPITER2.jpg
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.602353 0.602353 0.602353
+Ks 0.376471 0.376471 0.376471
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd JUPITER2.jpg
+
+
+newmtl Material__16_part.jpg
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.602353 0.602353 0.602353
+Ks 0.376471 0.376471 0.376471
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd part.jpg
+
+
+newmtl Material__14_part.jpg
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.602353 0.602353 0.602353
+Ks 0.376471 0.376471 0.376471
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd part.jpg
+
+
+newmtl Material__13_2.jpg
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.602353 0.602353 0.602353
+Ks 0.376471 0.376471 0.376471
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd 2.jpg
+
+
+newmtl Material__2_brick4.jpg
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.602353 0.602353 0.602353
+Ks 0.376471 0.376471 0.376471
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd brick4.jpg
+
+

@@ -50,22 +50,36 @@ namespace CSat
             if (!materials.Contains("defaultMaterial")) materials.Add("defaultMaterial", this);
         }
 
-        // materiaali taulukko, jokaisella materiaalilla pit‰‰ olla eri nimi.
+        /// <summary>
+        /// materiaali taulukko. t‰nne tulee kaikki materiaalit. jokaisella materiaalilla pit‰‰ olla eri nimi.
+        /// </summary>
         static Hashtable materials = new Hashtable();
 
-        // materiaalin nimi
+        /// <summary>
+        /// materiaalin nimi
+        /// </summary>
         public string name = null;
 
         static string curMaterial = "";
 
-        // texturet
+        /// <summary>
+        /// glsl ohjelman nimi. objektille voidaan asettaa ohjelma editoimalla materiaalitiedostoa
+        /// ja laittaa haluamaan matskuun  map_Ka Shader_(shader-tiedoston nimi ilman p‰‰tett‰)
+        /// </summary>
+        public string shaderName = "";
+
+        /*
+        /// texturet
+        */
         public Texture diffuseTex = null;
         public Texture specularTex = null;
         public Texture ambientTex = null;
         public Texture bumpTex = null;
         public Texture opacityTex = null;
 
-        // v‰riarvot
+        /*
+        /// v‰riarvot
+        */
         public float phongSpec = 5; // Ns: 0-200
         public Vector4 diffuseColor = new Vector4(0.5f, 0.5f, 0.5f, 1); // diffuse color
         public Vector4 ambientColor = new Vector4(0.1f, 0.1f, 0.1f, 1); // ambient color
@@ -81,8 +95,6 @@ namespace CSat
             if (bumpTex != null) bumpTex.Dispose();
             if (opacityTex != null) opacityTex.Dispose();
         }
-
-
 
         public static Material GetMaterial(string name)
         {
@@ -158,11 +170,20 @@ namespace CSat
                     if (loadTextures == true) tmpmat.specularTex = Texture.Load(ln[1]);
                     continue;
                 }
-                // Ambient color texture map
+                // Ambient color texture map TAI shaderin nimi
                 if (ln[0] == "map_Ka")
                 {
-                    tmpmat.ambientTex = new Texture();
-                    if (loadTextures == true) tmpmat.ambientTex = Texture.Load(ln[1]);
+                    // esim: Shader_cartoon  niin ladataan objektille cartoon.vert ja cartoon.frag shaderit.
+                    if (ln[1].Contains("Shader_"))
+                    {
+                        // ota shaderin nimi
+                        tmpmat.shaderName = ln[1].Substring(7);
+                    }
+                    else //Ambient color texture
+                    {
+                        tmpmat.ambientTex = new Texture();
+                        if (loadTextures == true) tmpmat.ambientTex = Texture.Load(ln[1]);
+                    }
                     continue;
                 }
                 // Bump color texture map

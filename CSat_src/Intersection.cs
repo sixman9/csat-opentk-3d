@@ -37,16 +37,18 @@ using OpenTK.Math;
 
 namespace CSat
 {
-
     public class Intersection
     {
         static float EPSILON = 0.00001f;
         public static float t, u, v;
 
-        /*
-         * tarkista osuuko start->end vektori johonkin polyyn obj -objektissa. 
-         * palauttaa true jos osuu, muuten false.
-         */
+        /// <summary>
+        /// tarkista osuuko start->end vektori johonkin polyyn obj -objektissa. palauttaa true jos osuu, muuten false.
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static bool CheckIntersection(ref Vector3 start, ref Vector3 end, Object3D obj)
         {
             // jos parent -objektia käännetty
@@ -70,10 +72,16 @@ namespace CSat
             return false;
         }
 
-        /*
-         * tarkista osuuko start->end vektori johonkin polyyn. 
-         * palauttaa true jos osuu, muuten false.
-         */
+        /// <summary>
+        /// tarkista osuuko start->end vektori johonkin polyyn. palauttaa true jos osuu, muuten false.
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="obj"></param>
+        /// <param name="position"></param>
+        /// <param name="rotation"></param>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
         public static bool CheckIntersection(ref Vector3 start, ref Vector3 end, ref Object3D obj, ref Vector3 position, ref Vector3 rotation, ref Matrix4 matrix)
         {
             Vector3 dir = new Vector3();
@@ -84,13 +92,13 @@ namespace CSat
             dir.Normalize();
             //len *= 2;
 
-            for (int e = 0; e < obj.mesh.vertexInd.Count / 3; e++)
+            for (int e = 0; e < obj.vertexInd.Count / 3; e++)
             {
                 int i = e * 3;
                 // tarkista kolmio
-                Vector3 v1 = obj.Vertex[(int)obj.mesh.vertexInd[i + 0]];
-                Vector3 v3 = obj.Vertex[(int)obj.mesh.vertexInd[i + 1]];
-                Vector3 v2 = obj.Vertex[(int)obj.mesh.vertexInd[i + 2]];
+                Vector3 v1 = obj.Vertex[(int)obj.vertexInd[i + 0]];
+                Vector3 v3 = obj.Vertex[(int)obj.vertexInd[i + 1]];
+                Vector3 v2 = obj.Vertex[(int)obj.vertexInd[i + 2]];
 
                 Vector3 vout;
                 if (Math.Abs(rotation.X + rotation.Y + rotation.Z) > 0.001f)

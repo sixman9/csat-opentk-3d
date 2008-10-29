@@ -23,10 +23,9 @@ using CSat;
 using CSLoader;
 using OpenTK;
 using OpenTK.Graphics;
-using OpenTK.Math;
 using OpenTK.Input;
+using OpenTK.Math;
 using OpenTK.Platform;
-using System.Collections;
 
 namespace CSatExamples
 {
@@ -76,9 +75,9 @@ namespace CSatExamples
 
             skybox.Load("sky/sky2_", "jpg", 100);
             world.Add(skybox); // skybox aina ekana koska se on kaikkien takana
-            
+
             obj[0] = new Object3D("Head/head.obj2"); // ladataan kerran
-            obj[0].position.Z = -2;
+            obj[0].position.Z = 0;
 
             // tehdään muutama kopio, siirretään vierekkäin
             obj[1] = obj[0].Clone();
@@ -97,9 +96,12 @@ namespace CSatExamples
             obj[6] = new Object3D("Head/saw.obj2");
             obj[5].Add(obj[6]); // liitä terä käteen
             obj[1].Add(obj[5]); // ja käsi päähän
-          
+
+            // obj[1] bbox pitää laskea uudelleen koska siihen ollaan lisätty tavaraa.
+            obj[1].objectGroupBoundingVolume.CalcBounds(obj[1]);
+
             // lisää kamat worldiin
-            for (int q = 0; q < 4; q++) // EI 5 ja 6 koska ne on liitetty jo
+            for (int q = 0; q < 4; q++) // ei addata 5 ja 6 koska ne on liitetty jo obj[1]:seen
                 world.Add(obj[q]);
 
             // rumilus
@@ -113,10 +115,10 @@ namespace CSatExamples
             uglyModel = new AnimatedModel((IModel)model);
             world.Add(uglyModel);
 
-            obj[4] = new Object3D("scene1.obj", .2f, .2f, .2f);
+            obj[4] = new Object3D("scene1.obj", 20, 20, 20);
             obj[4].position.X = 10;
-            obj[4].fixRotation.X = -90;
-            obj[4].SetDoubleSided(8, true); // katos pitää pistää 2 puoliseks, muuten se ei näy alhaalta päin
+            // katos (sen nimi on toi None_Material__9) pitää pistää 2 puoliseks, muuten se ei näy alhaalta päin
+            obj[4].SetDoubleSided("None_Material__9", true); 
             world.Add(obj[4]);
 
             cam.position.Y = 5;
@@ -234,7 +236,7 @@ namespace CSatExamples
             if (MainClass.UseFonts) printer.Draw("objs: " + Settings.NumOfObjects, font);
             printer.End();
             GL.MatrixMode(MatrixMode.Modelview);
-
+            Light.Enable();
             SwapBuffers();
         }
 
