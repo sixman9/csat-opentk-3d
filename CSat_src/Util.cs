@@ -156,7 +156,7 @@ namespace CSat
             error = GL.GetError();
             if (error != ErrorCode.NoError)
             {
-                throw new ArgumentException(className+": "+Glu.ErrorString(error)+" ("+error+")");
+                throw new ArgumentException(className + ": " + Glu.ErrorString(error) + " (" + error + ")");
             }
         }
 

@@ -59,13 +59,12 @@ namespace CSatExamples
             GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
             GL.Enable(EnableCap.CullFace);
             GL.ShadeModel(ShadingModel.Smooth);
+
             GL.Enable(EnableCap.ColorMaterial);
 
             Light.Enable();
             light.position = new Vector3(50, 80, -100);
-            light.UpdateColor(0);
-            light.SetLight(0, true);
-            Light.Add(light); // lisää valo (aurinko)
+            Light.Add(light, 0); // lisää valo (aurinko)
 
             Mouse.ButtonDown += MouseButtonDown;
             Mouse.ButtonUp += MouseButtonUp;
@@ -118,7 +117,10 @@ namespace CSatExamples
             obj[4] = new Object3D("scene1.obj", 20, 20, 20);
             obj[4].position.X = 10;
             // katos (sen nimi on toi None_Material__9) pitää pistää 2 puoliseks, muuten se ei näy alhaalta päin
-            obj[4].SetDoubleSided("None_Material__9", true); 
+            obj[4].SetDoubleSided("None_Material__9", true);
+            // samoin seinät 2 puolisiks (blenderistä ja tutkimalla .obj tiedostoa selviää nämä nimet)
+            obj[4].SetDoubleSided("None_Material__12", true);
+
             world.Add(obj[4]);
 
             cam.position.Y = 5;
@@ -222,6 +224,9 @@ namespace CSatExamples
 
             cam.UpdateXZ();
             Frustum.CalculateFrustum();
+
+            // TODO FIX:
+            //   linuxissa tämä saa ruudun välkkymään.
             Light.UpdateLights(); // päivitä valot kameran asettamisen jälkeen
 
             model.Update((float)e.Time, ref anim[0]);
@@ -237,6 +242,7 @@ namespace CSatExamples
             printer.End();
             GL.MatrixMode(MatrixMode.Modelview);
             Light.Enable();
+
             SwapBuffers();
         }
 

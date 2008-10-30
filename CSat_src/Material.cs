@@ -160,14 +160,14 @@ namespace CSat
                 if (ln[0] == "map_Kd")
                 {
                     tmpmat.diffuseTex = new Texture();
-                    if (loadTextures == true) tmpmat.diffuseTex = Texture.Load(ln[1]);
+                    if (loadTextures == true) tmpmat.diffuseTex = Texture.Load(ln[1].ToLower());
                     continue;
                 }
                 // Specular color texture map
                 if (ln[0] == "map_Ks")
                 {
                     tmpmat.specularTex = new Texture();
-                    if (loadTextures == true) tmpmat.specularTex = Texture.Load(ln[1]);
+                    if (loadTextures == true) tmpmat.specularTex = Texture.Load(ln[1].ToLower());
                     continue;
                 }
                 // Ambient color texture map TAI shaderin nimi
@@ -182,7 +182,7 @@ namespace CSat
                     else //Ambient color texture
                     {
                         tmpmat.ambientTex = new Texture();
-                        if (loadTextures == true) tmpmat.ambientTex = Texture.Load(ln[1]);
+                        if (loadTextures == true) tmpmat.ambientTex = Texture.Load(ln[1].ToLower());
                     }
                     continue;
                 }
@@ -190,14 +190,14 @@ namespace CSat
                 if (ln[0] == "map_Bump")
                 {
                     tmpmat.bumpTex = new Texture();
-                    if (loadTextures == true) tmpmat.bumpTex = Texture.Load(ln[1]);
+                    if (loadTextures == true) tmpmat.bumpTex = Texture.Load(ln[1].ToLower());
                     continue;
                 }
                 // Opacity color texture map
                 if (ln[0] == "map_d")
                 {
                     tmpmat.opacityTex = new Texture();
-                    if (loadTextures == true) tmpmat.opacityTex = Texture.Load(ln[1]);
+                    if (loadTextures == true) tmpmat.opacityTex = Texture.Load(ln[1].ToLower());
                     continue;
                 }
 

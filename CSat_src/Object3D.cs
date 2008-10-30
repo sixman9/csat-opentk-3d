@@ -468,6 +468,10 @@ namespace CSat
             else
             {
                 Object3D child = GetObject(name);
+                if (child == null)
+                {
+                    throw new Exception("Object " + name + " not found.");
+                }
                 child.doubleSided = doubleSided;
             }
         }

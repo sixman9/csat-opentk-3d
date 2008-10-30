@@ -90,7 +90,7 @@ namespace CSat
 
         /*
          * textureparametrit, k‰ytet‰‰n latauksen yhteydess‰
-         */ 
+         */
         public static TextureMagFilter MagnificationFilter = TextureMagFilter.Linear;
         public static TextureMinFilter MinificationFilter = TextureMinFilter.Linear;
         public static TextureWrapMode WrapModeS = TextureWrapMode.Repeat;
@@ -122,7 +122,7 @@ namespace CSat
         /// <summary>
         /// texture, cubemap
         /// </summary>
-        TextureTarget target; 
+        TextureTarget target;
 
         /// <summary>
         /// mik‰ texture bindattu
@@ -238,7 +238,7 @@ namespace CSat
 
         /*
          * kuvien lataajat.
-         */ 
+         */
         public delegate void LoadFromDiskCallback(string filename, out uint texturehandle, out TextureTarget dimension, TextureMinFilter minFilter, TextureMagFilter magFilter, TextureWrapMode wrapS, TextureWrapMode wrapT);
         public static LoadFromDiskCallback LoadFromDiskGDI = _loadfromdisk;
         public static LoadFromDiskCallback LoadFromDiskDDS = _loadfromdisk;

@@ -186,7 +186,7 @@ namespace CSat
             GL.Scale(sx, sy, 1);
 
             // rendaa childit jos on
-            base.RenderTree(); 
+            base.RenderTree();
 
             GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.EnableBit | AttribMask.PolygonBit);
             SetBlend();
@@ -196,7 +196,7 @@ namespace CSat
                 texture.Bind();
                 vbo.Render();
             }
-            
+
             GL.PopAttrib();
             GL.PopMatrix();
         }

@@ -123,7 +123,7 @@ namespace CSatExamples
             int tmp = Mouse.XDelta; tmp = Mouse.YDelta;
         }
 
-        float qq=0;
+        float textPos=0;
         /// <summary>
         /// Called when it is time to render the next frame.
         /// </summary>
@@ -157,7 +157,7 @@ namespace CSatExamples
             // 2d jutut kantsii pistää aina viimeisenä
 
             Util.Set2DMode();
-            bfont.Write(21, qq += 2, "First BitmapFont test!");
+            bfont.Write(21, textPos += (float)e.Time*100, "First BitmapFont test!");
             Util.Set3DMode();
 
             SwapBuffers();

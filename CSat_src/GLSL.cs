@@ -32,6 +32,13 @@ namespace CSat
 {
     public class GLSL
     {
+        /// <summary>
+        /// 0  pit‰‰ tarkistaa onko glsl tuki
+        /// 1  on tuki
+        /// -1 ei ole tukea
+        /// </summary>
+        static int _glslStatus = 0;
+
         // ohjelmavarasto josta katsotaan onko ohjelma jo k‰‰nnetty (ei tarvii jokaiselle objektille erikseen k‰‰nt‰‰)
         public static Hashtable programs = new Hashtable();
 
@@ -42,6 +49,23 @@ namespace CSat
 
         public void Load(string vertexShader, string fragmentShader)
         {
+            // tarkista eka kerralla voidaanko shadereita k‰ytt‰‰.
+            // vois ehk‰ vertailla viel‰ gl versiota?
+            if (_glslStatus < 1)
+            {
+                if (_glslStatus == 0)
+                {
+                    if (GL.GetString(StringName.Renderer).Contains("Mesa"))
+                    {
+                        _glslStatus = -1;
+                        Log.WriteDebugLine("No GLSL support.");
+                        return;
+                    }
+                    else _glslStatus = 1;
+                }
+                else return;
+            }
+
             using (StreamReader vs = new StreamReader(Settings.ShaderDir + vertexShader))
             {
                 using (StreamReader fs = new StreamReader(Settings.ShaderDir + fragmentShader))
@@ -107,11 +131,13 @@ namespace CSat
 
         public void UseProgram()
         {
+            if (_glslStatus!=1) return;
             GL.UseProgram(program);
         }
 
         public void DontUseProgram()
         {
+            if (_glslStatus != 1) return;
             GL.UseProgram(0);
         }
 

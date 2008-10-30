@@ -36,15 +36,25 @@ namespace CSat
         /// valotaulukko. kaikki valot lisätään tähän
         /// </summary>
         public static ArrayList lights = new ArrayList();
-        public Vector3 diffuse = new Vector3(1, 1, 1);
+        public Vector3 diffuse = new Vector3(0.8f, 0.8f, 0.8f);
         public Vector3 specular = new Vector3(0.5f, 0.5f, 0.5f);
-        public Vector3 ambient = new Vector3(0.2f, 0.2f, 0.2f);
+        public Vector3 ambient = new Vector3(0.1f, 0.1f, 0.1f);
         public bool enabled = false;
+        int lightNum = 0;
 
-
-        public static void Add(Light light)
+        /// <summary>
+        /// lisää valo. 
+        /// </summary>
+        /// <param name="light"></param>
+        /// <param name="lightNum">valon paikkanumero, arvo saa olla 0-7 (max 8 valoa päällä)</param>
+        public static void Add(Light light, int lightNum)
         {
+            if (lightNum >= 8)
+                throw new Exception("Light: (lightNum>=8)");
             lights.Add(light);
+            light.UpdateColor();
+            light.SetLight(true);
+            light.lightNum = lightNum;
             Log.WriteDebugLine("Light added..");
         }
         public static void Dispose(Light light)
@@ -58,34 +68,50 @@ namespace CSat
             Log.WriteDebugLine("All lights removed..");
         }
 
+        /// <summary>
+        /// valot käyttöön
+        /// </summary>
         public static void Enable()
         {
             GL.Enable(EnableCap.Lighting);
         }
+        /// <summary>
+        /// valot pois käytöstä
+        /// </summary>
         public static void Disable()
         {
             GL.Disable(EnableCap.Lighting);
         }
 
         /// <summary>
-        /// aseta valon tila ja paikka ettei se liiku kameran mukana
+        /// aseta valon tila (päällä/pois päältä)
         /// </summary>
-        /// <param name="lightNum"></param>
         /// <param name="enable"></param>
-        public void SetLight(int lightNum, bool enable)
+        public void SetLight(bool enable)
         {
             if (enable == false)
             {
+                GL.Disable(EnableCap.Light0 + lightNum);
                 enabled = false;
                 return;
             }
             enabled = true;
-
-            GL.Lightv(LightName.Light0 + lightNum, LightParameter.Position, new float[] { position.X, position.Y, position.Z });
             GL.Enable(EnableCap.Light0 + lightNum);
         }
 
-        public void UpdateColor(int lightNum)
+        /// <summary>
+        /// päivitä kameran paikka ettei se liiku kameran mukana
+        /// </summary>
+        public void UpdateLight()
+        {
+            if (enabled == false) return;
+            GL.Lightv(LightName.Light0 + lightNum, LightParameter.Position, new float[] { position.X, position.Y, position.Z });
+        }
+
+        /// <summary>
+        /// päivitä valon väri. tarvii päivittää vain jos muuttaa.
+        /// </summary>
+        public void UpdateColor()
         {
             GL.Lightv(LightName.Light0 + lightNum, LightParameter.Ambient, new float[] { ambient.X, ambient.Y, ambient.Z });
             GL.Lightv(LightName.Light0 + lightNum, LightParameter.Diffuse, new float[] { diffuse.X, diffuse.Y, diffuse.Z });
@@ -99,7 +125,8 @@ namespace CSat
         {
             for (int q = 0; q < lights.Count; q++)
             {
-                ((Light)lights[q]).SetLight(q, ((Light)lights[q]).enabled);
+                Light l = (Light)lights[q];
+                l.UpdateLight();
             }
 
         }

@@ -28,7 +28,7 @@ joints {
 }
 
 mesh {
-	shader "Ukko_texture.png"
+	shader "Ukko_texture.jpg"
 
 	numverts 1403
 	vert 0 ( 0.147441 0.193157 ) 0 1

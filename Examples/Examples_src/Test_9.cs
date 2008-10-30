@@ -48,9 +48,9 @@ namespace CSatExamples
 
             Light.Enable();
             light.position = new Vector3(80, 20, 0);
-            light.UpdateColor(0);
-            light.SetLight(0, true);
-            Light.Add(light); // lisää valo (aurinko)
+            light.UpdateColor();
+            light.SetLight(true);
+            Light.Add(light, 0); // lisää valo (aurinko)
             light.rotation=new Vector3(0, 0, -40);
 
             Mouse.ButtonDown += MouseButtonDown;

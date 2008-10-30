@@ -61,9 +61,9 @@ namespace CSatExamples
 
             Light.Enable();
             light.position = new Vector3(10, 100, 10);
-            light.UpdateColor(0);
-            light.SetLight(0, true);
-            Light.Add(light); // lisää valo
+            light.UpdateColor();
+            light.SetLight(true);
+            Light.Add(light, 0); // lisää valo
 
             carinfo.up = 0.2f;
             carinfo.down = 0.1f;

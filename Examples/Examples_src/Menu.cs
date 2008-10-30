@@ -103,7 +103,6 @@ namespace CSatExamples
                 //game.WindowBorder = WindowBorder.Fixed;
                 //game.WindowState = OpenTK.WindowState.Maximized;
                 game.WindowState = OpenTK.WindowState.Fullscreen;
-
             }
             else
             {
@@ -140,6 +139,7 @@ namespace CSatExamples
 
             // hack: ei käytetä fontteja nyt linuxissa..
             MainClass.UseFonts = (System.Environment.OSVersion.ToString()).Contains("Windows");
+
         }
 
     }
