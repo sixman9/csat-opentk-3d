@@ -103,6 +103,7 @@ namespace CSat
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadIdentity();
             GL.Ortho(0, width, 0, height, -1, 1);
+            GL.Viewport(0, 0, width, height);
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
 

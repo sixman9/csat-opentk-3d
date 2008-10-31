@@ -116,7 +116,6 @@ namespace CSatExamples
             cam.UpdateXZ();
             GL.Disable(EnableCap.Lighting);
 
-            GL.Color4(1f, 1, 1, 1);
             obj.RenderBillboard(0, 0, 0, 4);
 
             float rot = cam.position.X + cam.position.Y + cam.position.Z;

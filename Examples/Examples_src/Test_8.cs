@@ -225,8 +225,6 @@ namespace CSatExamples
             cam.UpdateXZ();
             Frustum.CalculateFrustum();
 
-            // TODO FIX:
-            //   linuxissa tämä saa ruudun välkkymään.
             Light.UpdateLights(); // päivitä valot kameran asettamisen jälkeen
 
             model.Update((float)e.Time, ref anim[0]);

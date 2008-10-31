@@ -135,16 +135,6 @@ namespace CSat
         }
 
         /// <summary>
-        /// alpha käyttöön.
-        /// </summary>
-        public static void SetBlend()
-        {
-            GL.Disable(EnableCap.Lighting);
-            GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-        }
-
-        /// <summary>
         /// voi erikseen valita mitä texture unittei käytetään jos multitexture
         /// </summary>
         /// <param name="t0"></param>
@@ -189,7 +179,9 @@ namespace CSat
             base.RenderTree();
 
             GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.EnableBit | AttribMask.PolygonBit);
-            SetBlend();
+            GL.Disable(EnableCap.Lighting);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 
             if (vbo != null)
             {
@@ -221,7 +213,10 @@ namespace CSat
             GL.Scale(view.X, view.Y, 1);
 
             GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.EnableBit | AttribMask.PolygonBit);
-            SetBlend();
+            GL.Disable(EnableCap.Lighting);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+
             texture.Bind();
 
             vbo.Render();

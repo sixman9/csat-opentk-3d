@@ -26,7 +26,7 @@ email: matola@sci.fi
 // TODO: kirjaimet display listiin / vbohon?
 
 /* 
- * fonttitiedoston pitää olla .PNG
+ * fonttitiedoston pitää olla .PNG (ja tausta kannattaa olla läpinäkyvänä).
  * 
  * Load("times14.png");
  * Write("Hello!");
@@ -354,10 +354,10 @@ namespace CSat
                 GL.Vertex2(xp + wm, yp);
 
                 GL.TexCoord2(u + w, v + h);
-                GL.Vertex2(xp + wm, yp + h + hm);
+                GL.Vertex2(xp + wm, yp + hm);
 
                 GL.TexCoord2(u, v + h);
-                GL.Vertex2(xp, yp + h + hm);
+                GL.Vertex2(xp, yp + hm);
 
                 GL.End();
 

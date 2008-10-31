@@ -63,6 +63,9 @@ namespace CSat
             GL.Enable(EnableCap.AlphaTest);
             GL.AlphaFunc(AlphaFunction.Greater, AlphaMin);
 
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusDstAlpha);
+
             // j‰rjestet‰‰n taulukko kauimmaisesta l‰himp‰‰n. pit‰‰ rendata siin‰ j‰rjestyksess‰.
             // vain l‰pikuultavat pit‰‰ j‰rjest‰‰. l‰pikuultamattomat renderoidaan samantien.
             for (int q = 0; q < part.Count; q++)
@@ -79,10 +82,10 @@ namespace CSat
                     else // rendataan se nyt, ei lis‰t‰ sortattavaks
                     {
                         Billboard.BillboardBegin(p.obj.Texture2D, p.pos.X, p.pos.Y, p.pos.Z, p.size);
+                        GL.Color4(p.color);
                         if (p.callBack != null) p.callBack(p);
                         Billboard.BillboardRender(p.obj);
                         Billboard.BillboardEnd();
-                        GL.Color3(1f, 1, 1);
                     }
 
                 }
@@ -91,19 +94,23 @@ namespace CSat
 
             slist.Sort(delegate(SortedList z1, SortedList z2) { return z2.len.CompareTo(z1.len); });
 
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
+
             // rendataan l‰pikuultavat
             GL.DepthMask(false); // ei kirjoiteta zbufferiin
             for (int q = 0; q < slist.Count; q++)
             {
                 Particle p = ((SortedList)slist[q]).part;
-
+                GL.Color4(p.color);
                 Billboard.BillboardBegin(p.obj.Texture2D, p.pos.X, p.pos.Y, p.pos.Z, p.size);
                 if (p.callBack != null) p.callBack(p);
                 Billboard.BillboardRender(p.obj);
                 Billboard.BillboardEnd();
-                GL.Color3(1f, 1, 1);
             }
             GL.DepthMask(true);
+
+            GL.Disable(EnableCap.Blend);
         }
 
     }
@@ -116,7 +123,8 @@ namespace CSat
         public Vector3 gravity;  // mihin suuntaan vedet‰‰n
         public float life; // kauanko partikkeli el‰‰
         public float size; // partikkelin koko		
-        public bool isTranslucent; // l‰pikuultava (eli pit‰‰kˆ sortata)
+        public bool isTranslucent; // l‰pikuultava (jos on, pit‰‰ sortata)
+        public Vector4 color; // v‰ri
         public ParticleCallback callBack;
     }
 
@@ -145,7 +153,7 @@ namespace CSat
             set { size = value; }
         }
 
-        public void AddParticle(ref Vector3 pos, ref Vector3 dir, ref Vector3 gravity, float life, float size)
+        public void AddParticle(ref Vector3 pos, ref Vector3 dir, ref Vector3 gravity, float life, float size, Vector4 color)
         {
             Particle p;
             p.pos = pos;
@@ -156,6 +164,7 @@ namespace CSat
             p.obj = obj;
             p.callBack = callBack;
             p.isTranslucent = isTranslucent;
+            p.color = color;
             this.size = size * 0.01f;
             parts.Add(p);
         }
@@ -201,13 +210,15 @@ namespace CSat
         /// </summary>
         public void Render()
         {
+            GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.EnableBit | AttribMask.PolygonBit);
+
             GL.DepthMask(false);
             GL.Enable(EnableCap.Texture2D);
             obj.Texture2D.Bind();
 
             GL.Disable(EnableCap.CullFace);
-            GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.EnableBit | AttribMask.PolygonBit);
-            Object2D.SetBlend();
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
 
             int i, j;
             float[] modelview = new float[16];
@@ -216,6 +227,7 @@ namespace CSat
             {
                 GL.PushMatrix();
                 Particle p = (Particle)parts[q];
+                GL.Color4(p.color);
                 GL.Translate(p.pos.X, p.pos.Y, p.pos.Z);
                 GL.GetFloat(GetPName.ModelviewMatrix, modelview);
 
@@ -236,6 +248,7 @@ namespace CSat
             }
             GL.DepthMask(true);
             GL.PopAttrib();
+            GL.Color4(1f, 1, 1, 1);
         }
 
     }

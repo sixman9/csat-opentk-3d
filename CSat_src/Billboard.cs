@@ -45,6 +45,8 @@ namespace CSat
         static float[] modelview = new float[16];
         public static void BillboardBegin(Texture tex, float x, float y, float z, float size)
         {
+            GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.EnableBit | AttribMask.PolygonBit);
+
             int i, j;
             size *= 0.01f;
 
@@ -52,8 +54,8 @@ namespace CSat
             tex.Bind();
 
             GL.Disable(EnableCap.CullFace);
-            GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.EnableBit | AttribMask.PolygonBit);
-            SetBlend();
+            GL.Disable(EnableCap.Lighting);
+
             GL.PushMatrix();
             GL.Translate(x, y, z);
 
@@ -90,6 +92,8 @@ namespace CSat
         public void RenderBillboard(float x, float y, float z, float size)
         {
             BillboardBegin(texture, x, y, z, size);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
             GL.Enable(EnableCap.AlphaTest);
             GL.AlphaFunc(AlphaFunction.Greater, AlphaMin);
             vbo.Render();

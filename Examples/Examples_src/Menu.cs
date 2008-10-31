@@ -112,6 +112,8 @@ namespace CSatExamples
 
             Camera.cam = new Camera(); // resetoi kamera
 
+            GL.Enable(EnableCap.Normalize);
+
             PrintInfo();
             game.Run(30.0, 0.0);
 

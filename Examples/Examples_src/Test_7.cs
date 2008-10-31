@@ -67,7 +67,7 @@ namespace CSatExamples
 
             SetupParticles(true, true, true);
 
-            particles.Add(explosion, new ParticleCallback(RenderParticleCallback));
+            particles.Add(explosion, null);
 
             Util.Set3DMode();
         }
@@ -123,7 +123,7 @@ namespace CSatExamples
             int tmp = Mouse.XDelta; tmp = Mouse.YDelta;
         }
 
-        float textPos=0;
+        float textPos = 0;
         /// <summary>
         /// Called when it is time to render the next frame.
         /// </summary>
@@ -149,15 +149,15 @@ namespace CSatExamples
             GL.Translate(50, 5, 0);
 
             Texture.ActiveUnit(0);
-            
-            bfont.Write3D(1, 0,"\nNew line..\n   stupid test.");
+
+            bfont.Write3D(1, 0, "\nNew line..\n   stupid test.");
             bfont.Write3D(10, 10, "Using coordinates,\nblaa bluu böä.");
             bfont.Write3D(5, -10, "The end.");
 
             // 2d jutut kantsii pistää aina viimeisenä
 
             Util.Set2DMode();
-            bfont.Write(21, textPos += (float)e.Time*100, "First BitmapFont test!");
+            bfont.Write(21, textPos += (float)e.Time * 100, "First BitmapFont test!");
             Util.Set3DMode();
 
             SwapBuffers();
@@ -175,17 +175,9 @@ namespace CSatExamples
                     float life = 2;
                     float size = (float)(random.NextDouble() * 16 + 15);
 
-                    this.explosion.AddParticle(ref pos, ref dir, ref grav, life, size);
+                    this.explosion.AddParticle(ref pos, ref dir, ref grav, life, size, new Vector4(0.8f, 0, 0, 0.5f));
                 }
             }
-        }
-
-        // partikkeliengine kutsuu tätä, asetettu räjähdykseen (halutaan muuttaa sen väriä)       
-        void RenderParticleCallback(Particle p)
-        {
-            // nyt voi tehdä joka partikkelille mitä haluaa, esim asettaa alphan lifeksi.
-            float tc = p.life / 2;
-            //            GL.Color4(1f, tc, tc, tc);
         }
 
         void UpdateParticles(float time)

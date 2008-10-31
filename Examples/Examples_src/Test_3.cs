@@ -44,7 +44,7 @@ namespace CSatExamples
         {
             base.OnLoad(e);
 
-            GL.ClearColor(System.Drawing.Color.Blue);
+            GL.ClearColor(0.2f, 0.2f, 0.2f, 1);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Texture2D);
             GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
@@ -154,6 +154,7 @@ namespace CSatExamples
             GL.Translate(50, 5, 0);
 
             Texture.ActiveUnit(0);
+            GL.Color4(1f, 1, 1, 1);
             printer.Begin();
             if (MainClass.UseFonts) printer.Draw("Particles demo", font);
             printer.End();
@@ -176,7 +177,7 @@ namespace CSatExamples
                     float life = (float)(random.NextDouble() * 1000 + 5000);
                     float size = 2;
 
-                    this.test.AddParticle(ref pos, ref dir, ref grav, life, size);
+                    this.test.AddParticle(ref pos, ref dir, ref grav, life, size, new Vector4(1, 1, 1, 1));
                 }
             }
             if (explosion)
@@ -189,7 +190,7 @@ namespace CSatExamples
                     float life = 2;
                     float size = (float)(random.NextDouble() * 10 + 6);
 
-                    this.explosion.AddParticle(ref pos, ref dir, ref grav, life, size);
+                    this.explosion.AddParticle(ref pos, ref dir, ref grav, life, size, new Vector4(0.3f, 0, 0, 0.5f));
                 }
             }
             if (smoke)
@@ -201,7 +202,7 @@ namespace CSatExamples
                     Vector3 grav = new Vector3(0, 0, 0);
                     float life = 1 + (float)(random.NextDouble() * 4);
                     float size = 10;
-                    this.smoke.AddParticle(ref pos, ref dir, ref grav, life, size);
+                    this.smoke.AddParticle(ref pos, ref dir, ref grav, life, size, new Vector4(0.4f, 0.4f, 0.4f, 0.2f));
                 }
             }
         }
@@ -222,15 +223,14 @@ namespace CSatExamples
             test.Update(time * 1000);
             explosion.Update(time);
 
-
             if (smoke.NumOfParticles < PART)
             {
                 Vector3 pos = new Vector3(0, 5 + (float)(random.NextDouble() * 5), 0);
-                Vector3 dir = new Vector3(-0.05f + (float)(random.NextDouble() * 0.1f), 0.1f, -0.05f + (float)(random.NextDouble() * 0.1f));
+                Vector3 dir = new Vector3(-0.05f + (float)(random.NextDouble() * 0.1f), 0.2f, -0.05f + (float)(random.NextDouble() * 0.1f));
                 Vector3 grav = new Vector3(0, 0, 0);
-                float life = 5;
-                float size = 10;
-                smoke.AddParticle(ref pos, ref dir, ref grav, life, size);
+                float life = 3;
+                float size = 15;
+                smoke.AddParticle(ref pos, ref dir, ref grav, life, size, new Vector4(0.5f, 0.5f, 0.5f, 0.1f));
             }
             smoke.Update(time);
         }
