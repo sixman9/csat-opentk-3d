@@ -66,6 +66,7 @@
     <Compile Include="CSat_src\Particles.cs" />
     <Compile Include="CSat_src\Group.cs" />
     <Compile Include="CSat_src\Settings.cs" />
+    <Compile Include="CSat_src\Skydome.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CSat_src\Skybox.cs" />
     <Compile Include="CSat_src\Texture.cs" />

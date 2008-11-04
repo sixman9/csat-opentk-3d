@@ -31,6 +31,17 @@ using OpenTK.Math;
 namespace CSat
 {
     public delegate void ParticleCallback(Particle part);
+
+    class SortedList
+    {
+        public float len = 0;
+        public Particle part;
+        public SortedList(float l, Particle p)
+        {
+            len = l; part = p;
+        }
+    }
+
     public class ParticleEngine
     {
         public static float AlphaMin = 0.1f;
@@ -40,16 +51,6 @@ namespace CSat
         {
             part.Add(particles);
             particles.callBack = particleCallback;
-        }
-
-        class SortedList
-        {
-            public float len = 0;
-            public Particle part;
-            public SortedList(float l, Particle p)
-            {
-                len = l; part = p;
-            }
         }
 
         public void Render()
@@ -70,13 +71,18 @@ namespace CSat
             // vain l‰pikuultavat pit‰‰ j‰rjest‰‰. l‰pikuultamattomat renderoidaan samantien.
             for (int q = 0; q < part.Count; q++)
             {
-                for (int w = 0; w < ((Particles)part[q]).NumOfParticles; w++)
+                GL.PushMatrix();
+                Particles curpar = (Particles)part[q];
+                GL.Translate(curpar.Position);
+
+                for (int w = 0; w < curpar.NumOfParticles; w++)
                 {
-                    Particle p = ((Particles)part[q]).GetParticle(w);
+                    Particle p = curpar.GetParticle(w);
 
                     if (p.isTranslucent == true) // listaan renderoitavaks myˆhemmin
                     {
-                        float len = (cam.position - p.pos).LengthSquared;
+                        Vector3 rp = p.pos + curpar.Position;
+                        float len = (cam.Position - rp).LengthSquared;
                         slist.Add(new SortedList(len, p));
                     }
                     else // rendataan se nyt, ei lis‰t‰ sortattavaks
@@ -89,6 +95,8 @@ namespace CSat
                     }
 
                 }
+                GL.PopMatrix();
+
             }
             GL.Disable(EnableCap.AlphaTest);
 
@@ -128,9 +136,9 @@ namespace CSat
         public ParticleCallback callBack;
     }
 
-    public class Particles
+    public class Particles : ObjectInfo
     {
-        bool isTranslucent = false;
+        public bool IsTranslucent = false;
         Object2D obj = null;
         public ParticleCallback callBack = null;
 
@@ -163,7 +171,7 @@ namespace CSat
             p.size = size;
             p.obj = obj;
             p.callBack = callBack;
-            p.isTranslucent = isTranslucent;
+            p.isTranslucent = IsTranslucent;
             p.color = color;
             this.size = size * 0.01f;
             parts.Add(p);
@@ -173,11 +181,11 @@ namespace CSat
         /// aseta partikkeliobjekti.
         /// </summary>
         /// <param name="obj"></param>
-        /// <param name="isTranslucent">jos true, partikkelit on l‰pikuultavia (pit‰‰ sortata)</param>
+        /// <param name="IsTranslucent">jos true, partikkelit on l‰pikuultavia (pit‰‰ sortata)</param>
         public void SetObject(Object2D obj, bool isTranslucent)
         {
             this.obj = obj;
-            this.isTranslucent = isTranslucent;
+            this.IsTranslucent = isTranslucent;
         }
 
         /// <summary>
@@ -208,7 +216,7 @@ namespace CSat
         /// <summary>
         /// piirr‰ partikkelit. ei sortata eik‰ ole callbackia.
         /// </summary>
-        public void Render()
+        public new void Render()
         {
             GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.EnableBit | AttribMask.PolygonBit);
 
@@ -222,6 +230,9 @@ namespace CSat
 
             int i, j;
             float[] modelview = new float[16];
+
+            GL.PushMatrix();
+            GL.Translate(Position);
 
             for (int q = 0; q < parts.Count; q++)
             {
@@ -246,9 +257,79 @@ namespace CSat
                 Billboard.BillboardRender(obj);
                 GL.PopMatrix();
             }
+            GL.PopMatrix();
             GL.DepthMask(true);
             GL.PopAttrib();
             GL.Color4(1f, 1, 1, 1);
+        }
+
+
+        /// <summary>
+        /// piirr‰ partikkelit. sortataan ja callback.
+        /// </summary>
+        public void RenderSorted()
+        {
+            Camera cam = Camera.cam;
+
+            List<SortedList> slist = new List<SortedList>();
+
+            GL.Enable(EnableCap.Texture2D);
+
+            GL.Enable(EnableCap.AlphaTest);
+            GL.AlphaFunc(AlphaFunction.Greater, ParticleEngine.AlphaMin);
+
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusDstAlpha);
+
+            // j‰rjestet‰‰n taulukko kauimmaisesta l‰himp‰‰n. pit‰‰ rendata siin‰ j‰rjestyksess‰.
+            // vain l‰pikuultavat pit‰‰ j‰rjest‰‰. l‰pikuultamattomat renderoidaan samantien.
+            GL.PushMatrix();
+            Particles curpar = this;
+            GL.Translate(curpar.Position);
+
+            for (int w = 0; w < curpar.NumOfParticles; w++)
+            {
+                Particle p = curpar.GetParticle(w);
+
+                if (p.isTranslucent == true) // listaan renderoitavaks myˆhemmin
+                {
+                    Vector3 rp = p.pos + curpar.Position;
+                    float len = (cam.Position - rp).LengthSquared;
+                    slist.Add(new SortedList(len, p));
+                }
+                else // rendataan se nyt, ei lis‰t‰ sortattavaks
+                {
+                    Billboard.BillboardBegin(p.obj.Texture2D, p.pos.X, p.pos.Y, p.pos.Z, p.size);
+                    GL.Color4(p.color);
+                    if (p.callBack != null) p.callBack(p);
+                    Billboard.BillboardRender(p.obj);
+                    Billboard.BillboardEnd();
+                }
+
+            }
+            GL.PopMatrix();
+
+            GL.Disable(EnableCap.AlphaTest);
+
+            slist.Sort(delegate(SortedList z1, SortedList z2) { return z2.len.CompareTo(z1.len); });
+
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
+
+            // rendataan l‰pikuultavat
+            GL.DepthMask(false); // ei kirjoiteta zbufferiin
+            for (int q = 0; q < slist.Count; q++)
+            {
+                Particle p = ((SortedList)slist[q]).part;
+                GL.Color4(p.color);
+                Billboard.BillboardBegin(p.obj.Texture2D, p.pos.X, p.pos.Y, p.pos.Z, p.size);
+                if (p.callBack != null) p.callBack(p);
+                Billboard.BillboardRender(p.obj);
+                Billboard.BillboardEnd();
+            }
+            GL.DepthMask(true);
+
+            GL.Disable(EnableCap.Blend);
         }
 
     }

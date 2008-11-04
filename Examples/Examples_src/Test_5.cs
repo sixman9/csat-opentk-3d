@@ -60,31 +60,32 @@ namespace CSatExamples
             GL.ShadeModel(ShadingModel.Smooth);
 
             Light.Enable();
-            light.position = new Vector3(10, 100, 10);
+            light.Position = new Vector3(10, 100, 10);
             light.UpdateColor();
             light.SetLight(true);
             Light.Add(light, 0); // lisää valo
+
+            skybox.Load("sky/sky_", "jpg", 100);
+            world.Add(skybox);
 
             carinfo.up = 0.2f;
             carinfo.down = 0.1f;
             carinfo.max = 5;
 
             car = new Object3D("car.obj", 2, 2, 2);
-            car.fixRotation.Y = -90;
-            car.rotation.Y = 90;
+            car.FixRotation.Y = -90;
+            car.Rotation.Y = 90;
 
             car2 = new Object3D("truck.obj", 1, 1, 1);
-            car2.rotation.Y = 90;
-            car2.position.X = -10;
-            car2.position.Y = -0.2f;
-            car2.position.Z = -15;
-
-            skybox.Load("sky/sky_", "jpg", 100);
+            car2.Rotation.Y = 90;
+            car2.Position.X = -10;
+            car2.Position.Y = -0.2f;
+            car2.Position.Z = -15;
 
             groundPlane.Load("2.jpg");
 
-            cam.position.Z = 15;
-            cam.position.Y = 2;
+            cam.Position.Z = 15;
+            cam.Position.Y = 2;
 
             Mouse.ButtonDown += MouseButtonDown;
             Mouse.ButtonUp += MouseButtonUp;
@@ -113,7 +114,7 @@ namespace CSatExamples
 
         /// <summary>
         /// Called when your window is resized. Set your viewport here. It is also
-        /// a good place to set up your projection matrix (which probably changes
+        /// a good place to set Up your projection Matrix (which probably changes
         /// along when the aspect ratio of your window).
         /// </summary>
         /// <param name="e">Contains information on the new Width and Size of the GameWindow.</param>
@@ -137,16 +138,16 @@ namespace CSatExamples
             if (Keyboard[Key.Left])
                 if (carinfo.speed != 0)
                     if (carinfo.speed < 0)
-                        car.rotation.Y -= 20 * speed;
+                        car.Rotation.Y -= 20 * speed;
                     else
-                        car.rotation.Y += 20 * speed;
+                        car.Rotation.Y += 20 * speed;
 
             if (Keyboard[Key.Right])
                 if (carinfo.speed != 0)
                     if (carinfo.speed < 0)
-                        car.rotation.Y += 20 * speed;
+                        car.Rotation.Y += 20 * speed;
                     else
-                        car.rotation.Y -= 20 * speed;
+                        car.Rotation.Y -= 20 * speed;
 
             if (Keyboard[Key.Up])
             {
@@ -176,8 +177,8 @@ namespace CSatExamples
             if (Keyboard[Key.S]) cam.MoveXZ(-spd, 0);
             if (Keyboard[Key.A]) cam.MoveXZ(0, -spd);
             if (Keyboard[Key.D]) cam.MoveXZ(0, spd);
-            if (Keyboard[Key.R]) cam.position.Y++;
-            if (Keyboard[Key.F]) if (cam.position.Y > 1) cam.position.Y--;
+            if (Keyboard[Key.R]) cam.Position.Y++;
+            if (Keyboard[Key.F]) if (cam.Position.Y > 1) cam.Position.Y--;
             if (mouseButtons[(int)MouseButton.Left])
             {
                 cam.TurnXZ(Mouse.XDelta);
@@ -186,23 +187,23 @@ namespace CSatExamples
             int tmp = Mouse.XDelta; tmp = Mouse.YDelta; // joo, kikkailu. vaatii tän rivin!
 
             // Tsekkaa törmätäänkö:
-            Vector3 oldPos = car.position; // alkup paikka talteen
+            Vector3 oldPos = car.Position; // alkup paikka talteen
             car.MoveXZ(speed * carinfo.speed); // laske uusi paikka
-            if (world.CheckCollisionBB(oldPos, car.position, ref car) == true) // törmäys
+            if (Intersection.CheckCollisionBB(ref world, oldPos, car.Position, ref car) == true) // törmäys
             {
-                car.position = oldPos; // palauta vanha paikka
+                car.Position = oldPos; // palauta vanha paikka
                 carinfo.speed = 0;
             }
             else
             {
                 // auto 2.
-                oldPos = car2.position; // alkup paikka talteen
+                oldPos = car2.Position; // alkup paikka talteen
                 car2.MoveXZ(-speed * 2); // laske uusi paikka
-                if (world.CheckCollisionBB(oldPos, car2.position, ref car2) == true) // törmäys
+                if (Intersection.CheckCollisionBB(ref world, oldPos, car2.Position, ref car2) == true) // törmäys
                 {
-                    car2.position = oldPos; // palauta vanha paikka
+                    car2.Position = oldPos; // palauta vanha paikka
                 }
-                else car2.rotation.Y += 1f;
+                else car2.Rotation.Y += 1f;
             }
         }
 
@@ -216,11 +217,10 @@ namespace CSatExamples
             GL.Clear(ClearBufferMask.DepthBufferBit);
             base.OnRenderFrame(e);
 
-            skybox.Render(cam);
             cam.UpdateXZ();
             Frustum.CalculateFrustum();
 
-            world.Render(); // car ja car2 on lisätty worldiin joten tämä renderoi ne.
+            world.Render(); // skybox, car ja car2 on lisätty worldiin joten tämä renderoi ne.
 
             groundPlane.Render3D(0, -0.2f, 0, 90, 0, 0, 1, 1);
 

@@ -6,15 +6,13 @@
  */
 #endregion
 
-/* 
- * 3D test
- * parent loading, skydome, multitexturing
- * 
- */
-
+// camera collision, walking in the city
+// voit kävellä kaupungilla. 
+// TAB vaihtaa näkymän silmistäpäin / äijän takaa
 using System;
 using System.Drawing;
 using CSat;
+using CSLoader;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Input;
@@ -22,25 +20,29 @@ using OpenTK.Platform;
 
 namespace CSatExamples
 {
-
-    class Game2 : GameWindow
+    class Game11 : GameWindow
     {
+        Skydome skydome = new Skydome();
+
         Camera cam = new Camera();
         ITextPrinter printer = new TextPrinter();
         TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
+        public Game11(int width, int height) : base(width, height, GraphicsMode.Default, "City") { }
 
-        Skybox skybox = new Skybox();
-        Object3D obj = new Object3D();
-        Texture tex = new Texture();
+        Group world = new Group("world"); // tänne lisäillään kaikki kamat
+        Object3D city = new Object3D();
+        Object3D car = new Object3D();
+        MD5Model model = new MD5Model();
+        MD5Model.MD5Animation[] anim = new MD5Model.MD5Animation[5];
+        AnimatedModel uglyModel; // tätä käytetään kun ugly lisätään worldiin.
 
-        public Game2(int width, int height) : base(width, height, GraphicsMode.Default, "3D test: loads obj file") { }
+        Object3D carPath = new Object3D();
 
-        /// <summary>Load resources here.</summary>
         public override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
-            GL.ClearColor(System.Drawing.Color.Blue);
+            GL.ClearColor(0, 0, 0, 0);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Texture2D);
             GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
@@ -49,49 +51,50 @@ namespace CSatExamples
             GL.Enable(EnableCap.Lighting);
             GL.Enable(EnableCap.Light0);
 
-            obj = new Object3D("skene.obj", 20, 20, 20);
-            skybox.Load("sky/sky2_", "jpg", 100);
-            tex = Texture.Load("1.png");
-
-            cam.Position.Y = 10;
-
             Mouse.ButtonDown += MouseButtonDown;
             Mouse.ButtonUp += MouseButtonUp;
-
             Util.Set3DMode();
+
+            skydome.Load("sky/space.jpg", 1f);
+            world.Add(skydome); // skydome aina ekana koska se on kaikkien takana
+
+            model.Load("Ugly/Ukko.mesh");
+            model.LoadAnim("Ugly/Ukko_walk.anim", ref anim[0]);
+            uglyModel = new AnimatedModel((IModel)model);
+            world.Add(uglyModel);
+            uglyModel.FixRotation.X = -90; // ukko on "makaavassa" asennossa joten nostetaan se fixRotationilla pystyyn.
+            uglyModel.FixRotation.Z = 180; // säätöä.. katse eteen päin!
+
+            car.Load("car.obj");
+            world.Add(car);
+
+            const float SC = 100;
+            city.Load("city.obj", SC, SC, SC);
+            world.Add(city);
+
+            // lataa reitit
+            carPath.Load("carpath.obj", SC, SC, SC); // sama skaalaus ku cityssä
+            car.FollowPath(ref carPath, true, true);
+
+            cam.Position.Y = 40;
+
         }
 
         bool[] mouseButtons = new bool[5];
         void MouseButtonDown(MouseDevice sender, MouseButton button) { mouseButtons[(int)button] = true; }
         void MouseButtonUp(MouseDevice sender, MouseButton button) { mouseButtons[(int)button] = false; }
 
-        #region OnUnload
         public override void OnUnload(EventArgs e)
         {
             font.Dispose();
-            tex.Dispose();
-
-            skybox.Dispose();
-            obj.Dispose();
-
+            Util.ClearArrays(); // poistaa kaikki materiaalit ja texturet
         }
-        #endregion
 
-        /// <summary>
-        /// Called when your window is resized. Set your viewport here. It is also
-        /// a good place to set Up your projection Matrix (which probably changes
-        /// along when the aspect ratio of your window).
-        /// </summary>
-        /// <param name="e">Contains information on the new Width and Size of the GameWindow.</param>
         protected override void OnResize(ResizeEventArgs e)
         {
             Util.Resize(e.Width, e.Height, 1.0, 1000);
         }
 
-        /// <summary>
-        /// Called when it is time to setup the next frame.
-        /// </summary>
-        /// <param name="e">Contains timing information for framerate independent logic.</param>
         public override void OnUpdateFrame(UpdateFrameEventArgs e)
         {
             if (Keyboard[Key.Escape])
@@ -112,34 +115,23 @@ namespace CSatExamples
                 cam.LookUpXZ(Mouse.YDelta);
             }
             int tmp = Mouse.XDelta; tmp = Mouse.YDelta;
+
+            car.UpdatePath((float)e.Time);
         }
 
-        /// <summary>
-        /// Called when it is time to render the next frame.
-        /// </summary>
-        /// <param name="e">Contains timing information.</param>
         public override void OnRenderFrame(RenderFrameEventArgs e)
         {
             Settings.NumOfObjects = 0;
-            GL.Clear(ClearBufferMask.DepthBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             base.OnRenderFrame(e);
 
             cam.UpdateXZ();
-            skybox.Render();
             Frustum.CalculateFrustum();
-
-            GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.OneMinusDstAlpha);
-            tex.Bind(1);
-            obj.UseTextureUnits(true, true, false);
-            obj.Render();
-            obj.UseTextureUnits(true, false, false);
-            Texture.UnBind(1);
-            GL.Disable(EnableCap.Blend);
+            world.Render();
 
             Texture.ActiveUnit(0);
             printer.Begin();
-            if (MainClass.UseFonts) printer.Draw("3D test -- objs: " + Settings.NumOfObjects, font);
+            if (MainClass.UseFonts) printer.Draw("objs: " + Settings.NumOfObjects, font);
             printer.End();
             GL.MatrixMode(MatrixMode.Modelview);
 

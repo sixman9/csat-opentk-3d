@@ -96,8 +96,8 @@ namespace CSat
             vbo.DataToVBO(vs, ind, null, uv, null, null, null);
 
             // scale
-            view.X = 1;
-            view.Y = 1;
+            View.X = 1;
+            View.Y = 1;
 
         }
 
@@ -116,22 +116,22 @@ namespace CSat
         /// <param name="sy"></param>
         public void Set(int x, int y, float rotate, float sx, float sy)
         {
-            position.X = x;
-            position.Y = y;
-            rotation.Z = rotate;
-            view.X = sx;
-            view.Y = sy;
+            Position.X = x;
+            Position.Y = y;
+            Rotation.Z = rotate;
+            View.X = sx;
+            View.Y = sy;
         }
         public void Set(float x, float y, float z, float rx, float ry, float rz, float sx, float sy)
         {
-            position.X = x;
-            position.Y = y;
-            position.Z = z;
-            rotation.X = rx;
-            rotation.Y = ry;
-            rotation.Z = rz;
-            view.X = sx;
-            view.Y = sy;
+            Position.X = x;
+            Position.Y = y;
+            Position.Z = z;
+            Rotation.X = rx;
+            Rotation.Y = ry;
+            Rotation.Z = rz;
+            View.X = sx;
+            View.Y = sy;
         }
 
         /// <summary>
@@ -147,9 +147,9 @@ namespace CSat
 
         public void Render3D()
         {
-            Render3D(position.X, position.Y, position.Z,
-                rotation.X, rotation.Y, rotation.Z,
-                view.X, view.Y);
+            Render3D(Position.X, Position.Y, Position.Z,
+                Rotation.X, Rotation.Y, Rotation.Z,
+                View.X, View.Y);
         }
 
         /// <summary>
@@ -174,9 +174,6 @@ namespace CSat
             GL.Rotate(ry, 0, 1, 0);
             GL.Rotate(rz, 0, 0, 1);
             GL.Scale(sx, sy, 1);
-
-            // rendaa childit jos on
-            base.RenderTree();
 
             GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.EnableBit | AttribMask.PolygonBit);
             GL.Disable(EnableCap.Lighting);
@@ -208,9 +205,9 @@ namespace CSat
         {
             GL.PushMatrix();
 
-            GL.Translate(position.X, Util.ScreeenHeight - position.Y, 0);
-            GL.Rotate(rotation.Z, 0, 0, 1);
-            GL.Scale(view.X, view.Y, 1);
+            GL.Translate(Position.X, Util.ScreeenHeight - Position.Y, 0);
+            GL.Rotate(Rotation.Z, 0, 0, 1);
+            GL.Scale(View.X, View.Y, 1);
 
             GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.EnableBit | AttribMask.PolygonBit);
             GL.Disable(EnableCap.Lighting);
@@ -226,10 +223,9 @@ namespace CSat
             GL.PopMatrix();
         }
 
-        public new void Render()
+        public void RenderVBO()
         {
             vbo.Render();
         }
-
     }
 }

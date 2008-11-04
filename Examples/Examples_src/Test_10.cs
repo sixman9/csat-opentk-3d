@@ -6,12 +6,19 @@
  */
 #endregion
 
-// TODO:
 // path testi
+// ladataan kaupunki, camerapath joka liitetään kameraan, sit parit muut pathit jotka liitetään autoihin.
+
+// skyboxin tilalla ladataan puolipallo johon texturointi. enemmän polyja mutta vain 1 texture.
+
+// auton reitti on vähän miten sattuu joten siihen pieni korjaus:
+//  xz tasossa tein sen reitin ja jaksanu alkaa säätää y arvoja blenderissä joten etsitään 
+// oikea y xz kohdalta.
 
 using System;
 using System.Drawing;
 using CSat;
+using CSLoader;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Input;
@@ -22,16 +29,26 @@ namespace CSatExamples
 
     class Game10 : GameWindow
     {
+        Skydome skydome = new Skydome();
+
         Camera cam = new Camera();
         ITextPrinter printer = new TextPrinter();
         TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
-        public Game10(int width, int height) : base(width, height, GraphicsMode.Default, "xxx") { }
+        public Game10(int width, int height) : base(width, height, GraphicsMode.Default, "City") { }
+
+        Group world = new Group("world"); // tänne lisäillään kaikki kamat
+        Object3D city = new Object3D();
+        Object3D car = new Object3D();
+        MD5Model model = new MD5Model();
+        MD5Model.MD5Animation[] anim = new MD5Model.MD5Animation[5];
+
+        Object3D carPath = new Object3D(), cameraPath = new Object3D();
 
         public override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
-            GL.ClearColor(System.Drawing.Color.Blue);
+            GL.ClearColor(0, 0, 0, 0);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Texture2D);
             GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
@@ -42,8 +59,26 @@ namespace CSatExamples
 
             Mouse.ButtonDown += MouseButtonDown;
             Mouse.ButtonUp += MouseButtonUp;
-
             Util.Set3DMode();
+
+            skydome.Load("sky/space.jpg", 1f);
+            world.Add(skydome); // skydome aina ekana koska se on kaikkien takana
+
+            car.Load("car.obj");
+            world.Add(car);
+
+            const float SC = 100;
+            city.Load("city.obj", SC, SC, SC);
+            world.Add(city);
+
+            // lataa reitit
+            cameraPath.Load("camerapath.obj", SC, SC, SC); // sama skaalaus ku cityssä
+            carPath.Load("carpath.obj", SC, SC, SC);
+
+            cam.FollowPath(ref cameraPath, true, true);
+            car.FollowPath(ref carPath, true, true);
+
+            cam.MakeCurve(3); // tehdään reitistä spline
         }
 
         bool[] mouseButtons = new bool[5];
@@ -54,7 +89,6 @@ namespace CSatExamples
         {
             font.Dispose();
             Util.ClearArrays(); // poistaa kaikki materiaalit ja texturet
-
         }
 
         protected override void OnResize(ResizeEventArgs e)
@@ -67,21 +101,13 @@ namespace CSatExamples
             if (Keyboard[Key.Escape])
                 Exit();
 
-            // ohjaus
-            float spd = 1;
-            if (Keyboard[Key.ShiftLeft]) spd = 2;
-            if (Keyboard[Key.W]) cam.MoveXZ(spd, 0);
-            if (Keyboard[Key.S]) cam.MoveXZ(-spd, 0);
-            if (Keyboard[Key.A]) cam.MoveXZ(0, -spd);
-            if (Keyboard[Key.D]) cam.MoveXZ(0, spd);
-            if (Keyboard[Key.R]) cam.position.Y++;
-            if (Keyboard[Key.F]) cam.position.Y--;
-            if (mouseButtons[(int)MouseButton.Left])
-            {
-                cam.TurnXZ(Mouse.XDelta);
-                cam.LookUpXZ(Mouse.YDelta);
-            }
-            int tmp = Mouse.XDelta; tmp = Mouse.YDelta;
+            car.UpdatePath((float)e.Time);
+            cam.UpdatePath((float)e.Time*5);
+
+            // etsitään autolle oikea y
+            // todo
+
+
         }
 
         public override void OnRenderFrame(RenderFrameEventArgs e)
@@ -90,19 +116,15 @@ namespace CSatExamples
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             base.OnRenderFrame(e);
 
-            cam.UpdateXZ();
             Frustum.CalculateFrustum();
-
-
-            // rendataas jotain
-
-
+            world.Render();
 
             Texture.ActiveUnit(0);
             printer.Begin();
-            if (MainClass.UseFonts) printer.Draw("blaa bluu: " + Settings.NumOfObjects, font);
+            if (MainClass.UseFonts) printer.Draw("objs: " + Settings.NumOfObjects, font);
             printer.End();
-
+            GL.MatrixMode(MatrixMode.Modelview);
+            
             SwapBuffers();
         }
 

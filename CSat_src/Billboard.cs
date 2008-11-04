@@ -81,12 +81,12 @@ namespace CSat
 
         public static void BillboardRender(Object2D obj)
         {
-            obj.Render();
+            obj.RenderVBO();
         }
 
         public new void Render()
         {
-            RenderBillboard(position.X, position.Y, position.Z, view.X);
+            RenderBillboard(Position.X, Position.Y, Position.Z, View.X);
         }
 
         public void RenderBillboard(float x, float y, float z, float size)

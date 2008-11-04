@@ -26,16 +26,16 @@ namespace CSatExamples
             listBox1.Items.Add("3D test, obj loader");
             listBox1.Items.Add("Particles");
             listBox1.Items.Add("MD5 animation");
-            listBox1.Items.Add("Intersection test");
+            listBox1.Items.Add("Collision detection test (todo)");
             listBox1.Items.Add("Billboard");
             listBox1.Items.Add("BitmapFont");
             listBox1.Items.Add("Group test");
             listBox1.Items.Add("GLSL test");
-            listBox1.Items.Add("-empty-");
+            listBox1.Items.Add("Path test");
+            listBox1.Items.Add("Walking in the city (todo)");
             listBox1.SelectedIndex = 0;
 
             textBox1.Lines = new string[] { "Moving:", "A D W S", "R F (up/down)", "shift - run", "", "Push mouse button to rotate the camera." };
-
 
             DisplayDevice dev = DisplayDevice.Default;
             DisplayResolution[] res = dev.AvailableResolutions;
@@ -92,6 +92,9 @@ namespace CSatExamples
                     break;
                 case 10:
                     game = new Game10(width, height);
+                    break;
+                case 11:
+                    game = new Game11(width, height);
                     break;
             }
 

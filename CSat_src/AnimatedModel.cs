@@ -23,30 +23,40 @@ email: matola@sci.fi
 */
 #endregion
 /*
- * käytetään kun halutaan liittää MD5 model worldiin.
+ * käytetään kun liitetään MD5 model worldiin.
  * 
  * MD5Model model = new MD5Model();
- * AnimatedModel uglyModel
+ * AnimatedModel uglyModel;
  * 
  * model.Load("Ugly/Ukko.mesh");
  * uglyModel = new AnimatedModel((IModel)model);
  * world.Add(uglyModel);
  * 
+ * MD5Modelissa ei ole paikka ja asentotietoja, se pitää
+ * liittää AnimatedModeliin joka hoitaa sen jälkeen
+ * paikan laskemiset ym.
+ * 
  */
 using System;
 using System.Collections;
+using OpenTK.Graphics;
+using OpenTK.Math;
 
 namespace CSat
 {
     public interface IModel
     {
+        BoundingVolume GetBoundingVolume();
         void Load(string fileName);
         void Render();
     }
 
-    public class AnimatedModel : Group, IModel, ICloneable
+    public class AnimatedModel : ObjectInfo, IModel, ICloneable
     {
         IModel model;
+
+        public AnimatedModel() { }
+
         public AnimatedModel(IModel model)
         {
             this.model = model;
@@ -56,9 +66,50 @@ namespace CSat
             this.model = model;
         }
 
+        public BoundingVolume GetBoundingVolume()
+        {
+            return model.GetBoundingVolume();
+        }
+
+        /// <summary>
+        /// renderoi objekti
+        /// </summary>        
         public new void Render()
         {
+            visibleObjects.Clear();
+            translucentObjects.Clear();
+
+            GL.PushMatrix(); // kameramatrix talteen. seuraavat laskut frustum cullingia varten
+            GL.LoadIdentity();
+            CalcAndGetMatrix(ref WMatrix, ObjCenter); // "root"
+            CalculateWorldCoords(); // lasketaan objektien paikat
+            GL.PopMatrix(); // kameraan takas
+
+            CalcAndGetMatrix(ref Matrix, Vector3.Zero); // "root"
+            CalculateCoords(); // lasketaan objektien paikat kamerasta
+
+            // tarkista onko objekti näkökentässä
+            if (Frustum.ObjectInFrustum(WMatrix[12], WMatrix[13], WMatrix[14], GetBoundingVolume()))
+            {
+                visibleObjects.Add(this);
+            }
+
+            RenderArrays();
+        }
+
+        /// <summary>
+        /// pelkkä renderointi.
+        /// </summary>
+        public void RenderFast()
+        {
+            if (Shader != null && UseShader) Shader.UseProgram();
+            if (DoubleSided) GL.Disable(EnableCap.CullFace);
+
             model.Render();
+
+            if (Shader != null && UseShader) Shader.RemoveProgram();
+            if (DoubleSided) GL.Enable(EnableCap.CullFace);
+            Settings.NumOfObjects++;
         }
 
         public void Load(string fileName)
@@ -73,9 +124,19 @@ namespace CSat
 
         public AnimatedModel Clone()
         {
-            AnimatedModel o = (AnimatedModel)this.MemberwiseClone();
-            o.objects = new ArrayList(objects);
-            return o;
+            AnimatedModel clone = (AnimatedModel)this.MemberwiseClone();
+
+            // eri grouppi eli kloonatut objektit voi lisäillä grouppiin mitä tahtoo
+            // sen vaikuttamatta alkuperäiseen.
+            clone.objects = new ArrayList(objects);
+
+            for (int q = 0; q < objects.Count; q++)
+            {
+                object ob = objects[q];
+                Object3D child = (Object3D)objects[q];
+                clone.objects[q] = child.Clone();
+            }
+            return clone;
         }
     }
 }

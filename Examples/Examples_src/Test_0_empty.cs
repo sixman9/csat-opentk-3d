@@ -76,8 +76,8 @@ namespace CSatExamples
             if (Keyboard[Key.S]) cam.MoveXZ(-spd, 0);
             if (Keyboard[Key.A]) cam.MoveXZ(0, -spd);
             if (Keyboard[Key.D]) cam.MoveXZ(0, spd);
-            if (Keyboard[Key.R]) cam.position.Y++;
-            if (Keyboard[Key.F]) cam.position.Y--;
+            if (Keyboard[Key.R]) cam.Position.Y++;
+            if (Keyboard[Key.F]) cam.Position.Y--;
             if (mouseButtons[(int)MouseButton.Left])
             {
                 cam.TurnXZ(Mouse.XDelta);
@@ -106,6 +106,7 @@ namespace CSatExamples
             printer.Begin();
             if (MainClass.UseFonts) printer.Draw("blaa bluu: " + Settings.NumOfObjects, font);
             printer.End();
+            GL.MatrixMode(MatrixMode.Modelview); // tärkeä!
 
             SwapBuffers();
         }

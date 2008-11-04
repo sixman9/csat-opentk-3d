@@ -1,4 +1,4 @@
-#region --- License ---
+Ôªø#region --- License ---
 /*
 Copyright (C) 2008 mjt[matola@sci.fi]
 
@@ -27,52 +27,40 @@ using OpenTK.Graphics;
 
 namespace CSat
 {
-    public class Skybox
+    public class Skydome
     {
-        Object3D skybox = new Object3D();
+        Object3D skydome = new Object3D();
 
         public void Dispose()
         {
-            skybox.Dispose();
+            skydome.Dispose();
         }
 
         /// <summary>
-        /// lataa skybox.
+        /// lataa kupu.
         /// </summary>
-        /// <param name="skyName">skyboxin nimi, eli esim plainsky_  jos tiedostot on plainsky_front.jpg, plainsky_back.jpg jne</param>
-        /// <param name="ext">tiedoston p‰‰te, eli jpg, png, dds, ..</param>
+        /// <param name="skyName">texturen nimi</param>
         /// <param name="scale"></param>
-        public void Load(string skyName, string ext, float scale)
+        public void Load(string skyName, float scale)
         {
-            Object3D.Textured = false; // ‰l‰ lataa objektin textureita automaattisesti
-            skybox = new Object3D("skybox.obj", scale, scale, scale); // lataa skybox
+            Object3D.Textured = false; // √§l√§ lataa objektin textureita automaattisesti
+            skydome = new Object3D("skydome.obj", scale, scale, scale); // lataa kupu
             Object3D.Textured = true; // seuraava saa ladatakin..
 
-            skybox.SetBoundingMode(BoundingVolume.None);
-            string[] side = { "bottom", "left", "back", "right", "top", "front" };
+            skydome.SetBoundingMode(BoundingVolume.None);
 
-            for (int q = 0; q < 6; q++)
+            Texture newSkyTex = new Texture();
+            newSkyTex = Texture.Load(skyName);
+
+            // etsi materiaali
+            string mat = skydome.GetObject(0).MaterialName;
+            Material matInf = Material.GetMaterial(mat);
+
+            if (matInf != null)
             {
-                string fileName = skyName + side[q] + "." + ext;
-                Texture newSkyTex = new Texture();
-                Texture.WrapModeS = TextureWrapMode.ClampToEdge;
-                Texture.WrapModeT = TextureWrapMode.ClampToEdge;
-
-                newSkyTex = Texture.Load(fileName);
-
-                // etsi sivun materiaali
-                string mat = skybox.GetObject(q).MaterialName;
-
-                Material matInf = Material.GetMaterial(mat);
-
-                if (matInf != null)
-                {
-                    // korvaa vanhat texturet
-                    matInf.diffuseTex = newSkyTex;
-                }
+                // korvaa vanha texture
+                matInf.diffuseTex = newSkyTex;
             }
-            Texture.WrapModeS = TextureWrapMode.Repeat;
-            Texture.WrapModeT = TextureWrapMode.Repeat;
 
         }
 
@@ -89,11 +77,14 @@ namespace CSat
 
             GL.Disable(EnableCap.Lighting);
             GL.Disable(EnableCap.DepthTest);
-            for (int q = 0; q < 6; q++) skybox.GetObject(q).RenderFast();
+
+            skydome.GetObject(0).RenderFast();
+
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Lighting);
 
             GL.PopMatrix();
         }
+
     }
 }

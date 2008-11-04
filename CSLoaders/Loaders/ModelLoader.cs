@@ -40,9 +40,13 @@ using OpenTK.Math;
 
 namespace CSLoader
 {
-    public class MD5Model : CSat.ObjectInfo, CSat.IModel
+    public class MD5Model : CSat.IModel
     {
-        public int NumOfTextures = 1; // jos käytetään enemmän kuin 1 texturea, tätä pitää muuttaa.
+        /// <summary>
+        /// jos käytetään enemmän kuin 1 texturea, tätä pitää muuttaa.
+        /// </summary>
+        public int NumOfTextures = 1;
+        string name = "";
 
         private bool animated = false;
         private CSat.Vertex[] vertices;
@@ -55,7 +59,12 @@ namespace CSLoader
         private Vector3[] normals;
         private ArrayList meshes;
 
-        CSat.BoundingVolume bounds = new CSat.BoundingVolume();
+        CSat.BoundingVolume boundingVolume = new CSat.BoundingVolume();
+        public CSat.BoundingVolume GetBoundingVolume()
+        {
+            return boundingVolume;
+        }
+
 
         private struct MD5Vertex
         {
@@ -92,14 +101,18 @@ namespace CSLoader
         }
         private MD5Joint[] baseSkel;
 
-        /* Bounding box */
+        /// <summary>
+        /// Bounding box
+        /// </summary>
         public struct MD5BoundingBox
         {
             public Vector3 min;
             public Vector3 max;
         };
 
-        /* Animation data */
+        /// <summary>
+        /// Animation data
+        /// </summary>
         public struct MD5Animation
         {
             public int numFrames;
@@ -115,7 +128,9 @@ namespace CSLoader
 
         };
 
-        /* Joint info */
+        /// <summary>
+        /// Joint info 
+        /// </summary>
         struct MD5JointInfo
         {
             public string name;
@@ -124,7 +139,9 @@ namespace CSLoader
             public int startIndex;
         };
 
-        /* Base frame joint */
+        /// <summary>
+        /// Base frame joint
+        /// </summary>
         struct MD5BaseFrameJoint
         {
             public Vector3 pos;
@@ -141,7 +158,10 @@ namespace CSLoader
         }
 
         private string ext = "";
-        // jos shaderin päätettä ei ole md5 tiedostoissa, voi pistää tässä, eli esim .jpg, .tga, .dds ..
+        /// <summary>
+        /// jos shaderin päätettä ei ole md5 tiedostoissa, voi pistää tässä, eli esim .jpg, .tga, .dds ..
+        /// </summary>
+        /// <param name="ext"></param>
         public void UseExt(string ext)
         {
             this.ext = ext;
@@ -318,13 +338,15 @@ namespace CSLoader
             updateAnimCount = FramesBetweenAnimUpdate;
         }
 
-        // Prepare obj for rendering
+        /// <summary>
+        /// Prepare obj for rendering
+        /// </summary>
         void PrepareMesh()
         {
             int i, j, k;
             meshes.Clear();
 
-            // Calculate the final position ingame position of all the model vertexes
+            // Calculate the final Position ingame Position of all the model vertexes
             for (k = 0; k < numMesh; k++)
             {
                 numOfFaces = model[k].numTris;
@@ -367,95 +389,71 @@ namespace CSLoader
                 meshes.Add(vertices);
 
                 if (model[k].vbo != null) model[k].vbo.Update(vertices);
-
             }
-
         }
 
-        public new void Render()
+        /// <summary>
+        /// montako texturea käytetään (default: 1)
+        /// </summary>
+        /// <param name="numOfTextures"></param>
+        public void UseTextures(int numOfTextures)
         {
-            GL.PushMatrix();
-
-            // liikuta haluttuun kohtaan
-            GL.Translate(position.X, position.Y, position.Z);
-            GL.Rotate(rotation.X, 1, 0, 0);
-            GL.Rotate(rotation.Y, 0, 1, 0);
-            GL.Rotate(rotation.Z, 0, 0, 1);
-
-            // korjaa asento
-            GL.Rotate(fixRotation.X, 1, 0, 0);
-            GL.Rotate(fixRotation.Y, 0, 1, 0);
-            GL.Rotate(fixRotation.Z, 0, 0, 1);
-
-            // tarkista onko objekti näkökentässä
-            if (CSat.Frustum.ObjectInFrustum(position.X, position.Y, position.Z, bounds))
+            NumOfTextures = numOfTextures;
+            for (int i = 0; i < model.Length; i++)
             {
-                for (int i = 0; i < model.Length; i++)
+                switch (NumOfTextures)
                 {
-                    switch (NumOfTextures)
-                    {
-                        case 1: model[i].vbo.UseTextureUnits(true, false, false); break;
-                        case 2: model[i].vbo.UseTextureUnits(true, true, false); break;
-                        case 3: model[i].vbo.UseTextureUnits(true, true, true); break;
-                    }
-
-                    model[i].vbo.BeginRender();
-
-                    CSat.Material.SetMaterial("defaultMaterial");
-
-                    model[i].texture.Bind();
-
-                    // lasketaanko uusi asento
-                    if (updateAnimCount == FramesBetweenAnimUpdate)
-                    {
-                        // Interpolate skeletons between two frames
-                        InterpolateSkeletons(ref curAnim.skelFrames, curAnim.curFrame, curAnim.nextFrame,
-                                  curAnim.numJoints,
-                                  curAnim.lastTime * curAnim.frameRate);
-
-                        PrepareMesh();
-                        updateAnimCount = 0;
-                    }
-                    else updateAnimCount++;
-
-                    //Render_debug(v);
-                    model[i].vbo.Render();
-
-                    CSat.Settings.NumOfObjects++;
-
-                    model[i].vbo.EndRender();
+                    case 1: model[i].vbo.UseTextureUnits(true, false, false); break;
+                    case 2: model[i].vbo.UseTextureUnits(true, true, false); break;
+                    case 3: model[i].vbo.UseTextureUnits(true, true, true); break;
                 }
             }
-
-
-            // renderoidaan myös kaikki childit
-            if (objects.Count != 0)
-            {
-                base.RenderTree();
-            }
-
-            GL.PopMatrix();
-
         }
 
-        void Render_debug(CSat.Vertex[] v)
+        /// <summary>
+        /// pelkkä renderointi. 
+        /// ei aseta asentoa, ei frustum cullingia.
+        /// käytä AnimatedModelin Render():iä.
+        /// </summary>
+        public void Render()
         {
-            GL.Begin(BeginMode.Triangles);
-            for (int q = 0; q < v.Length; q++)
+            for (int i = 0; i < model.Length; i++)
             {
-                GL.TexCoord2(v[q].uv1);
-                GL.Vertex3(v[q].vertex);
+                if (model[i].vbo == null) continue;
+
+                CSat.Material.SetMaterial("defaultMaterial");
+                model[i].texture.Bind();
+
+                // lasketaanko uusi asento
+                if (updateAnimCount == FramesBetweenAnimUpdate)
+                {
+                    // Interpolate skeletons between two frames
+                    InterpolateSkeletons(ref curAnim.skelFrames, curAnim.curFrame, curAnim.nextFrame, curAnim.numJoints, curAnim.lastTime * curAnim.frameRate);
+                    PrepareMesh();
+                    updateAnimCount = 0;
+                }
+                else updateAnimCount++;
+
+                model[i].vbo.BeginRender();
+                model[i].vbo.Render();
+                model[i].vbo.EndRender();
             }
-            GL.End();
         }
 
-        // animation code
+        // animation code -------------------------------------------------------------------------
+
         MD5Joint[] skeleton = null;
 
         MD5Animation curAnim;
-        public int FramesBetweenAnimUpdate = 1; // monenko framen jälkeen lasketaan uusi asento
+        /// <summary>
+        /// monenko framen jälkeen lasketaan uusi asento
+        /// </summary>
+        public int FramesBetweenAnimUpdate = 1;
         int updateAnimCount = 0;
-        public int FramesBetweenNormalsUpdate = 3; // monenko framen välein päivitetään normaalit
+        /// <summary>
+        /// monenko framen välein päivitetään normaalit
+        /// </summary>
+        public int FramesBetweenNormalsUpdate = 3;
         int updateNormalsCount = 0;
 
         /// <summary>
@@ -537,7 +535,7 @@ namespace CSLoader
                 else
                 {
                     MD5Joint parentJoint = md5anim.skelFrames[frameIndex, parent];
-                    Vector3 rpos; /* Rotated position */
+                    Vector3 rpos; /* Rotated Position */
 
                     /* Add positions */
                     rpos = CSat.MathExt.RotatePoint(ref parentJoint.orient, ref animatedPos);
@@ -572,7 +570,7 @@ namespace CSLoader
                 /* Copy parent index */
                 skeleton[i].parent = skel[curFrame, i].parent;
 
-                /* Linear interpolation for position */
+                /* Linear interpolation for Position */
                 skeleton[i].pos.X = skel[curFrame, i].pos.X + interp * (skel[nextFrame, i].pos.X - skel[curFrame, i].pos.X);
                 skeleton[i].pos.Y = skel[curFrame, i].pos.Y + interp * (skel[nextFrame, i].pos.Y - skel[curFrame, i].pos.Y);
                 skeleton[i].pos.Z = skel[curFrame, i].pos.Z + interp * (skel[nextFrame, i].pos.Z - skel[curFrame, i].pos.Z);
@@ -582,7 +580,11 @@ namespace CSLoader
             }
         }
 
-        // laskemisia
+        /// <summary>
+        /// lasketaan frame
+        /// </summary>
+        /// <param name="anim"></param>
+        /// <param name="dt"></param>
         void Animate(ref MD5Animation anim, float dt)
         {
             int maxFrames = anim.numFrames - 1;
@@ -787,7 +789,8 @@ namespace CSLoader
 
             Vector3 min = new Vector3(9999, 9999, 9999);
             Vector3 max = new Vector3(-9999, -9999, -9999);
-            // laske max bboxit
+
+            // laske bboxit
             for (int q = 0; q < anim.numFrames; q++)
             {
                 if (anim.bboxes[q].min.X < min.X) min.X = anim.bboxes[q].min.X;
@@ -798,8 +801,8 @@ namespace CSLoader
                 if (anim.bboxes[q].max.Y > max.Y) max.Y = anim.bboxes[q].max.Y;
                 if (anim.bboxes[q].max.Z > max.Z) max.Z = anim.bboxes[q].max.Z;
             }
-            bounds.Mode = CSat.BoundingVolume.Sphere;
-            bounds.CreateBoundingBox(min, max);
+            boundingVolume.Mode = CSat.BoundingVolume.Sphere;
+            boundingVolume.CreateBoundingBox(min, max);
 
             CSat.Log.WriteDebugLine("Animation: " + fileName);
         }

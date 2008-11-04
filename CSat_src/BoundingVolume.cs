@@ -61,9 +61,9 @@ namespace CSat
 
         public void FindMinMax(Object3D o, Vector3 pos)
         {
-            for (int c = 0; c < o.vertexInd.Count; c++)
+            for (int c = 0; c < o.VertexInd.Count; c++)
             {
-                int q = (int)o.vertexInd[c];
+                int q = (int)o.VertexInd[c];
                 Vector3 v = o.Vertex[q] + pos;
 
                 if (v.X < min.X) min.X = v.X;
@@ -102,7 +102,7 @@ namespace CSat
             for (int q = 0; q < obj.Objects.Count; q++)
             {
                 Object3D child = (Object3D)obj.Objects[q];
-                FindMinMax(child, obj.position);
+                FindMinMax(child, obj.Position);
                 CalcBounds(child);
             }
             CalcR();
@@ -123,8 +123,9 @@ namespace CSat
 
             Vector3 v = max - min;
             r = v.Length;
-            v.Scale(.5f, .5f, .5f);
-            obj.objCenter = min + v; // objektin keskipiste
+
+            v.Scale(0.5f, 0.5f, 0.5f); // puoleen väliin
+            obj.ObjCenter = min + v; // joka on objektin keskikohta
 
             SetCorners();
             CalcPlanes();

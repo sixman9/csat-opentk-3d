@@ -57,8 +57,8 @@ namespace CSatExamples
 
             explosion.SetObject(partObj[1], true); // läpinäkyvä
 
-            cam.position.Z = 100;
-            cam.position.Y = 2;
+            cam.Position.Z = 100;
+            cam.Position.Y = 2;
 
             Mouse.ButtonDown += MouseButtonDown;
             Mouse.ButtonUp += MouseButtonUp;
@@ -86,7 +86,7 @@ namespace CSatExamples
 
         /// <summary>
         /// Called when your window is resized. Set your viewport here. It is also
-        /// a good place to set up your projection matrix (which probably changes
+        /// a good place to set Up your projection Matrix (which probably changes
         /// along when the aspect ratio of your window).
         /// </summary>
         /// <param name="e">Contains information on the new Width and Size of the GameWindow.</param>
@@ -113,8 +113,8 @@ namespace CSatExamples
             if (Keyboard[Key.S]) cam.MoveXZ(-spd, 0);
             if (Keyboard[Key.A]) cam.MoveXZ(0, -spd);
             if (Keyboard[Key.D]) cam.MoveXZ(0, spd);
-            if (Keyboard[Key.R]) cam.position.Y++;
-            if (Keyboard[Key.F]) cam.position.Y--;
+            if (Keyboard[Key.R]) cam.Position.Y++;
+            if (Keyboard[Key.F]) cam.Position.Y--;
             if (mouseButtons[(int)MouseButton.Left])
             {
                 cam.TurnXZ(Mouse.XDelta);

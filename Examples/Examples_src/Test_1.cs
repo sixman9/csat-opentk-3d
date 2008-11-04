@@ -72,7 +72,7 @@ namespace CSatExamples
 
         /// <summary>
         /// Called when your window is resized. Set your viewport here. It is also
-        /// a good place to set up your projection matrix (which probably changes
+        /// a good place to set Up your projection Matrix (which probably changes
         /// along when the aspect ratio of your window).
         /// </summary>
         /// <param name="e">Contains information on the new Width and Size of the GameWindow.</param>

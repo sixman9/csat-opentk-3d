@@ -25,7 +25,7 @@ email: matola@sci.fi
 
 namespace CSat
 {
-    public class Settings
+    public static class Settings
     {
         public static string Version = "0.3a-svn";
         public static string DataDir = "data/model/";

@@ -48,10 +48,10 @@ namespace CSat
         {
             Camera.cam = this;
             GL.LoadIdentity();
-            GL.Rotate(-rotation.X, 1.0f, 0, 0);
-            GL.Rotate(-rotation.Y, 0, 1.0f, 0);
-            GL.Rotate(-rotation.Z, 0, 0, 1.0f);
-            GL.Translate(-position.X, -position.Y, -position.Z);
+            GL.Rotate(-Rotation.X, 1.0f, 0, 0);
+            GL.Rotate(-Rotation.Y, 0, 1.0f, 0);
+            GL.Rotate(-Rotation.Z, 0, 0, 1.0f);
+            GL.Translate(-Position);
         }
 
         /// <summary>
@@ -63,20 +63,20 @@ namespace CSat
 
             GL.LoadIdentity();
 
-            Vector3 vp; // view point
-            vp = view + position;
-            Glu.LookAt(position.X, position.Y, position.Z, vp.X, vp.Y, vp.Z, up.X, up.Y, up.Z);
+            Vector3 vp; // View point
+            vp = View + Position;
+            Glu.LookAt(Position, vp, Up);
         }
 
         /// <summary>
         /// k‰‰nn‰ kuvakulma pos:iin
         /// </summary>
         /// <param name="pos"></param>
-        public void LookAt(Vector3 pos)
+        public new void LookAt(Vector3 pos)
         {
             Camera.cam = this;
             GL.LoadIdentity();
-            Glu.LookAt(position.X, position.Y, position.Z, pos.X, pos.Y, pos.Z, up.X, up.Y, up.Z);
+            Glu.LookAt(Position, pos, Up);
         }
 
         /// <summary>
@@ -85,11 +85,11 @@ namespace CSat
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="z"></param>
-        public void LookAt(float x, float y, float z)
+        public new void LookAt(float x, float y, float z)
         {
             Camera.cam = this;
             GL.LoadIdentity();
-            Glu.LookAt(position.X, position.Y, position.Z, x, y, z, up.X, up.Y, up.Z);
+            Glu.LookAt(Position.X, Position.Y, Position.Z, x, y, z, Up.X, Up.Y, Up.Z);
         }
     }
 }

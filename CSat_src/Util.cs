@@ -25,12 +25,49 @@ email: matola@sci.fi
 
 using System;
 using OpenTK.Graphics;
+using OpenTK.Math;
 using System.Collections;
 
 namespace CSat
 {
-    public class Util
+    public static class Util
     {
+        public static float[] ProjMatrix = new float[16];
+        public static float[] ModelMatrix = new float[16];
+        public static float[] ClipMatrix = new float[16];
+
+        public static void CopyArray(ref float[] arrayIn, ref float[] arrayOut)
+        {
+            if (arrayOut == null) arrayOut = new float[arrayIn.Length];
+            for (int q = 0; q < arrayIn.Length; q++)
+            {
+                arrayOut[q] = arrayIn[q];
+            }
+        }
+
+        public static void ArrayToMatrix(float[] array, out Matrix4 matrix)
+        {
+            matrix.Row0.X = array[0];
+            matrix.Row0.Y = array[1];
+            matrix.Row0.Z = array[2];
+            matrix.Row0.W = array[3];
+
+            matrix.Row1.X = array[4];
+            matrix.Row1.Y = array[5];
+            matrix.Row1.Z = array[6];
+            matrix.Row1.W = array[7];
+
+            matrix.Row2.X = array[8];
+            matrix.Row2.Y = array[9];
+            matrix.Row2.Z = array[10];
+            matrix.Row2.W = array[11];
+
+            matrix.Row3.X = array[12];
+            matrix.Row3.Y = array[13];
+            matrix.Row3.Z = array[14];
+            matrix.Row3.W = array[15];
+        }
+
         public static void ClearArrays()
         {
             Texture.DisposeAll();

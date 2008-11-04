@@ -40,10 +40,6 @@ namespace CSat
         static float[,] frustum = new float[6, 4];
         const int RIGHT = 0, LEFT = 1, BOTTOM = 2, TOP = 3, BACK = 4, FRONT = 5;
 
-        static float[] projMatrix = new float[16];
-        static float[] modelMatrix = new float[16];
-        static float[] clipMatrix = new float[16];
-
         static void NormalizePlane(float[,] frustum, int side)
         {
             float magnitude = (float)Math.Sqrt((frustum[side, 0] * frustum[side, 0]) + (frustum[side, 1] * frustum[side, 1])
@@ -58,64 +54,64 @@ namespace CSat
         public static void CalculateFrustum()
         {
             // ota projection ja modelview matriisit
-            GL.GetFloat(GetPName.ProjectionMatrix, projMatrix);
-            GL.GetFloat(GetPName.ModelviewMatrix, modelMatrix);
+            GL.GetFloat(GetPName.ProjectionMatrix, Util.ProjMatrix);
+            GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
 
-            clipMatrix[0] = (modelMatrix[0] * projMatrix[0]) + (modelMatrix[1] * projMatrix[4]) + (modelMatrix[2] * projMatrix[8]) + (modelMatrix[3] * projMatrix[12]);
-            clipMatrix[1] = (modelMatrix[0] * projMatrix[1]) + (modelMatrix[1] * projMatrix[5]) + (modelMatrix[2] * projMatrix[9]) + (modelMatrix[3] * projMatrix[13]);
-            clipMatrix[2] = (modelMatrix[0] * projMatrix[2]) + (modelMatrix[1] * projMatrix[6]) + (modelMatrix[2] * projMatrix[10]) + (modelMatrix[3] * projMatrix[14]);
-            clipMatrix[3] = (modelMatrix[0] * projMatrix[3]) + (modelMatrix[1] * projMatrix[7]) + (modelMatrix[2] * projMatrix[11]) + (modelMatrix[3] * projMatrix[15]);
+            Util.ClipMatrix[0] = (Util.ModelMatrix[0] * Util.ProjMatrix[0]) + (Util.ModelMatrix[1] * Util.ProjMatrix[4]) + (Util.ModelMatrix[2] * Util.ProjMatrix[8]) + (Util.ModelMatrix[3] * Util.ProjMatrix[12]);
+            Util.ClipMatrix[1] = (Util.ModelMatrix[0] * Util.ProjMatrix[1]) + (Util.ModelMatrix[1] * Util.ProjMatrix[5]) + (Util.ModelMatrix[2] * Util.ProjMatrix[9]) + (Util.ModelMatrix[3] * Util.ProjMatrix[13]);
+            Util.ClipMatrix[2] = (Util.ModelMatrix[0] * Util.ProjMatrix[2]) + (Util.ModelMatrix[1] * Util.ProjMatrix[6]) + (Util.ModelMatrix[2] * Util.ProjMatrix[10]) + (Util.ModelMatrix[3] * Util.ProjMatrix[14]);
+            Util.ClipMatrix[3] = (Util.ModelMatrix[0] * Util.ProjMatrix[3]) + (Util.ModelMatrix[1] * Util.ProjMatrix[7]) + (Util.ModelMatrix[2] * Util.ProjMatrix[11]) + (Util.ModelMatrix[3] * Util.ProjMatrix[15]);
 
-            clipMatrix[4] = (modelMatrix[4] * projMatrix[0]) + (modelMatrix[5] * projMatrix[4]) + (modelMatrix[6] * projMatrix[8]) + (modelMatrix[7] * projMatrix[12]);
-            clipMatrix[5] = (modelMatrix[4] * projMatrix[1]) + (modelMatrix[5] * projMatrix[5]) + (modelMatrix[6] * projMatrix[9]) + (modelMatrix[7] * projMatrix[13]);
-            clipMatrix[6] = (modelMatrix[4] * projMatrix[2]) + (modelMatrix[5] * projMatrix[6]) + (modelMatrix[6] * projMatrix[10]) + (modelMatrix[7] * projMatrix[14]);
-            clipMatrix[7] = (modelMatrix[4] * projMatrix[3]) + (modelMatrix[5] * projMatrix[7]) + (modelMatrix[6] * projMatrix[11]) + (modelMatrix[7] * projMatrix[15]);
+            Util.ClipMatrix[4] = (Util.ModelMatrix[4] * Util.ProjMatrix[0]) + (Util.ModelMatrix[5] * Util.ProjMatrix[4]) + (Util.ModelMatrix[6] * Util.ProjMatrix[8]) + (Util.ModelMatrix[7] * Util.ProjMatrix[12]);
+            Util.ClipMatrix[5] = (Util.ModelMatrix[4] * Util.ProjMatrix[1]) + (Util.ModelMatrix[5] * Util.ProjMatrix[5]) + (Util.ModelMatrix[6] * Util.ProjMatrix[9]) + (Util.ModelMatrix[7] * Util.ProjMatrix[13]);
+            Util.ClipMatrix[6] = (Util.ModelMatrix[4] * Util.ProjMatrix[2]) + (Util.ModelMatrix[5] * Util.ProjMatrix[6]) + (Util.ModelMatrix[6] * Util.ProjMatrix[10]) + (Util.ModelMatrix[7] * Util.ProjMatrix[14]);
+            Util.ClipMatrix[7] = (Util.ModelMatrix[4] * Util.ProjMatrix[3]) + (Util.ModelMatrix[5] * Util.ProjMatrix[7]) + (Util.ModelMatrix[6] * Util.ProjMatrix[11]) + (Util.ModelMatrix[7] * Util.ProjMatrix[15]);
 
-            clipMatrix[8] = (modelMatrix[8] * projMatrix[0]) + (modelMatrix[9] * projMatrix[4]) + (modelMatrix[10] * projMatrix[8]) + (modelMatrix[11] * projMatrix[12]);
-            clipMatrix[9] = (modelMatrix[8] * projMatrix[1]) + (modelMatrix[9] * projMatrix[5]) + (modelMatrix[10] * projMatrix[9]) + (modelMatrix[11] * projMatrix[13]);
-            clipMatrix[10] = (modelMatrix[8] * projMatrix[2]) + (modelMatrix[9] * projMatrix[6]) + (modelMatrix[10] * projMatrix[10]) + (modelMatrix[11] * projMatrix[14]);
-            clipMatrix[11] = (modelMatrix[8] * projMatrix[3]) + (modelMatrix[9] * projMatrix[7]) + (modelMatrix[10] * projMatrix[11]) + (modelMatrix[11] * projMatrix[15]);
+            Util.ClipMatrix[8] = (Util.ModelMatrix[8] * Util.ProjMatrix[0]) + (Util.ModelMatrix[9] * Util.ProjMatrix[4]) + (Util.ModelMatrix[10] * Util.ProjMatrix[8]) + (Util.ModelMatrix[11] * Util.ProjMatrix[12]);
+            Util.ClipMatrix[9] = (Util.ModelMatrix[8] * Util.ProjMatrix[1]) + (Util.ModelMatrix[9] * Util.ProjMatrix[5]) + (Util.ModelMatrix[10] * Util.ProjMatrix[9]) + (Util.ModelMatrix[11] * Util.ProjMatrix[13]);
+            Util.ClipMatrix[10] = (Util.ModelMatrix[8] * Util.ProjMatrix[2]) + (Util.ModelMatrix[9] * Util.ProjMatrix[6]) + (Util.ModelMatrix[10] * Util.ProjMatrix[10]) + (Util.ModelMatrix[11] * Util.ProjMatrix[14]);
+            Util.ClipMatrix[11] = (Util.ModelMatrix[8] * Util.ProjMatrix[3]) + (Util.ModelMatrix[9] * Util.ProjMatrix[7]) + (Util.ModelMatrix[10] * Util.ProjMatrix[11]) + (Util.ModelMatrix[11] * Util.ProjMatrix[15]);
 
-            clipMatrix[12] = (modelMatrix[12] * projMatrix[0]) + (modelMatrix[13] * projMatrix[4]) + (modelMatrix[14] * projMatrix[8]) + (modelMatrix[15] * projMatrix[12]);
-            clipMatrix[13] = (modelMatrix[12] * projMatrix[1]) + (modelMatrix[13] * projMatrix[5]) + (modelMatrix[14] * projMatrix[9]) + (modelMatrix[15] * projMatrix[13]);
-            clipMatrix[14] = (modelMatrix[12] * projMatrix[2]) + (modelMatrix[13] * projMatrix[6]) + (modelMatrix[14] * projMatrix[10]) + (modelMatrix[15] * projMatrix[14]);
-            clipMatrix[15] = (modelMatrix[12] * projMatrix[3]) + (modelMatrix[13] * projMatrix[7]) + (modelMatrix[14] * projMatrix[11]) + (modelMatrix[15] * projMatrix[15]);
+            Util.ClipMatrix[12] = (Util.ModelMatrix[12] * Util.ProjMatrix[0]) + (Util.ModelMatrix[13] * Util.ProjMatrix[4]) + (Util.ModelMatrix[14] * Util.ProjMatrix[8]) + (Util.ModelMatrix[15] * Util.ProjMatrix[12]);
+            Util.ClipMatrix[13] = (Util.ModelMatrix[12] * Util.ProjMatrix[1]) + (Util.ModelMatrix[13] * Util.ProjMatrix[5]) + (Util.ModelMatrix[14] * Util.ProjMatrix[9]) + (Util.ModelMatrix[15] * Util.ProjMatrix[13]);
+            Util.ClipMatrix[14] = (Util.ModelMatrix[12] * Util.ProjMatrix[2]) + (Util.ModelMatrix[13] * Util.ProjMatrix[6]) + (Util.ModelMatrix[14] * Util.ProjMatrix[10]) + (Util.ModelMatrix[15] * Util.ProjMatrix[14]);
+            Util.ClipMatrix[15] = (Util.ModelMatrix[12] * Util.ProjMatrix[3]) + (Util.ModelMatrix[13] * Util.ProjMatrix[7]) + (Util.ModelMatrix[14] * Util.ProjMatrix[11]) + (Util.ModelMatrix[15] * Util.ProjMatrix[15]);
 
             // laske frustumin tasot ja normalisoi ne
-            frustum[RIGHT, 0] = clipMatrix[3] - clipMatrix[0];
-            frustum[RIGHT, 1] = clipMatrix[7] - clipMatrix[4];
-            frustum[RIGHT, 2] = clipMatrix[11] - clipMatrix[8];
-            frustum[RIGHT, 3] = clipMatrix[15] - clipMatrix[12];
+            frustum[RIGHT, 0] = Util.ClipMatrix[3] - Util.ClipMatrix[0];
+            frustum[RIGHT, 1] = Util.ClipMatrix[7] - Util.ClipMatrix[4];
+            frustum[RIGHT, 2] = Util.ClipMatrix[11] - Util.ClipMatrix[8];
+            frustum[RIGHT, 3] = Util.ClipMatrix[15] - Util.ClipMatrix[12];
             NormalizePlane(frustum, RIGHT);
 
-            frustum[LEFT, 0] = clipMatrix[3] + clipMatrix[0];
-            frustum[LEFT, 1] = clipMatrix[7] + clipMatrix[4];
-            frustum[LEFT, 2] = clipMatrix[11] + clipMatrix[8];
-            frustum[LEFT, 3] = clipMatrix[15] + clipMatrix[12];
+            frustum[LEFT, 0] = Util.ClipMatrix[3] + Util.ClipMatrix[0];
+            frustum[LEFT, 1] = Util.ClipMatrix[7] + Util.ClipMatrix[4];
+            frustum[LEFT, 2] = Util.ClipMatrix[11] + Util.ClipMatrix[8];
+            frustum[LEFT, 3] = Util.ClipMatrix[15] + Util.ClipMatrix[12];
             NormalizePlane(frustum, LEFT);
 
-            frustum[BOTTOM, 0] = clipMatrix[3] + clipMatrix[1];
-            frustum[BOTTOM, 1] = clipMatrix[7] + clipMatrix[5];
-            frustum[BOTTOM, 2] = clipMatrix[11] + clipMatrix[9];
-            frustum[BOTTOM, 3] = clipMatrix[15] + clipMatrix[13];
+            frustum[BOTTOM, 0] = Util.ClipMatrix[3] + Util.ClipMatrix[1];
+            frustum[BOTTOM, 1] = Util.ClipMatrix[7] + Util.ClipMatrix[5];
+            frustum[BOTTOM, 2] = Util.ClipMatrix[11] + Util.ClipMatrix[9];
+            frustum[BOTTOM, 3] = Util.ClipMatrix[15] + Util.ClipMatrix[13];
             NormalizePlane(frustum, BOTTOM);
 
-            frustum[TOP, 0] = clipMatrix[3] - clipMatrix[1];
-            frustum[TOP, 1] = clipMatrix[7] - clipMatrix[5];
-            frustum[TOP, 2] = clipMatrix[11] - clipMatrix[9];
-            frustum[TOP, 3] = clipMatrix[15] - clipMatrix[13];
+            frustum[TOP, 0] = Util.ClipMatrix[3] - Util.ClipMatrix[1];
+            frustum[TOP, 1] = Util.ClipMatrix[7] - Util.ClipMatrix[5];
+            frustum[TOP, 2] = Util.ClipMatrix[11] - Util.ClipMatrix[9];
+            frustum[TOP, 3] = Util.ClipMatrix[15] - Util.ClipMatrix[13];
             NormalizePlane(frustum, TOP);
 
-            frustum[BACK, 0] = clipMatrix[3] - clipMatrix[2];
-            frustum[BACK, 1] = clipMatrix[7] - clipMatrix[6];
-            frustum[BACK, 2] = clipMatrix[11] - clipMatrix[10];
-            frustum[BACK, 3] = clipMatrix[15] - clipMatrix[14];
+            frustum[BACK, 0] = Util.ClipMatrix[3] - Util.ClipMatrix[2];
+            frustum[BACK, 1] = Util.ClipMatrix[7] - Util.ClipMatrix[6];
+            frustum[BACK, 2] = Util.ClipMatrix[11] - Util.ClipMatrix[10];
+            frustum[BACK, 3] = Util.ClipMatrix[15] - Util.ClipMatrix[14];
             NormalizePlane(frustum, BACK);
 
-            frustum[FRONT, 0] = clipMatrix[3] + clipMatrix[2];
-            frustum[FRONT, 1] = clipMatrix[7] + clipMatrix[6];
-            frustum[FRONT, 2] = clipMatrix[11] + clipMatrix[10];
-            frustum[FRONT, 3] = clipMatrix[15] + clipMatrix[14];
+            frustum[FRONT, 0] = Util.ClipMatrix[3] + Util.ClipMatrix[2];
+            frustum[FRONT, 1] = Util.ClipMatrix[7] + Util.ClipMatrix[6];
+            frustum[FRONT, 2] = Util.ClipMatrix[11] + Util.ClipMatrix[10];
+            frustum[FRONT, 3] = Util.ClipMatrix[15] + Util.ClipMatrix[14];
             NormalizePlane(frustum, FRONT);
         }
 

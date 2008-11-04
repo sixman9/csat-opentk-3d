@@ -26,6 +26,7 @@ namespace CSatExamples
 
         MD5Model model = new MD5Model();
         MD5Model.MD5Animation[] anim = new MD5Model.MD5Animation[5];
+        AnimatedModel mod = new AnimatedModel(); // tähän pitää liittää MD5Model, tää hoitaa rendaukset ym
         int curAnim = 0;
 
         public Game4(int width, int height) : base(width, height, GraphicsMode.Default, "Animation test") { }
@@ -49,11 +50,12 @@ namespace CSatExamples
             model.LoadAnim("Ugly/Ukko_action1.anim", ref anim[1]);
             model.LoadAnim("Ugly/Ukko_action2.anim", ref anim[2]);
             model.LoadAnim("Ugly/Ukko_action3.anim", ref anim[3]);
-            model.fixRotation.X = -90; // ukko on "makaavassa" asennossa joten nostetaan se fixRotationilla pystyyn.
-            model.fixRotation.Z = 180; // säätöä.. katse eteen päin!
+            mod.SetAnimatedModel(model);
+            mod.FixRotation.X = -90; // ukko on "makaavassa" asennossa joten nostetaan se fixRotationilla pystyyn.
+            mod.FixRotation.Z = 180; // säätöä.. katse eteen päin!
 
-            cam.position.Y = 3;
-            cam.position.Z = 10;
+            cam.Position.Y = 3;
+            cam.Position.Z = 10;
             Mouse.ButtonDown += MouseButtonDown;
             Mouse.ButtonUp += MouseButtonUp;
 
@@ -79,7 +81,7 @@ namespace CSatExamples
 
         /// <summary>
         /// Called when your window is resized. Set your viewport here. It is also
-        /// a good place to set up your projection matrix (which probably changes
+        /// a good place to set Up your projection Matrix (which probably changes
         /// along when the aspect ratio of your window).
         /// </summary>
         /// <param name="e">Contains information on the new Width and Size of the GameWindow.</param>
@@ -99,20 +101,20 @@ namespace CSatExamples
 
             // örvelön liikuttaminen
             float speed = (float)(3 * e.Time);
-            if (Keyboard[Key.Left]) model.rotation.Y += speed * 20;
-            if (Keyboard[Key.Right]) model.rotation.Y -= speed * 20;
+            if (Keyboard[Key.Left]) mod.Rotation.Y += speed * 20;
+            if (Keyboard[Key.Right]) mod.Rotation.Y -= speed * 20;
 
             if (Keyboard[Key.Number1] == false && Keyboard[Key.Number2] == false)
             {
                 if (Keyboard[Key.Up])
                 {
-                    model.MoveXZ(speed);
+                    mod.MoveXZ(speed);
                     curAnim = 0;
                 }
                 else
                     if (Keyboard[Key.Down])
                     {
-                        model.MoveXZ(-speed);
+                        mod.MoveXZ(-speed);
                         curAnim = 0;
                     }
                     else curAnim = 2;
@@ -127,8 +129,8 @@ namespace CSatExamples
             if (Keyboard[Key.S]) cam.MoveXZ(-spd, 0);
             if (Keyboard[Key.A]) cam.MoveXZ(0, -spd);
             if (Keyboard[Key.D]) cam.MoveXZ(0, spd);
-            if (Keyboard[Key.R]) cam.position.Y++;
-            if (Keyboard[Key.F]) cam.position.Y--;
+            if (Keyboard[Key.R]) cam.Position.Y++;
+            if (Keyboard[Key.F]) cam.Position.Y--;
             if (mouseButtons[(int)MouseButton.Left])
             {
                 cam.TurnXZ(Mouse.XDelta);
@@ -150,9 +152,7 @@ namespace CSatExamples
             Frustum.CalculateFrustum();
 
             model.Update((float)e.Time, ref anim[curAnim]);
-            // voi käyttää modelin renderiä, mutta jos pistää modeleita grouppiin,
-            // pitää alussa asettaa render callback. selviää grouping demosta.
-            model.Render();
+            mod.Render(); // huom! AnimationModelin render (se asettaa ja cullaa)
 
             Texture.ActiveUnit(0);
             printer.Begin();

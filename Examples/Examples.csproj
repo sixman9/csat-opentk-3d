@@ -55,6 +55,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Examples_src\Test_11.cs" />
     <Compile Include="Examples_src\Test_10.cs" />
     <Compile Include="Examples_src\Test_9.cs" />
     <Compile Include="Examples_src\Test_8.cs" />

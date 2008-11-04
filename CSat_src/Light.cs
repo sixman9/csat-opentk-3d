@@ -105,7 +105,7 @@ namespace CSat
         public void UpdateLight()
         {
             if (enabled == false) return;
-            GL.Lightv(LightName.Light0 + lightNum, LightParameter.Position, new float[] { position.X, position.Y, position.Z,1 });
+            GL.Lightv(LightName.Light0 + lightNum, LightParameter.Position, new float[] { Position.X, Position.Y, Position.Z,1 });
         }
 
         /// <summary>

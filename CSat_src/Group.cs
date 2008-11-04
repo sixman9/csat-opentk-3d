@@ -29,7 +29,7 @@ email: matola@sci.fi
  * 
  * hoitaa myös objektien törmäystarkistukset ja groupin rendauksen.
  * 
- * jos groupissa Object2D objekteja, ne renderoidaan sen Render3D metodilla.
+ * jos groupissa on Object2D objekteja, ne renderoidaan sen Render3D metodilla.
  * 
  */
 
@@ -60,50 +60,104 @@ namespace CSat
             }
         }
 
+        /// <summary>
+        /// calculatepositions ottaa kaikki täysin näkyvät objektit tähän talteen renderointia varten
+        /// </summary>
+        static protected ArrayList visibleObjects = new ArrayList();
+        /// <summary>
+        /// calculatepositions ottaa kaikki ruudulla olevat läpikuultavat objektit tähän talteen renderointia varten
+        /// </summary>
+        static protected ArrayList translucentObjects = new ArrayList();
 
         /// <summary>
-        /// laske objekteille paikat. pitää kutsua jos on liittänyt objekteihin toisia objekteja.
+        /// laske objekteille world coordinates (WMatrix)
         /// </summary>
-        public void CalculatePositions()
-        {
-            GL.PushMatrix();
-            GL.LoadIdentity();
-            CalcPos();
-            GL.PopMatrix();
-        }
-
-        static float[] modelMatrix = new float[16];
-        void CalcPos()
+        public void CalculateWorldCoords()
         {
             for (int q = 0; q < objects.Count; q++)
             {
-                if (objects[q] is Skybox || objects[q] is IModel) continue;
-
-                ObjectInfo o = (ObjectInfo)objects[q];
+                if (objects[q] is Skybox || objects[q] is Skydome) continue;
 
                 GL.PushMatrix();
-                // liikuta haluttuun kohtaan
-                GL.Translate(o.position.X, o.position.Y, o.position.Z);
-                GL.Rotate(o.rotation.X, 1, 0, 0);
-                GL.Rotate(o.rotation.Y, 0, 1, 0);
-                GL.Rotate(o.rotation.Z, 0, 0, 1);
 
-                // korjaa asento
-                GL.Rotate(o.fixRotation.X, 1, 0, 0);
-                GL.Rotate(o.fixRotation.Y, 0, 1, 0);
-                GL.Rotate(o.fixRotation.Z, 0, 0, 1);
+                ObjectInfo o = (ObjectInfo)objects[q];
+                o.CalcAndGetMatrix(ref o.WMatrix, o.ObjCenter);
+                if (o.objects.Count > 0) o.CalculateWorldCoords();
 
-                GL.GetFloat(GetPName.ModelviewMatrix, modelMatrix);
-                o.wpos.X = modelMatrix[12];
-                o.wpos.Y = modelMatrix[13];
-                o.wpos.Z = modelMatrix[14];
-
-                if (o.objects.Count > 0)
-                {
-                    o.CalcPos();
-                }
                 GL.PopMatrix();
             }
+        }
+
+        /// <summary>
+        /// laske objekteille paikat (Matrix).
+        /// ota listoihin näkyvät obut.
+        /// </summary>
+        public void CalculateCoords()
+        {
+            for (int q = 0; q < objects.Count; q++)
+            {
+                GL.PushMatrix();
+
+                if (objects[q] is Skybox || objects[q] is Skydome) // nämä on aina näkyviä
+                {
+                    visibleObjects.Add(objects[q]);
+                }
+                else if (objects[q] is Object3D)
+                {
+                    Object3D o = (Object3D)objects[q];
+
+                    o.CalcAndGetMatrix(ref o.Matrix, Vector3.Zero);
+                    if (o.objects.Count > 0) o.CalculateCoords();
+
+                    // tarkista onko objekti näkökentässä
+                    if (Frustum.ObjectInFrustum(o.WMatrix[12], o.WMatrix[13], o.WMatrix[14], o.MeshBoundingVolume))
+                    {
+                        if (o.IsTranslucent == true)
+                        {
+                            translucentObjects.Add(objects[q]);
+                        }
+                        else
+                        {
+                            visibleObjects.Add(objects[q]);
+                        }
+                    }
+                }
+                else if (objects[q] is AnimatedModel)
+                {
+                    AnimatedModel o = (AnimatedModel)objects[q];
+
+                    o.CalcAndGetMatrix(ref o.Matrix, Vector3.Zero);
+                    if (o.objects.Count > 0) o.CalculateCoords();
+
+                    // tarkista onko objekti näkökentässä
+                    if (Frustum.ObjectInFrustum(o.WMatrix[12], o.WMatrix[13], o.WMatrix[14], o.GetBoundingVolume()))
+                    {
+                        visibleObjects.Add(objects[q]);
+                    }
+                }
+                else if(objects[q] is Particles)
+                {
+                    Particles o = (Particles)objects[q];
+                    o.CalcAndGetMatrix(ref o.Matrix, Vector3.Zero);
+                    if (o.objects.Count > 0) o.CalculateCoords();
+                    if (o.IsTranslucent == false) visibleObjects.Add(objects[q]);
+                    else translucentObjects.Add(objects[q]);
+                }
+                else // loput eli billboard, object2d, ..
+                {
+                    ObjectInfo o = (ObjectInfo)objects[q];
+                    o.CalcAndGetMatrix(ref o.Matrix, Vector3.Zero);
+                    if (o.objects.Count > 0) o.CalculateCoords();
+                    visibleObjects.Add(objects[q]);
+                }
+                
+                // TODO piutäis tsekata onko ruudulla: billboards, object2d
+
+                GL.PopMatrix();
+            }
+
+            // TODO
+            // translucentObjects  array:  pitää sortata kauimmaisesta lähimpään
         }
 
         /// <summary>
@@ -111,8 +165,17 @@ namespace CSat
         /// </summary>
         public void Render()
         {
-            CalculatePositions();
-            RenderTree();
+            visibleObjects.Clear();
+            translucentObjects.Clear();
+
+            GL.PushMatrix(); // kameramatrix talteen
+            GL.LoadIdentity();
+            CalculateWorldCoords();
+            GL.PopMatrix(); // kameraan takas
+
+            CalculateCoords();
+
+            RenderArrays();
         }
 
         public void Add(Object obj)
@@ -145,121 +208,67 @@ namespace CSat
         }
 
         /// <summary>
-        /// palauttaa true jos vektori oldpos->newpos välissä poly. sopii esim kameralle
-        /// dontTestThis - objekti jota ei testata (eli liikuteltava objekti tai null jos esim kamera)
+        /// renderoi näkyvät objektit
         /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        /// <param name="dontTestThis"></param>
-        /// <returns></returns>
-        public bool CheckCollision(Vector3 start, Vector3 end, ref Object3D dontTestThis)
+        public void RenderArrays()
         {
-            Vector3 len = start - end;
-            if (len.X == 0 && len.Y == 0 && len.Z == 0) return false;
-
-            for (int q = 0; q < objects.Count; q++)
+            GL.PushMatrix();
+            ArrayList cur = (ArrayList)visibleObjects.Clone();
+            int c = 0;
+            for (int q = 0; q < visibleObjects.Count + translucentObjects.Count; q++, c++)
             {
-                if (objects[q] is Object3D)
+                if (q == visibleObjects.Count) // listan vaihto, rendataan läpikuultavat
                 {
-                    if (objects[q] != dontTestThis)
-                        if (Intersection.CheckIntersection(ref start, ref end, (Object3D)objects[q]) == true) return true;
-
+                    c = 0;
+                    cur = (ArrayList)translucentObjects.Clone(); 
                 }
 
-            }
-            return false;
-        }
+                // renderoi oikea objekti:
 
-        /// <summary>
-        /// palauttaa true jos objektin boundingboxin joku vertexi osuu johonkin polyyn
-        /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public bool CheckCollisionBB(Vector3 start, Vector3 end, ref Object3D obj)
-        {
-            Vector3 len = start - end;
-            if (len.X == 0 && len.Y == 0 && len.Z == 0) return false;
-
-            for (int q = 0; q < objects.Count; q++)
-            {
-                if (objects[q] is Object3D) // todo  animatedmodelia ei tsekata, vielä
+                if (cur[c] is Object3D)
                 {
-                    if (objects[q] != obj)
-                    {
-                        // jos objekti käännetty (rotation ja/tai fixRotation != 0), pitää ottaa huomioon ja kääntää bounding boxia.
-                        Matrix4 outm = new Matrix4();
-                        Vector3 rot = -(obj.rotation + obj.fixRotation);
-                        if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
-                        {
-                            rot = rot * MathExt.PiOver180;
-                            Matrix4 mx = Matrix4.RotateX(rot.X);
-                            Matrix4 my = Matrix4.RotateY(rot.Y);
-                            Matrix4 mz = Matrix4.RotateZ(rot.Z);
-                            Matrix4 outm0;
-                            Matrix4.Mult(ref mx, ref my, out outm0);
-                            Matrix4.Mult(ref outm0, ref mz, out outm);
-                        }
-                        // tarkistetaan bounding boxin kulmat, yrittääkö läpäistä jonkun polyn
-                        for (int c = 0; c < 8; c++)
-                        {
-                            Vector3 v = obj.objectGroupBoundingVolume.Corner[c];
-//                            Vector3 v = obj.boundingVolume.Corner[c];
-
-                            Vector3 vout;
-                            if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
-                            {
-                                vout = MathExt.VectorMatrixMult(ref v, ref outm);
-                            }
-                            else vout = v;
-
-                            vout = vout + obj.position;
-                            Vector3 endv = vout + len;
-
-                            if (Intersection.CheckIntersection(ref vout, ref endv, (Object3D)objects[q]) == true)
-                            {
-                                return true;
-                            }
-                        }
-
-                    }
+                    Object3D o = (Object3D)cur[c];
+                    GL.LoadMatrix(o.Matrix);
+                    o.RenderFast();
                 }
-            }
-            return false;
-        }
-
-        public void RenderTree()
-        {
-            for (int q = 0; q < objects.Count; q++)
-            {
-                if (objects[q] is Object3D)
+                else if (cur[c] is AnimatedModel)
                 {
-                    Object3D o = (Object3D)objects[q];
-                    o.Render();
+                    AnimatedModel o = (AnimatedModel)cur[c];
+                    GL.LoadMatrix(o.Matrix);
+                    o.RenderFast();
                 }
-                else if (objects[q] is AnimatedModel)
+                else if (cur[c] is Object2D)
                 {
-                    AnimatedModel o = (AnimatedModel)objects[q];
-                    o.Render();
-                }
-                else if (objects[q] is Billboard)
-                {
-                    Billboard o = (Billboard)objects[q];
-                    o.Render();
-                }
-                else if (objects[q] is Object2D)
-                {
-                    Object2D o = (Object2D)objects[q];
+                    Object2D o = (Object2D)cur[c];
+                    GL.LoadMatrix(o.Matrix);
                     o.Render3D();
                 }
-                else if (objects[q] is Skybox)
+                else if (cur[c] is Billboard)
                 {
-                    Skybox o = (Skybox)objects[q];
+                    Billboard o = (Billboard)cur[c];
+                    GL.LoadMatrix(o.Matrix);
+                    o.Render();
+                }
+                else if (cur[c] is Particles)
+                {
+                    Particles o = (Particles)cur[c];
+                    GL.LoadMatrix(o.Matrix);
+                    o.Render();
+                }
+                else if (cur[c] is Skybox)
+                {
+                    Skybox o = (Skybox)cur[c];
+                    o.Render();
+                }
+                else if (cur[c] is Skydome)
+                {
+                    Skydome o = (Skydome)cur[c];
                     o.Render();
                 }
 
             }
+            GL.PopMatrix();
         }
+
     }
 }

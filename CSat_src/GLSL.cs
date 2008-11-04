@@ -96,7 +96,7 @@ namespace CSat
             vertexObject = GL.CreateShader(ShaderType.VertexShader);
             fragmentObject = GL.CreateShader(ShaderType.FragmentShader);
 
-            // Compile vertex shader
+            // Compile vertex Shader
             GL.ShaderSource(vertexObject, vs);
             GL.CompileShader(vertexObject);
             GL.GetShaderInfoLog(vertexObject, out info);
@@ -105,7 +105,7 @@ namespace CSat
 
             if (status_code != 1) throw new Exception("GLSL: " + info);
 
-            // Compile vertex shader
+            // Compile vertex Shader
             GL.ShaderSource(fragmentObject, fs);
             GL.CompileShader(fragmentObject);
             GL.GetShaderInfoLog(fragmentObject, out info);
@@ -129,13 +129,19 @@ namespace CSat
             programs.Add(name, this);
         }
 
+        /// <summary>
+        /// käytä shaderia
+        /// </summary>
         public void UseProgram()
         {
             if (_glslStatus!=1) return;
             GL.UseProgram(program);
         }
 
-        public void DontUseProgram()
+        /// <summary>
+        /// lopeta shaderin käyttäminen
+        /// </summary>
+        public void RemoveProgram()
         {
             if (_glslStatus != 1) return;
             GL.UseProgram(0);

@@ -64,7 +64,7 @@ namespace CSat
 
         /// <summary>
         /// glsl ohjelman nimi. objektille voidaan asettaa ohjelma editoimalla materiaalitiedostoa
-        /// ja laittaa haluamaan matskuun  map_Ka Shader_(shader-tiedoston nimi ilman p‰‰tett‰)
+        /// ja laittaa haluamaan matskuun  map_Ka Shader_(Shader-tiedoston nimi ilman p‰‰tett‰)
         /// </summary>
         public string shaderName = "";
 
@@ -227,7 +227,7 @@ namespace CSat
                     continue;
                 }
 
-                // Dissolve factor
+                // Dissolve factor (pistetty alphaks)
                 if (ln[0] == "d")
                 {
                     // alpha value

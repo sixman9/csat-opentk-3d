@@ -57,11 +57,11 @@ namespace CSat
 
         private int vertexID = 0, indexID = 0;
         private BufferUsageHint usage = BufferUsageHint.StaticDraw;
-        
+
         /// <summary>
         /// liput, mit‰ kaikkea k‰ytet‰‰n (normal, uv, color)
         /// </summary>
-        private short vertexFlags = 0; 
+        private short vertexFlags = 0;
         int numOfIndices = 0;
 
         public VBO() { }
@@ -111,16 +111,16 @@ namespace CSat
         /// <param name="obj"></param>
         public void DataToVBO(Vector3[] vertices, Vector3[] normals, Vector2[] uvs1, Vector2[] uvs2, Vector2[] uvs3, Vector4[] colors, ref Object3D obj)
         {
-            int[] ind = new int[obj.vertexInd.Count];
+            int[] ind = new int[obj.VertexInd.Count];
             Vector3[] vert = new Vector3[ind.Length];
             Vector3[] norm = new Vector3[ind.Length];
             Vector2[] uv = new Vector2[ind.Length];
 
             for (int q = 0; q < ind.Length; q++)
             {
-                vert[q] = vertices[(int)obj.vertexInd[q]];
-                norm[q] = normals[(int)obj.normalInd[q]];
-                uv[q] = uvs1[(int)obj.uvInd[q]];
+                vert[q] = vertices[(int)obj.VertexInd[q]];
+                norm[q] = normals[(int)obj.NormalInd[q]];
+                if (obj.UvInd.Count != 0) uv[q] = uvs1[(int)obj.UvInd[q]];
             }
 
             // index taulukko
@@ -216,7 +216,7 @@ namespace CSat
         /// <summary>
         /// tilat p‰‰lle. pit‰‰ kutsua ennen Renderi‰.
         /// </summary>
-         public void BeginRender()
+        public void BeginRender()
         {
             if (vertexID == 0 || indexID == 0)
             {
@@ -266,7 +266,7 @@ namespace CSat
         }
 
         /// <summary>
-         /// voi erikseen valita mit‰ texture unittei k‰ytet‰‰n jos multitexture
+        /// voi erikseen valita mit‰ texture unittei k‰ytet‰‰n jos multitexture
         /// </summary>
         /// <param name="t0"></param>
         /// <param name="t1"></param>

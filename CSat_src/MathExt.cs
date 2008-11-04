@@ -205,7 +205,7 @@ namespace CSat
             float cosOmega = DotProduct(ref qa, ref qb);
 
             // if negative dot, use -q1. two quaternions q and -q
-            // represent the same rotation, but may produce
+            // represent the same Rotation, but may produce
             // different slerp. we chose q or -q to rotate using
             // the acute angle.
             float q1w = qb.W;
@@ -226,7 +226,7 @@ namespace CSat
             // assert( cosOmega < 1.1f );
             if (cosOmega >= 1.1f)
             {
-                Log.WriteDebugLine("error: quatSlerp");
+                Log.WriteDebugLine("Quaternion error: Slerp");
             }
 
             // compute interpolation fraction, checking for quaternions
