@@ -20,6 +20,7 @@ using System.Drawing;
 using CSat;
 using CSLoader;
 using OpenTK;
+using OpenTK.Math;
 using OpenTK.Graphics;
 using OpenTK.Input;
 using OpenTK.Platform;
@@ -101,11 +102,18 @@ namespace CSatExamples
             if (Keyboard[Key.Escape])
                 Exit();
 
-            car.UpdatePath((float)e.Time);
-            cam.UpdatePath((float)e.Time*5);
+            car.UpdatePath((float)e.Time * 0.1f);
+            cam.UpdatePath((float)e.Time * 5);
 
-            // etsitään autolle oikea y
-            // todo
+
+            // laske autolle Y (reitti ei seuraa maaston korkeutta oikein niin lasketaan se sitten tässä).
+            car.Position.Y = 1000;
+            Vector3 tmpV = car.Position;
+            tmpV.Y = -10000;
+            if (Intersection.CheckIntersection(ref car.Position, ref tmpV, ref city))
+            {
+                car.Position.Y = Intersection.intersection.Y;
+            }
 
 
         }
@@ -124,7 +132,7 @@ namespace CSatExamples
             if (MainClass.UseFonts) printer.Draw("objs: " + Settings.NumOfObjects, font);
             printer.End();
             GL.MatrixMode(MatrixMode.Modelview);
-            
+
             SwapBuffers();
         }
 

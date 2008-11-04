@@ -30,8 +30,6 @@ using OpenTK.Math;
 
 namespace CSat
 {
-    public delegate void ParticleCallback(Particle part);
-
     class SortedList
     {
         public float len = 0;
@@ -41,6 +39,8 @@ namespace CSat
             len = l; part = p;
         }
     }
+
+    public delegate void ParticleCallback(Particle part);
 
     public class ParticleEngine
     {
@@ -109,7 +109,7 @@ namespace CSat
             GL.DepthMask(false); // ei kirjoiteta zbufferiin
             for (int q = 0; q < slist.Count; q++)
             {
-                Particle p = ((SortedList)slist[q]).part;
+                Particle p = slist[q].part;
                 GL.Color4(p.color);
                 Billboard.BillboardBegin(p.obj.Texture2D, p.pos.X, p.pos.Y, p.pos.Z, p.size);
                 if (p.callBack != null) p.callBack(p);

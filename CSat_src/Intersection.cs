@@ -29,8 +29,6 @@ email: matola@sci.fi
  * http://www.gamedev.net/reference/articles/article1026.asp
  * http://jgt.akpeters.com/papers/MollerTrumbore97/
  *
- *  TODO:
- *     ei toimi hyvin tällä hetkellä
  */
 
 using System;
@@ -42,7 +40,7 @@ namespace CSat
     public class Intersection
     {
         static float EPSILON = 0.00001f;
-        public Vector3 intersection;//todo
+        public static Vector3 intersection;
         public static float u, v, t;
 
         /// <summary>
@@ -52,7 +50,7 @@ namespace CSat
         /// <param name="end"></param>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static bool CheckIntersection(ref Vector3 start, ref Vector3 end, Object3D obj)
+        public static bool CheckIntersection(ref Vector3 start, ref Vector3 end, ref Object3D obj)
         {
             // jos objektia käännetty
             Matrix4 outm = new Matrix4();
@@ -100,8 +98,8 @@ namespace CSat
                 int i = e * 3;
                 // tarkista kolmio
                 Vector3 v1 = obj.Vertex[(int)obj.VertexInd[i + 0]];
-                Vector3 v3 = obj.Vertex[(int)obj.VertexInd[i + 1]];
-                Vector3 v2 = obj.Vertex[(int)obj.VertexInd[i + 2]];
+                Vector3 v2 = obj.Vertex[(int)obj.VertexInd[i + 1]];
+                Vector3 v3 = obj.Vertex[(int)obj.VertexInd[i + 2]];
 
                 Vector3 vout;
                 if (Math.Abs(rotation.X + rotation.Y + rotation.Z) > 0.001f)
@@ -177,21 +175,11 @@ namespace CSat
             t = Vector3.Dot(edge2, qvec);
             inv_det = 1.0f / det;
 
-            t *= inv_det;
             u *= inv_det;
             v *= inv_det;
+            t *= inv_det;
 
-            float x=u, y=v, z=t;
-
-            GL.Begin(BeginMode.Lines);
-            GL.Vertex3(x - 25, y, z);
-            GL.Vertex3(x+25, y, z);
-            GL.Vertex3(x, y-25, z);
-            GL.Vertex3(x, y+25, z);
-            GL.Vertex3(x, y, z-25);
-            GL.Vertex3(x, y, z+25);
-            GL.End();
-            Log.WriteDebugLine(" >>  " + x + " " + y + " " + z);
+            intersection = v0 + (edge1 * u) + (edge2 * v);
 
             return true;
         }
@@ -215,8 +203,10 @@ namespace CSat
                 if (world.Objects[q] is Object3D)
                 {
                     if (world.Objects[q] != doNotTestThis)
-                        if (Intersection.CheckIntersection(ref start, ref end, (Object3D)world.Objects[q]) == true) return true;
-
+                    {
+                        Object3D ob = (Object3D)world.Objects[q];
+                        if (Intersection.CheckIntersection(ref start, ref end, ref ob) == true) return true;
+                    }
                 }
 
             }
@@ -258,7 +248,8 @@ namespace CSat
                         // tarkistetaan bounding boxin kulmat, yrittääkö läpäistä jonkun polyn
                         for (int c = 0; c < 8; c++)
                         {
-                            Vector3 v = obj.MeshBoundingVolume.Corner[c];
+                            //Vector3 v = obj.MeshBoundingVolume.Corner[c];
+                            Vector3 v = obj.ObjBoundingVolume.Corner[c];
 
                             Vector3 vout;
                             if (Math.Abs(rot.X + rot.Y + rot.Z) > 0.001f)
@@ -270,7 +261,8 @@ namespace CSat
                             vout = vout + obj.Position;
                             Vector3 endv = vout + len;
 
-                            if (Intersection.CheckIntersection(ref vout, ref endv, (Object3D)world.Objects[q]) == true)
+                            Object3D ob = (Object3D)world.Objects[q];
+                            if (Intersection.CheckIntersection(ref vout, ref endv, ref ob) == true)
                             {
                                 return true;
                             }

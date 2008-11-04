@@ -78,6 +78,8 @@ namespace CSat
             return clone;
         }
 
+        public BoundingVolume ObjBoundingVolume = new BoundingVolume();
+
         Vector3[] vertex;
         Vector3[] normal;
         Vector2[] uv;
@@ -305,7 +307,7 @@ namespace CSat
                     if (Material.GetMaterial(child.MaterialName).dissolve < 1.0f) IsTranslucent = true;
 
                 }
-
+                CalcBoundingVolumes();
                 Log.WriteDebugLine("Object: " + parent.name + "  meshes: " + parent.objects.Count);
 
             }
@@ -362,6 +364,7 @@ namespace CSat
         {
             return (Object3D)objects[index];
         }
+
         /// <summary>
         /// ota haluttu objekti nimen perusteella.
         /// </summary>
@@ -376,9 +379,7 @@ namespace CSat
             }
             return null;
         }
-
-
-
+        
         /// <summary>
         /// voi erikseen valita mit‰ texture unitteja k‰ytet‰‰n jos multitexture
         /// </summary>
@@ -393,6 +394,14 @@ namespace CSat
                 if (Textured) child.vbo.UseTextureUnits(t0, t1, t2);
                 else child.vbo.UseTextureUnits(false, false, false);
             }
+        }
+
+        /// <summary>
+        /// laske objektin ja childien viem‰ alue
+        /// </summary>
+        public void CalcBoundingVolumes()
+        {
+            ObjBoundingVolume.CalcBounds(this);
         }
 
 

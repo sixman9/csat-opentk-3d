@@ -35,13 +35,25 @@ email: matola@sci.fi
 
 using System;
 using System.Collections;
-using OpenTK.Math;
+using System.Collections.Generic;
 using OpenTK.Graphics;
+using OpenTK.Math;
 
 namespace CSat
 {
     public class Group
     {
+        class SortedList
+        {
+            public float len = 0;
+            public object obj;
+            public SortedList(float l, object o)
+            {
+                len = l;
+                obj = o;
+            }
+        }
+
         string groupName = "group";
 
         public Group() { }
@@ -94,15 +106,21 @@ namespace CSat
         /// </summary>
         public void CalculateCoords()
         {
+            // skybox/skydome AINA ekana.
             for (int q = 0; q < objects.Count; q++)
-            {
-                GL.PushMatrix();
-
                 if (objects[q] is Skybox || objects[q] is Skydome) // nämä on aina näkyviä
                 {
                     visibleObjects.Add(objects[q]);
+                    break;
                 }
-                else if (objects[q] is Object3D)
+
+            for (int q = 0; q < objects.Count; q++)
+            {
+                if (objects[q] is Skybox || objects[q] is Skydome) continue;
+
+                GL.PushMatrix();
+
+                if (objects[q] is Object3D)
                 {
                     Object3D o = (Object3D)objects[q];
 
@@ -135,7 +153,7 @@ namespace CSat
                         visibleObjects.Add(objects[q]);
                     }
                 }
-                else if(objects[q] is Particles)
+                else if (objects[q] is Particles)
                 {
                     Particles o = (Particles)objects[q];
                     o.CalcAndGetMatrix(ref o.Matrix, Vector3.Zero);
@@ -145,19 +163,18 @@ namespace CSat
                 }
                 else // loput eli billboard, object2d, ..
                 {
+
+                    // TODO pitäis tsekata onko ruudulla: billboards, object2d
+
                     ObjectInfo o = (ObjectInfo)objects[q];
                     o.CalcAndGetMatrix(ref o.Matrix, Vector3.Zero);
                     if (o.objects.Count > 0) o.CalculateCoords();
                     visibleObjects.Add(objects[q]);
                 }
-                
-                // TODO piutäis tsekata onko ruudulla: billboards, object2d
 
                 GL.PopMatrix();
             }
 
-            // TODO
-            // translucentObjects  array:  pitää sortata kauimmaisesta lähimpään
         }
 
         /// <summary>
@@ -212,15 +229,27 @@ namespace CSat
         /// </summary>
         public void RenderArrays()
         {
+            // sortataan läpinäkyvät obut
+            List<SortedList> slist = new List<SortedList>();
+            for (int q = 0; q < translucentObjects.Count; q++)
+            {
+                ObjectInfo o = (ObjectInfo)translucentObjects[q];
+                Vector3 rp = new Vector3(o.Matrix[12], o.Matrix[13], o.Matrix[14]);
+                float len = (Camera.cam.Position - rp).LengthSquared;
+                slist.Add(new SortedList(len, translucentObjects[q]));
+
+            }
+            slist.Sort(delegate(SortedList z1, SortedList z2) { return z2.len.CompareTo(z1.len); });
+
             GL.PushMatrix();
             ArrayList cur = (ArrayList)visibleObjects.Clone();
             int c = 0;
-            for (int q = 0; q < visibleObjects.Count + translucentObjects.Count; q++, c++)
+            for (int q = 0; q < visibleObjects.Count + slist.Count; q++, c++)
             {
-                if (q == visibleObjects.Count) // listan vaihto, rendataan läpikuultavat
+                if (q >= visibleObjects.Count) // listan vaihto, rendataan läpikuultavat
                 {
-                    c = 0;
-                    cur = (ArrayList)translucentObjects.Clone(); 
+                    if (q == visibleObjects.Count) c = 0;
+                    cur[c] = slist[c];
                 }
 
                 // renderoi oikea objekti:
@@ -253,7 +282,8 @@ namespace CSat
                 {
                     Particles o = (Particles)cur[c];
                     GL.LoadMatrix(o.Matrix);
-                    o.Render();
+                    if (o.IsTranslucent) o.RenderSorted();
+                    else o.Render();
                 }
                 else if (cur[c] is Skybox)
                 {

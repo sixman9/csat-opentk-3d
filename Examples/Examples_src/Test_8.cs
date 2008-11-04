@@ -95,6 +95,8 @@ namespace CSatExamples
             obj[6] = new Object3D("Head/saw.obj2");
             obj[5].Add(obj[6]); // liitä terä käteen
             obj[1].Add(obj[5]); // ja käsi päähän
+            // koska obj[1]:stä ollaan muutettu lisäämällä siihen muuta kamaa, pitää bounding volume laskea uudelleen.
+            obj[1].CalcBoundingVolumes();
 
             // lisää kamat worldiin
             for (int q = 0; q < 4; q++) // ei addata 5 ja 6 koska ne on liitetty jo obj[1]:seen

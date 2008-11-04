@@ -14,6 +14,7 @@ using System.Drawing;
 using CSat;
 using CSLoader;
 using OpenTK;
+using OpenTK.Math;
 using OpenTK.Graphics;
 using OpenTK.Input;
 using OpenTK.Platform;
@@ -65,7 +66,7 @@ namespace CSatExamples
             uglyModel.FixRotation.X = -90; // ukko on "makaavassa" asennossa joten nostetaan se fixRotationilla pystyyn.
             uglyModel.FixRotation.Z = 180; // säätöä.. katse eteen päin!
 
-            car.Load("car.obj");
+            car.Load("car.obj", 7, 7, 7);
             world.Add(car);
 
             const float SC = 100;
@@ -76,7 +77,7 @@ namespace CSatExamples
             carPath.Load("carpath.obj", SC, SC, SC); // sama skaalaus ku cityssä
             car.FollowPath(ref carPath, true, true);
 
-            cam.Position.Y = 40;
+            cam.Position.Y = 60;
 
         }
 
@@ -95,10 +96,18 @@ namespace CSatExamples
             Util.Resize(e.Width, e.Height, 1.0, 1000);
         }
 
+        public void CheckMove(ref Vector3 orig, ref Vector3 newpos, ref Object3D obj)
+        {
+            if (Intersection.CheckIntersection(ref orig, ref newpos, ref obj))
+                newpos = orig;
+        }
+
         public override void OnUpdateFrame(UpdateFrameEventArgs e)
         {
             if (Keyboard[Key.Escape])
                 Exit();
+
+            Vector3 origCamPos = cam.Position; // ensin alkuperäinen talteen
 
             // ohjaus
             float spd = 1;
@@ -109,6 +118,11 @@ namespace CSatExamples
             if (Keyboard[Key.D]) cam.MoveXZ(0, spd);
             if (Keyboard[Key.R]) cam.Position.Y++;
             if (Keyboard[Key.F]) cam.Position.Y--;
+
+            // kameran päivityksen jälkeen tarkistetaan onko orig->uus liike mahdollinen (törmätäänkö johonkin?)
+            // ellei, palautetaan orig kameraan.
+            CheckMove(ref origCamPos, ref cam.Position, ref city);
+
             if (mouseButtons[(int)MouseButton.Left])
             {
                 cam.TurnXZ(Mouse.XDelta);
@@ -116,7 +130,27 @@ namespace CSatExamples
             }
             int tmp = Mouse.XDelta; tmp = Mouse.YDelta;
 
-            car.UpdatePath((float)e.Time);
+            // laske kameralle Y (luodaan vektori kamerasta kauas alaspäin ja otetaan leikkauspiste. sit leikkauspisteen y asetetaan kameraan)
+            Vector3 tmpV = Camera.cam.Position;
+            tmpV.Y = -10000;
+            if (Intersection.CheckIntersection(ref Camera.cam.Position, ref tmpV, ref city))
+            {
+                Camera.cam.Position.Y = Intersection.intersection.Y + 3;
+            }
+
+
+            // laske autolle Y (reitti ei seuraa maaston korkeutta oikein niin lasketaan se sitten tässä).
+            car.UpdatePath((float)e.Time * 0.1f);
+            car.Position.Y = 1000;
+            tmpV = car.Position;
+            tmpV.Y = -10000;
+            if (Intersection.CheckIntersection(ref car.Position, ref tmpV, ref city))
+            {
+                car.Position.Y = Intersection.intersection.Y;
+            }
+
+
+
         }
 
         public override void OnRenderFrame(RenderFrameEventArgs e)

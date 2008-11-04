@@ -134,7 +134,7 @@ namespace CSat
         /// </summary>
         public void UseProgram()
         {
-            if (_glslStatus!=1) return;
+            if (_glslStatus != 1) return;
             GL.UseProgram(program);
         }
 
