@@ -72,7 +72,7 @@ namespace CSat
         }
 
         /// <summary>
-        /// renderoi objekti
+        /// renderoi objekti, lasketaan myös paikka
         /// </summary>        
         public new void Render()
         {
@@ -81,18 +81,10 @@ namespace CSat
 
             GL.PushMatrix(); // kameramatrix talteen. seuraavat laskut frustum cullingia varten
             GL.LoadIdentity();
-            CalcAndGetMatrix(ref WMatrix, ObjCenter); // "root"
-            CalculateWorldCoords(); // lasketaan objektien paikat
+            CalculateWorldCoords(this);
             GL.PopMatrix(); // kameraan takas
 
-            CalcAndGetMatrix(ref Matrix, Vector3.Zero); // "root"
-            CalculateCoords(); // lasketaan objektien paikat kamerasta
-
-            // tarkista onko objekti näkökentässä
-            if (Frustum.ObjectInFrustum(WMatrix[12], WMatrix[13], WMatrix[14], GetBoundingVolume()))
-            {
-                visibleObjects.Add(this);
-            }
+            CalculateCoords(this);
 
             RenderArrays();
         }

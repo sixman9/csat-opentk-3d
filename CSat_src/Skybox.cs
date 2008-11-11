@@ -27,7 +27,7 @@ using OpenTK.Graphics;
 
 namespace CSat
 {
-    public class Skybox
+    public class Skybox : ObjectInfo
     {
         Object3D skybox = new Object3D();
 
@@ -79,7 +79,7 @@ namespace CSat
         /// <summary>
         /// rendaa taivas
         /// </summary>
-        public void Render()
+        public new void Render()
         {
             GL.PushMatrix();
 

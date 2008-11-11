@@ -134,7 +134,6 @@ namespace CSat
         void CalcPlanes()
         {
             // todo laske 6 tasonormaalia
-            //Util.CalcPlane(
         }
 
         void SetCorners()

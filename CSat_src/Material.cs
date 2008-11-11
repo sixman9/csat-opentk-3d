@@ -151,7 +151,7 @@ namespace CSat
                     if (tmpmat != null && materials.Contains(tmpmat.name) == false) materials.Add(tmpmat.name, tmpmat);
                     tmpmat = new Material();
                     tmpmat.name = ln[1];
-                    Log.WriteDebugLine("MaterialName: " + tmpmat.name);
+                    Log.WriteDebugLine("MaterialName: " + tmpmat.name, 2);
                     continue;
                 }
 

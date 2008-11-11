@@ -54,6 +54,12 @@ namespace CSat
             Console.ReadKey(true);
         }
 
+        public static void WriteDebugLine(string str, int warningMode)
+        {
+            if (warningMode <= Settings.WarningMode)
+                WriteDebugLine(str);
+        }
+
         public static void WriteDebugLine(string str)
         {
             // kirjoitetaanko konsoliin virheet

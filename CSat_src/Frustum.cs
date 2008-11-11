@@ -53,7 +53,7 @@ namespace CSat
 
         public static void CalculateFrustum()
         {
-            // ota projection ja modelview matriisit
+            // ota projection ja Modelview matriisit
             GL.GetFloat(GetPName.ProjectionMatrix, Util.ProjMatrix);
             GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
 

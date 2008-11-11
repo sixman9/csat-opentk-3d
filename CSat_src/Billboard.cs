@@ -42,7 +42,7 @@ namespace CSat
 
         public static float AlphaMin = 0.1f;
 
-        static float[] modelview = new float[16];
+        static float[] Modelview = new float[16];
         public static void BillboardBegin(Texture tex, float x, float y, float z, float size)
         {
             GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.EnableBit | AttribMask.PolygonBit);
@@ -59,17 +59,17 @@ namespace CSat
             GL.PushMatrix();
             GL.Translate(x, y, z);
 
-            GL.GetFloat(GetPName.ModelviewMatrix, modelview);
+            GL.GetFloat(GetPName.ModelviewMatrix, Modelview);
 
             for (i = 0; i < 3; i++)
             {
                 for (j = 0; j < 3; j++)
                 {
-                    if (i == j) modelview[i * 4 + j] = 1;
-                    else modelview[i * 4 + j] = 0;
+                    if (i == j) Modelview[i * 4 + j] = 1;
+                    else Modelview[i * 4 + j] = 0;
                 }
             }
-            GL.LoadMatrix(modelview);
+            GL.LoadMatrix(Modelview);
             GL.Scale(size, size, size);
         }
 
@@ -86,7 +86,7 @@ namespace CSat
 
         public new void Render()
         {
-            RenderBillboard(Position.X, Position.Y, Position.Z, View.X);
+            RenderBillboard(Position.X, Position.Y, Position.Z, Front.X);
         }
 
         public void RenderBillboard(float x, float y, float z, float size)

@@ -22,7 +22,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 email: matola@sci.fi
 */
 #endregion
-//#define MOREDEBUG
 
 using System;
 using OpenTK.Graphics;
@@ -86,9 +85,7 @@ namespace CSat
             GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indSize * sizeof(int)), null, usage);
 
             numOfIndices = indSize;
-#if MOREDEBUG
-            Log.WriteDebugLine("AllocVBO: (verts:" + vertSize + " indices:" + indSize + ")");
-#endif
+            Log.WriteDebugLine("AllocVBO: (verts:" + vertSize + " indices:" + indSize + ")", 2);
         }
 
         public void Dispose()
@@ -106,10 +103,9 @@ namespace CSat
         /// <param name="normals"></param>
         /// <param name="uvs1"></param>
         /// <param name="uvs2"></param>
-        /// <param name="uvs3"></param>
         /// <param name="colors"></param>
         /// <param name="obj"></param>
-        public void DataToVBO(Vector3[] vertices, Vector3[] normals, Vector2[] uvs1, Vector2[] uvs2, Vector2[] uvs3, Vector4[] colors, ref Object3D obj)
+        public void DataToVBO(Vector3[] vertices, Vector3[] normals, Vector2[] uvs1, Vector2[] uvs2, Vector4[] colors, ref Object3D obj)
         {
             int[] ind = new int[obj.VertexInd.Count];
             Vector3[] vert = new Vector3[ind.Length];
@@ -126,7 +122,7 @@ namespace CSat
             // index taulukko
             for (int q = 0; q < ind.Length; q++) ind[q] = q;
 
-            DataToVBO(vert, ind, norm, uv, null, null, null);
+            DataToVBO(vert, ind, norm, uv, null, null);
         }
 
         /// <summary>
@@ -139,7 +135,7 @@ namespace CSat
         /// <param name="uvs2"></param>
         /// <param name="temp"></param>
         /// <param name="colors"></param>
-        public void DataToVBO(Vector3[] vertices, int[] indices, Vector3[] normals, Vector2[] uvs1, Vector2[] uvs2, Vector2[] temp, Vector4[] colors)
+        public void DataToVBO(Vector3[] vertices, int[] indices, Vector3[] normals, Vector2[] uvs1, Vector2[] uvs2, Vector4[] colors)
         {
             Vertex[] verts = new Vertex[vertices.Length];
 

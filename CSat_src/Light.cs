@@ -49,23 +49,22 @@ namespace CSat
         /// <param name="lightNum">valon paikkanumero, arvo saa olla 0-7 (max 8 valoa päällä)</param>
         public static void Add(Light light, int lightNum)
         {
-            if (lightNum >= 8)
-                throw new Exception("Light: (lightNum>=8)");
+            if (lightNum >= 8) throw new Exception("Light: (lightNum>=8)");
             lights.Add(light);
             light.UpdateColor();
             light.SetLight(true);
             light.lightNum = lightNum;
-            Log.WriteDebugLine("Light added..");
+            Log.WriteDebugLine("Light added..", 2);
         }
         public static void Dispose(Light light)
         {
             lights.Remove(light);
-            Log.WriteDebugLine("Light removed..");
+            Log.WriteDebugLine("Light removed..", 2);
         }
         public static void DisposeAll()
         {
             lights.Clear();
-            Log.WriteDebugLine("All lights removed..");
+            Log.WriteDebugLine("All lights removed..", 2);
         }
 
         /// <summary>
@@ -105,7 +104,7 @@ namespace CSat
         public void UpdateLight()
         {
             if (enabled == false) return;
-            GL.Lightv(LightName.Light0 + lightNum, LightParameter.Position, new float[] { Position.X, Position.Y, Position.Z,1 });
+            GL.Lightv(LightName.Light0 + lightNum, LightParameter.Position, new float[] { Position.X, Position.Y, Position.Z, 1 });
         }
 
         /// <summary>

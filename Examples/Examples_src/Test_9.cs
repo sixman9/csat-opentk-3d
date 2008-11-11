@@ -101,7 +101,7 @@ namespace CSatExamples
         #endregion
 
         /// <summary>
-        /// Called when your window is resized. Set your viewport here. It is also
+        /// Called when your window is resized. Set your Frontport here. It is also
         /// a good place to set Up your projection Matrix (which probably changes
         /// along when the aspect ratio of your window).
         /// </summary>

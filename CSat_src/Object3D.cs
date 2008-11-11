@@ -232,7 +232,7 @@ namespace CSat
                             // otetaan meshin paikka talteen
                             string[] spos = lines[q + 1].Split(' ');
                             child.Position = new Vector3(Util.GetFloat(spos[1]), Util.GetFloat(spos[2]), Util.GetFloat(spos[3]));
-                            Log.WriteDebugLine(child.name + " POS: " + child.Position.ToString());
+                            Log.WriteDebugLine(child.name + " POS: " + child.Position.ToString(), 2);
                         }
 
                         continue;
@@ -291,7 +291,7 @@ namespace CSat
                 {
                     child = (Object3D)parent.objects[q];
                     child.vbo = new VBO();
-                    child.vbo.DataToVBO(parent.vertex, parent.normal, parent.uv, null, null, null, ref child);
+                    child.vbo.DataToVBO(parent.vertex, parent.normal, parent.uv, null, null, ref child);
 
                     child.MeshBoundingVolume.CalcMeshBounds(child);
 
@@ -308,10 +308,10 @@ namespace CSat
 
                 }
                 CalcBoundingVolumes();
-                Log.WriteDebugLine("Object: " + parent.name + "  meshes: " + parent.objects.Count);
+                Log.WriteDebugLine("Object: " + parent.name + "  meshes: " + parent.objects.Count, 1);
 
             }
-            else Log.WriteDebugLine("Path: " + parent.name);
+            else Log.WriteDebugLine("Path: " + parent.name, 1);
 
         }
 
@@ -325,12 +325,10 @@ namespace CSat
 
             GL.PushMatrix(); // kameramatrix talteen. seuraavat laskut frustum cullingia varten
             GL.LoadIdentity();
-            CalcAndGetMatrix(ref WMatrix, ObjCenter); // "root"
-            CalculateWorldCoords(); // lasketaan objektien paikat
+            CalculateWorldCoords(this);
             GL.PopMatrix(); // kameraan takas
 
-            CalcAndGetMatrix(ref Matrix, Vector3.Zero); // "root"
-            CalculateCoords(); // lasketaan objektien paikat kamerasta
+            CalculateCoords(this);
 
             RenderArrays();
         }
@@ -340,6 +338,12 @@ namespace CSat
         /// </summary>
         public void RenderFast()
         {
+            if (lookAtNextPoint)
+            {
+                GL.LoadMatrix(Matrix);
+// fix this --todo
+            }
+
             if (vbo != null)
             {
                 Material.SetMaterial(MaterialName);
@@ -379,7 +383,7 @@ namespace CSat
             }
             return null;
         }
-        
+
         /// <summary>
         /// voi erikseen valita mit‰ texture unitteja k‰ytet‰‰n jos multitexture
         /// </summary>

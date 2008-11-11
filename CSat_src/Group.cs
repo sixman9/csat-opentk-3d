@@ -81,100 +81,33 @@ namespace CSat
         /// </summary>
         static protected ArrayList translucentObjects = new ArrayList();
 
-        /// <summary>
-        /// laske objekteille world coordinates (WMatrix)
-        /// </summary>
-        public void CalculateWorldCoords()
+        public void Add(Object obj)
         {
-            for (int q = 0; q < objects.Count; q++)
-            {
-                if (objects[q] is Skybox || objects[q] is Skydome) continue;
-
-                GL.PushMatrix();
-
-                ObjectInfo o = (ObjectInfo)objects[q];
-                o.CalcAndGetMatrix(ref o.WMatrix, o.ObjCenter);
-                if (o.objects.Count > 0) o.CalculateWorldCoords();
-
-                GL.PopMatrix();
-            }
+            objects.Add(obj);
+            Log.WriteDebugLine(obj + " added to " + groupName + ".", 2);
         }
 
-        /// <summary>
-        /// laske objekteille paikat (Matrix).
-        /// ota listoihin näkyvät obut.
-        /// </summary>
-        public void CalculateCoords()
+        public void Remove(Object obj)
         {
-            // skybox/skydome AINA ekana.
-            for (int q = 0; q < objects.Count; q++)
-                if (objects[q] is Skybox || objects[q] is Skydome) // nämä on aina näkyviä
-                {
-                    visibleObjects.Add(objects[q]);
-                    break;
-                }
+            objects.Remove(obj);
+            Log.WriteDebugLine(obj + " removed from " + groupName + ".", 2);
+        }
 
+        public void Remove(string name)
+        {
+            objects.Remove(SearchObject(name));
+            Log.WriteDebugLine(name + " removed from " + groupName + ".", 2);
+        }
+
+        public Object SearchObject(string name)
+        {
             for (int q = 0; q < objects.Count; q++)
             {
-                if (objects[q] is Skybox || objects[q] is Skydome) continue;
-
-                GL.PushMatrix();
-
-                if (objects[q] is Object3D)
-                {
-                    Object3D o = (Object3D)objects[q];
-
-                    o.CalcAndGetMatrix(ref o.Matrix, Vector3.Zero);
-                    if (o.objects.Count > 0) o.CalculateCoords();
-
-                    // tarkista onko objekti näkökentässä
-                    if (Frustum.ObjectInFrustum(o.WMatrix[12], o.WMatrix[13], o.WMatrix[14], o.MeshBoundingVolume))
-                    {
-                        if (o.IsTranslucent == true)
-                        {
-                            translucentObjects.Add(objects[q]);
-                        }
-                        else
-                        {
-                            visibleObjects.Add(objects[q]);
-                        }
-                    }
-                }
-                else if (objects[q] is AnimatedModel)
-                {
-                    AnimatedModel o = (AnimatedModel)objects[q];
-
-                    o.CalcAndGetMatrix(ref o.Matrix, Vector3.Zero);
-                    if (o.objects.Count > 0) o.CalculateCoords();
-
-                    // tarkista onko objekti näkökentässä
-                    if (Frustum.ObjectInFrustum(o.WMatrix[12], o.WMatrix[13], o.WMatrix[14], o.GetBoundingVolume()))
-                    {
-                        visibleObjects.Add(objects[q]);
-                    }
-                }
-                else if (objects[q] is Particles)
-                {
-                    Particles o = (Particles)objects[q];
-                    o.CalcAndGetMatrix(ref o.Matrix, Vector3.Zero);
-                    if (o.objects.Count > 0) o.CalculateCoords();
-                    if (o.IsTranslucent == false) visibleObjects.Add(objects[q]);
-                    else translucentObjects.Add(objects[q]);
-                }
-                else // loput eli billboard, object2d, ..
-                {
-
-                    // TODO pitäis tsekata onko ruudulla: billboards, object2d
-
-                    ObjectInfo o = (ObjectInfo)objects[q];
-                    o.CalcAndGetMatrix(ref o.Matrix, Vector3.Zero);
-                    if (o.objects.Count > 0) o.CalculateCoords();
-                    visibleObjects.Add(objects[q]);
-                }
-
-                GL.PopMatrix();
+                Object3D o = (Object3D)objects[q];
+                if (o.Name == name)
+                    return o;
             }
-
+            return null;
         }
 
         /// <summary>
@@ -187,41 +120,12 @@ namespace CSat
 
             GL.PushMatrix(); // kameramatrix talteen
             GL.LoadIdentity();
-            CalculateWorldCoords();
+            for (int q = 0; q < objects.Count; q++) ((ObjectInfo)objects[q]).CalculateWorldCoords(objects[q]);
             GL.PopMatrix(); // kameraan takas
 
-            CalculateCoords();
+            for (int q = 0; q < objects.Count; q++) ((ObjectInfo)objects[q]).CalculateCoords(objects[q]);
 
             RenderArrays();
-        }
-
-        public void Add(Object obj)
-        {
-            objects.Add(obj);
-            Log.WriteDebugLine(obj + " added to " + groupName + ".");
-        }
-
-        public void Remove(Object obj)
-        {
-            objects.Remove(obj);
-            Log.WriteDebugLine(obj + " removed from " + groupName + ".");
-        }
-
-        public void Remove(string name)
-        {
-            objects.Remove(SearchObject(name));
-            Log.WriteDebugLine(name + " removed from " + groupName + ".");
-        }
-
-        public Object SearchObject(string name)
-        {
-            for (int q = 0; q < objects.Count; q++)
-            {
-                Object3D o = (Object3D)objects[q];
-                if (o.Name == name)
-                    return o;
-            }
-            return null;
         }
 
         /// <summary>

@@ -108,9 +108,9 @@ namespace CSatExamples
             // modelia ei voi liittää worldiin (tai voi mut se ei renderoidu) joten käytetään
             // animatedmodelia johon modelin tiedot ja se lisätään maailmaan.
             uglyModel = new AnimatedModel((IModel)model);
-            world.Add(uglyModel);
             uglyModel.Position.X = -4;
             uglyModel.FixRotation.X = -90; // ukko on "makaavassa" asennossa joten nostetaan se fixRotationilla pystyyn.
+            world.Add(uglyModel);
 
             obj[4] = new Object3D("scene1.obj", 20, 20, 20);
             obj[4].Position.X = 10;
@@ -140,7 +140,7 @@ namespace CSatExamples
         #endregion
 
         /// <summary>
-        /// Called when your window is resized. Set your viewport here. It is also
+        /// Called when your window is resized. Set your Frontport here. It is also
         /// a good place to set Up your projection Matrix (which probably changes
         /// along when the aspect ratio of your window).
         /// </summary>
@@ -204,10 +204,10 @@ namespace CSatExamples
 
             // TODO FIX---
             // prob: seuraavat ei toimi vielä, eli vaikka pyörivä terä on kädessä, se ei liiku kun kättä liikuttaa.
-            //obj[5].GetObject(0).Rotation.Z = obj[1].Rotation.Y / 2;
-            //obj[5].GetObject(3).Rotation.Z = -obj[1].Rotation.Y / 2;
-            //obj[5].Rotation.Z = obj[1].Rotation.Y / 5; // tällä tavalla pysyy kädessä mutta pyöritys menee pöydän 0 pisteen ympäri.
-            // TODO FIX---
+            /*obj[5].GetObject(0).Rotation.Z = obj[1].Rotation.Y / 2;
+            obj[5].GetObject(3).Rotation.Z = -obj[1].Rotation.Y / 2;
+            obj[5].Rotation.Z = obj[1].Rotation.Y / 5; // tällä tavalla pysyy kädessä mutta pyöritys menee pöydän 0 pisteen ympäri.
+             */
         }
 
         /// <summary>

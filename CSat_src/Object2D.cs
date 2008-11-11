@@ -93,11 +93,11 @@ namespace CSat
 			};
 
             vbo = new VBO();
-            vbo.DataToVBO(vs, ind, null, uv, null, null, null);
+            vbo.DataToVBO(vs, ind, null, uv, null, null);
 
             // scale
-            View.X = 1;
-            View.Y = 1;
+            Front.X = 1;
+            Front.Y = 1;
 
         }
 
@@ -119,8 +119,8 @@ namespace CSat
             Position.X = x;
             Position.Y = y;
             Rotation.Z = rotate;
-            View.X = sx;
-            View.Y = sy;
+            Front.X = sx;
+            Front.Y = sy;
         }
         public void Set(float x, float y, float z, float rx, float ry, float rz, float sx, float sy)
         {
@@ -130,8 +130,8 @@ namespace CSat
             Rotation.X = rx;
             Rotation.Y = ry;
             Rotation.Z = rz;
-            View.X = sx;
-            View.Y = sy;
+            Front.X = sx;
+            Front.Y = sy;
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace CSat
         {
             Render3D(Position.X, Position.Y, Position.Z,
                 Rotation.X, Rotation.Y, Rotation.Z,
-                View.X, View.Y);
+                Front.X, Front.Y);
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace CSat
 
             GL.Translate(Position.X, Util.ScreeenHeight - Position.Y, 0);
             GL.Rotate(Rotation.Z, 0, 0, 1);
-            GL.Scale(View.X, View.Y, 1);
+            GL.Scale(Front.X, Front.Y, 1);
 
             GL.PushAttrib(AttribMask.ColorBufferBit | AttribMask.EnableBit | AttribMask.PolygonBit);
             GL.Disable(EnableCap.Lighting);

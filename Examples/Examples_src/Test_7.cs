@@ -57,8 +57,8 @@ namespace CSatExamples
 
             explosion.SetObject(partObj[1], true); // läpinäkyvä
 
-            cam.Position.Z = 100;
-            cam.Position.Y = 2;
+            cam.Position.Z = 200;
+            cam.Position.Y = 50;
 
             Mouse.ButtonDown += MouseButtonDown;
             Mouse.ButtonUp += MouseButtonUp;
@@ -85,7 +85,7 @@ namespace CSatExamples
         #endregion
 
         /// <summary>
-        /// Called when your window is resized. Set your viewport here. It is also
+        /// Called when your window is resized. Set your Frontport here. It is also
         /// a good place to set Up your projection Matrix (which probably changes
         /// along when the aspect ratio of your window).
         /// </summary>
@@ -150,14 +150,13 @@ namespace CSatExamples
 
             Texture.ActiveUnit(0);
 
-            bfont.Write3D(1, 0, "\nNew line..\n   stupid test.");
-            bfont.Write3D(10, 10, "Using coordinates,\nblaa bluu böä.");
-            bfont.Write3D(5, -10, "The end.");
+            bfont.Write3D(1, 0, "\nNew line..\n-stupid test-");
+            bfont.Write3D(10, 10, "Using coordinates,\nblaa bluu blöä.");
+            bfont.Write3D(5, -20, "The end.");
 
             // 2d jutut kantsii pistää aina viimeisenä
-
             Util.Set2DMode();
-            bfont.Write(21, textPos += (float)e.Time * 100, "First BitmapFont test!");
+            bfont.Write(21, textPos += (float)e.Time * 100, "First BitmapFont test!!\n-------========-------");
             Util.Set3DMode();
 
             SwapBuffers();

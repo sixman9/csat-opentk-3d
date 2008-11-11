@@ -27,9 +27,6 @@ email: matola@sci.fi
  * texturen lataus.
  * 
  */
-
-//#define MOREDEBUG
-
 using System;
 using System.Collections;
 using OpenTK.Graphics;
@@ -50,11 +47,7 @@ namespace CSat
         {
             if (textureID != 0)
             {
-
-#if MOREDEBUG
-                Log.WriteDebugLine(" Dispose:" + textureName + " " + textureCount);
-#endif
-
+                Log.WriteDebugLine("Disposed:" + textureName + " " + textureCount, 3);
                 if (textureCount == 0) // ei muita käyttäjiä, saa poistaa
                 {
                     GL.DeleteTextures(1, ref textureID);
@@ -192,16 +185,14 @@ namespace CSat
             // jos texture on jo ladattu, ei ladata uudelleen
             if ((Texture)textures[fileName] != null)
             {
-#if MOREDEBUG
-                Log.WriteDebugLine("### Found: " + fileName);
-#endif
+                Log.WriteDebugLine(" Found: " + fileName, 3);
                 ((Texture)textures[fileName]).textureCount++; // monta muuta käyttöä samalla texturella
                 return (Texture)textures[fileName];
             }
             Texture t = new Texture();
 
             t.textureName = fileName;
-            Log.WriteDebugLine("Texture: " + t.textureName);
+            Log.WriteDebugLine("Texture: " + t.textureName, 2);
 
             if (useTexDir) fileName = Settings.TextureDir + fileName;
 

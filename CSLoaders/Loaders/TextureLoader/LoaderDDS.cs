@@ -224,8 +224,8 @@ namespace TextureLoaders
 
                 // start by checking if all forced flags are present. Flags indicate valid fields, but aren't written by every tool .....
                 if (idstring != "DDS " || // magic key
-                     dwSize != 124 || // constant size of struct, never reused
-                     pfSize != 32 || // constant size of struct, never reused
+                     dwSize != 124 || // constant Size of struct, never reused
+                     pfSize != 32 || // constant Size of struct, never reused
                      !CheckFlag(dwFlags, (uint)eDDSD.CAPS) ||        // must know it's caps
                      !CheckFlag(dwFlags, (uint)eDDSD.PIXELFORMAT) || // must know it's format
                      !CheckFlag(dwCaps1, (uint)eDDSCAPS.TEXTURE)     // must be a Texture

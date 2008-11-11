@@ -60,12 +60,8 @@ namespace CSat
         public void Update6DOF()
         {
             Camera.cam = this;
-
             GL.LoadIdentity();
-
-            Vector3 vp; // View point
-            vp = View + Position;
-            Glu.LookAt(Position, vp, Up);
+            Glu.LookAt(Position, Position + Front, Up);
         }
 
         /// <summary>

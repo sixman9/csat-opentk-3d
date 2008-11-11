@@ -34,7 +34,7 @@ namespace CSat
 
         public static int NumOfObjects = 0;
         public static bool WriteDebug = true;
-
+        public static int WarningMode = 1;
     }
 
 }

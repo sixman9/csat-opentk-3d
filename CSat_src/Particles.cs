@@ -229,7 +229,7 @@ namespace CSat
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
 
             int i, j;
-            float[] modelview = new float[16];
+            float[] Modelview = new float[16];
 
             GL.PushMatrix();
             GL.Translate(Position);
@@ -240,18 +240,18 @@ namespace CSat
                 Particle p = (Particle)parts[q];
                 GL.Color4(p.color);
                 GL.Translate(p.pos.X, p.pos.Y, p.pos.Z);
-                GL.GetFloat(GetPName.ModelviewMatrix, modelview);
+                GL.GetFloat(GetPName.ModelviewMatrix, Modelview);
 
                 for (i = 0; i < 3; i++)
                 {
                     for (j = 0; j < 3; j++)
                     {
-                        if (i == j) modelview[i * 4 + j] = 1;
-                        else modelview[i * 4 + j] = 0;
+                        if (i == j) Modelview[i * 4 + j] = 1;
+                        else Modelview[i * 4 + j] = 0;
                     }
                 }
 
-                GL.LoadMatrix(modelview);
+                GL.LoadMatrix(Modelview);
                 GL.Scale(size, size, size);
 
                 Billboard.BillboardRender(obj);

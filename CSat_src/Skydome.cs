@@ -27,7 +27,7 @@ using OpenTK.Graphics;
 
 namespace CSat
 {
-    public class Skydome
+    public class Skydome : ObjectInfo
     {
         Object3D skydome = new Object3D();
 
@@ -67,7 +67,7 @@ namespace CSat
         /// <summary>
         /// rendaa taivas
         /// </summary>
-        public void Render()
+        public new void Render()
         {
             GL.PushMatrix();
 

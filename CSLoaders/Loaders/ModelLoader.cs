@@ -325,7 +325,7 @@ namespace CSLoader
                 model[q].vbo.DataToVBO(v, ind);
             }
 
-            CSat.Log.WriteDebugLine("Model: " + name);
+            CSat.Log.WriteDebugLine("Model: " + name, 1);
             CSat.Material material = new CSat.Material();
         }
 
@@ -804,7 +804,9 @@ namespace CSLoader
             boundingVolume.Mode = CSat.BoundingVolume.Sphere;
             boundingVolume.CreateBoundingBox(min, max);
 
-            CSat.Log.WriteDebugLine("Animation: " + fileName);
+            Update(0, ref anim);
+
+            CSat.Log.WriteDebugLine("Animation: " + fileName, 1);
         }
 
         public struct Buffer

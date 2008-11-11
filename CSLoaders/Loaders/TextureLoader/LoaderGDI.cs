@@ -96,14 +96,14 @@ namespace TextureLoaders
 
                 // tarkista onko texturen koko oikeanlainen (64, 128, 256, jne)
                 int test = 1;
-                bool wOK=false, hOK=false;
+                bool wOK = false, hOK = false;
                 for (int q = 0; q < 100; q++)
                 {
                     test *= 2;
                     if (test == Data.Width) wOK = true;
                     if (test == Data.Height) hOK = true;
                 }
-                if(wOK==false || hOK==false) throw new Exception("Use power of 2 size texture maps only!");
+                if (wOK == false || hOK == false) throw new Exception("Use power of 2 size texture maps only!");
                 // ---
 
                 if (Data.Height > 1)
