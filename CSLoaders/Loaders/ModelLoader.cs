@@ -64,6 +64,17 @@ namespace CSLoader
         {
             return boundingVolume;
         }
+        public int GetNumOfTriangles()
+        {
+            return numOfFaces;
+        }
+        public void GetTriangle(int triNum, ref Vector3[] tri)
+        {
+            triNum *= 3;
+            tri[0] = new Vector3(finalVert[triNum]);
+            tri[1] = new Vector3(finalVert[triNum + 1]);
+            tri[2] = new Vector3(finalVert[triNum + 2]);
+        }
 
 
         private struct MD5Vertex

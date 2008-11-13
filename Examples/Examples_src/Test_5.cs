@@ -189,7 +189,7 @@ namespace CSatExamples
             // Tsekkaa törmätäänkö:
             Vector3 oldPos = car.Position; // alkup paikka talteen
             car.MoveXZ(speed * carinfo.speed); // laske uusi paikka
-            if (Intersection.CheckCollisionBB(ref world, oldPos, car.Position, ref car) == true) // törmäys
+            if (Intersection.CheckCollisionBB_Poly(ref world, ref oldPos, ref car.Position, ref car) == true) // törmäys
             {
                 car.Position = oldPos; // palauta vanha paikka
                 carinfo.speed = 0;
@@ -199,7 +199,7 @@ namespace CSatExamples
                 // auto 2.
                 oldPos = car2.Position; // alkup paikka talteen
                 car2.MoveXZ(-speed * 2); // laske uusi paikka
-                if (Intersection.CheckCollisionBB(ref world, oldPos, car2.Position, ref car2) == true) // törmäys
+                if (Intersection.CheckCollisionBB_Poly(ref world, ref oldPos, ref car2.Position, ref car2) == true) // törmäys
                 {
                     car2.Position = oldPos; // palauta vanha paikka
                 }

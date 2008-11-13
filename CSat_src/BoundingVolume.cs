@@ -131,9 +131,22 @@ namespace CSat
             CalcPlanes();
         }
 
+        /// <summary>
+        /// laske tasonormaalit bounding boxille
+        /// </summary>
         void CalcPlanes()
         {
-            // todo laske 6 tasonormaalia
+            // laske 6 tasonormaalia
+            MathExt.CalcPlane(ref corner[0], ref corner[1], ref corner[2], out planes[0]); // min z
+            MathExt.CalcPlane(ref corner[4], ref corner[5], ref corner[6], out planes[1]); // max z
+
+            MathExt.CalcPlane(ref corner[0], ref corner[3], ref corner[5], out planes[2]); // min x
+            MathExt.CalcPlane(ref corner[4], ref corner[1], ref corner[7], out planes[3]); // max x
+
+            MathExt.CalcPlane(ref corner[0], ref corner[1], ref corner[7], out planes[4]); // min y
+            MathExt.CalcPlane(ref corner[4], ref corner[3], ref corner[5], out planes[5]); // max y
+
+            // todo tarkista
         }
 
         void SetCorners()

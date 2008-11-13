@@ -23,6 +23,7 @@ email: matola@sci.fi
 */
 #endregion
 
+using System;
 using OpenTK.Graphics;
 using OpenTK.Math;
 
@@ -48,7 +49,7 @@ namespace CSat
         public void CalcAndGetMatrix(ref float[] matrix, Vector3 pos)
         {
             // liikuta haluttuun kohtaan
-            GL.Translate(Position.X + pos.X, Position.Y + pos.Y, Position.Z + pos.Z);
+            GL.Translate(Position + pos);
             GL.Rotate(Rotation.X, 1, 0, 0);
             GL.Rotate(Rotation.Y, 0, 1, 0);
             GL.Rotate(Rotation.Z, 0, 0, 1);
@@ -72,18 +73,18 @@ namespace CSat
                 CalcAndGetMatrix(ref WMatrix, ObjCenter);
             }
 
-            for (int q = 0; q < objects.Count; q++)
+            for (int q = 0; q < Objects.Count; q++)
             {
                 GL.PushMatrix();
-                ObjectInfo o = (ObjectInfo)objects[q];
+                ObjectInfo o = (ObjectInfo)Objects[q];
                 o.CalcAndGetMatrix(ref o.WMatrix, o.ObjCenter);
-                if (o.objects.Count > 0) o.CalculateWorldCoords(objects[q]);
+                if (o.Objects.Count > 0) o.CalculateWorldCoords(Objects[q]);
                 GL.PopMatrix();
             }
             GL.PopMatrix();
         }
 
-        void CheckObject(object obj)
+        void CheckObject(Object obj)
         {
             if (obj is Object3D)
             {
@@ -117,9 +118,9 @@ namespace CSat
                 if (o.IsTranslucent == false) visibleObjects.Add(obj);
                 else translucentObjects.Add(obj);
             }
-            else // loput eli billboard, object2d, ..
+            else // loput eli billboard, Object2d, ..
             {
-                // TODO pitäis tsekata onko ruudulla: billboards, object2d
+                // TODO pitäis tsekata onko ruudulla: billboards, Object2d
                 ObjectInfo o = (ObjectInfo)obj;
                 visibleObjects.Add(obj);
             }
@@ -129,7 +130,7 @@ namespace CSat
         /// laske objekteille paikat (Matrix).
         /// ota listoihin näkyvät obut.
         /// </summary>
-        public void CalculateCoords(object obj)
+        public void CalculateCoords(Object obj)
         {
             GL.PushMatrix();
             if (obj is Skybox || obj is Skydome) // skybox/skydome AINA ekana.
@@ -142,15 +143,15 @@ namespace CSat
                 CheckObject(obj);
             }
 
-            for (int q = 0; q < objects.Count; q++)
+            for (int q = 0; q < Objects.Count; q++)
             {
                 GL.PushMatrix();
 
-                ObjectInfo oi = (ObjectInfo)objects[q];
+                ObjectInfo oi = (ObjectInfo)Objects[q];
                 oi.CalcAndGetMatrix(ref oi.Matrix, Vector3.Zero);
-                oi.CheckObject(objects[q]);
+                oi.CheckObject(Objects[q]);
 
-                if (oi.objects.Count > 0) oi.CalculateCoords(objects[q]);
+                if (oi.Objects.Count > 0) oi.CalculateCoords(Objects[q]);
 
                 GL.PopMatrix();
             }

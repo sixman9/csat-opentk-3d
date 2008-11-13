@@ -46,8 +46,8 @@ namespace CSat
         class SortedList
         {
             public float len = 0;
-            public object obj;
-            public SortedList(float l, object o)
+            public Object obj;
+            public SortedList(float l, Object o)
             {
                 len = l;
                 obj = o;
@@ -83,27 +83,27 @@ namespace CSat
 
         public void Add(Object obj)
         {
-            objects.Add(obj);
+            Objects.Add(obj);
             Log.WriteDebugLine(obj + " added to " + groupName + ".", 2);
         }
 
         public void Remove(Object obj)
         {
-            objects.Remove(obj);
+            Objects.Remove(obj);
             Log.WriteDebugLine(obj + " removed from " + groupName + ".", 2);
         }
 
         public void Remove(string name)
         {
-            objects.Remove(SearchObject(name));
+            Objects.Remove(SearchObject(name));
             Log.WriteDebugLine(name + " removed from " + groupName + ".", 2);
         }
 
         public Object SearchObject(string name)
         {
-            for (int q = 0; q < objects.Count; q++)
+            for (int q = 0; q < Objects.Count; q++)
             {
-                Object3D o = (Object3D)objects[q];
+                Object3D o = (Object3D)Objects[q];
                 if (o.Name == name)
                     return o;
             }
@@ -120,10 +120,10 @@ namespace CSat
 
             GL.PushMatrix(); // kameramatrix talteen
             GL.LoadIdentity();
-            for (int q = 0; q < objects.Count; q++) ((ObjectInfo)objects[q]).CalculateWorldCoords(objects[q]);
+            for (int q = 0; q < Objects.Count; q++) ((ObjectInfo)Objects[q]).CalculateWorldCoords(Objects[q]);
             GL.PopMatrix(); // kameraan takas
 
-            for (int q = 0; q < objects.Count; q++) ((ObjectInfo)objects[q]).CalculateCoords(objects[q]);
+            for (int q = 0; q < Objects.Count; q++) ((ObjectInfo)Objects[q]).CalculateCoords(Objects[q]);
 
             RenderArrays();
         }

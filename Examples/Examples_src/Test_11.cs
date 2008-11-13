@@ -11,6 +11,10 @@
 // 6dof camera
 // TAB vaihtaa näkymän silmistäpäin / äijän takaa  / lentomoodi
 
+// auton reitti on vähän miten sattuu joten siihen pieni korjaus:
+//  xz tasossa tein sen reitin ja jaksanu alkaa säätää y arvoja blenderissä joten etsitään 
+// oikea y xz kohdalta.
+
 using System;
 using System.Drawing;
 using CSat;
@@ -72,6 +76,7 @@ namespace CSatExamples
             uglyModel.FixRotation.Z = 180; // säätöä.. katse eteen päin!
 
             car.Load("car.obj", 7, 7, 7);
+            car.FixRotation.Y = -90;
             world.Add(car);
 
             const float SC = 100;
@@ -81,6 +86,7 @@ namespace CSatExamples
             // lataa reitit
             carPath.Load("carpath.obj", SC, SC, SC); // sama skaalaus ku cityssä
             car.FollowPath(ref carPath, true, true);
+            car.MakeCurve(4); // tehdään reitistä spline
 
             cam.Position.Y = 60;
             cam.Front.Z = -10;
@@ -192,20 +198,21 @@ namespace CSatExamples
 
                 if (mode == 1)
                 {
-                    //Camera.cam.Position.X = Camera.cam.Matrix[12]; // TODO kameran paikka lasketaan matrixiin (objectinfossa/groupissa)
+                    //Camera.cam.Position.X = Camera.cam.Matrix[12]; // TODO kameran paikka lasketaan matrixiin (Objectinfossa/groupissa)
                     //Camera.cam.Position.Z = Camera.cam.Matrix[14]; ..pitäisi laskea jos se on liitetty ukkoon (nyt ei laske)
                 }
             }
 
             // laske autolle Y (reitti ei seuraa maaston korkeutta oikein niin lasketaan se sitten tässä).
-            car.UpdatePath((float)e.Time * 0.1f);
+            car.UpdatePath((float)e.Time * 2.5f);
             car.Position.Y = 1000;
             tmpV = car.Position;
             tmpV.Y = -10000;
             if (Intersection.CheckIntersection(ref car.Position, ref tmpV, ref city))
             {
-                car.Position.Y = Intersection.intersection.Y;
+                car.Position.Y = Intersection.intersection.Y + 0.7f;
             }
+
         }
 
         public override void OnRenderFrame(RenderFrameEventArgs e)

@@ -46,9 +46,10 @@ namespace CSat
 {
     public interface IModel
     {
-        BoundingVolume GetBoundingVolume();
-        void Load(string fileName);
         void Render();
+        BoundingVolume GetBoundingVolume();
+        int GetNumOfTriangles();
+        void GetTriangle(int triNum, ref Vector3[] tri);
     }
 
     public class AnimatedModel : ObjectInfo, IModel, ICloneable
@@ -69,6 +70,15 @@ namespace CSat
         public BoundingVolume GetBoundingVolume()
         {
             return model.GetBoundingVolume();
+        }
+
+        public int GetNumOfTriangles()
+        {
+            return model.GetNumOfTriangles();
+        }
+        public void GetTriangle(int triNum, ref Vector3[] tri)
+        {
+            model.GetTriangle(triNum, ref tri);
         }
 
         /// <summary>
@@ -104,12 +114,7 @@ namespace CSat
             Settings.NumOfObjects++;
         }
 
-        public void Load(string fileName)
-        {
-            model.Load(fileName);
-        }
-
-        object ICloneable.Clone()
+        Object ICloneable.Clone()
         {
             return this.Clone();
         }
@@ -120,13 +125,13 @@ namespace CSat
 
             // eri grouppi eli kloonatut objektit voi lisäillä grouppiin mitä tahtoo
             // sen vaikuttamatta alkuperäiseen.
-            clone.objects = new ArrayList(objects);
+            clone.objects = new ArrayList(Objects);
 
-            for (int q = 0; q < objects.Count; q++)
+            for (int q = 0; q < Objects.Count; q++)
             {
-                object ob = objects[q];
-                Object3D child = (Object3D)objects[q];
-                clone.objects[q] = child.Clone();
+                Object ob = Objects[q];
+                Object3D child = (Object3D)Objects[q];
+                clone.Objects[q] = child.Clone();
             }
             return clone;
         }

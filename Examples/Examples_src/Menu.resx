@@ -19,11 +19,11 @@
     <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
     <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
     <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.Object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework Object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.Object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework Object]</value>
         <comment>This is a comment</comment>
     </data>
                 
@@ -36,26 +36,26 @@
     Classes that don't support this are serialized and stored with the 
     mimetype set.
     
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+    The mimetype is used for serialized Objects, and tells the 
+    ResXResourceReader how to depersist the Object. This is currently not 
     extensible. For a given mimetype the value must be set accordingly:
     
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    Note - application/x-microsoft.net.Object.binary.base64 is the format 
     that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
     
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    mimetype: application/x-microsoft.net.Object.binary.base64
+    value   : The Object must be serialized with 
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
     
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    mimetype: application/x-microsoft.net.Object.soap.base64
+    value   : The Object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    mimetype: application/x-microsoft.net.Object.bytearray.base64
+    value   : The Object must be serialized into a byte array 
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->

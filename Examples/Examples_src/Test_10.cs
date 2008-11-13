@@ -7,13 +7,10 @@
 #endregion
 
 // path testi
-// ladataan kaupunki, camerapath joka liitetään kameraan, sit parit muut pathit jotka liitetään autoihin.
+// ladataan kaupunki, camerapath joka liitetään kameraan.
 
 // skyboxin tilalla ladataan puolipallo johon texturointi. enemmän polyja mutta vain 1 texture.
 
-// auton reitti on vähän miten sattuu joten siihen pieni korjaus:
-//  xz tasossa tein sen reitin ja jaksanu alkaa säätää y arvoja blenderissä joten etsitään 
-// oikea y xz kohdalta.
 
 using System;
 using System.Drawing;
@@ -39,11 +36,7 @@ namespace CSatExamples
 
         Group world = new Group("world"); // tänne lisäillään kaikki kamat
         Object3D city = new Object3D();
-        Object3D car = new Object3D();
-        MD5Model model = new MD5Model();
-        MD5Model.MD5Animation[] anim = new MD5Model.MD5Animation[5];
-
-        Object3D carPath = new Object3D(), cameraPath = new Object3D();
+        Object3D cameraPath = new Object3D();
 
         public override void OnLoad(EventArgs e)
         {
@@ -65,20 +58,14 @@ namespace CSatExamples
             skydome.Load("sky/space.jpg", 1f);
             world.Add(skydome); // skydome aina ekana koska se on kaikkien takana
 
-            car.Load("car.obj");
-            world.Add(car);
-
             const float SC = 100;
             city.Load("city.obj", SC, SC, SC);
             world.Add(city);
 
             // lataa reitit
             cameraPath.Load("camerapath.obj", SC, SC, SC); // sama skaalaus ku cityssä
-            carPath.Load("carpath.obj", SC, SC, SC);
 
             cam.FollowPath(ref cameraPath, true, true);
-            car.FollowPath(ref carPath, true, true);
-
             cam.MakeCurve(3); // tehdään reitistä spline
         }
 
@@ -99,23 +86,8 @@ namespace CSatExamples
 
         public override void OnUpdateFrame(UpdateFrameEventArgs e)
         {
-            if (Keyboard[Key.Escape])
-                Exit();
-
-            car.UpdatePath((float)e.Time * 0.1f);
+            if (Keyboard[Key.Escape]) Exit();
             cam.UpdatePath((float)e.Time * 5);
-
-
-            // laske autolle Y (reitti ei seuraa maaston korkeutta oikein niin lasketaan se sitten tässä).
-            car.Position.Y = 1000;
-            Vector3 tmpV = car.Position;
-            tmpV.Y = -10000;
-            if (Intersection.CheckIntersection(ref car.Position, ref tmpV, ref city))
-            {
-                car.Position.Y = Intersection.intersection.Y;
-            }
-
-
         }
 
         public override void OnRenderFrame(RenderFrameEventArgs e)

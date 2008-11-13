@@ -34,7 +34,7 @@ using OpenTK.Math;
 
 namespace CSat
 {
-    public class Object3D : ObjectInfo, ICloneable
+    public class Object3D : ObjectInfo, IModel, ICloneable
     {
         public Object3D()
         {
@@ -50,7 +50,7 @@ namespace CSat
             Load(fileName, xs, ys, zs);
         }
 
-        object ICloneable.Clone()
+        Object ICloneable.Clone()
         {
             return this.Clone();
         }
@@ -65,20 +65,24 @@ namespace CSat
 
             // eri grouppi eli kloonatut objektit voi lisäillä grouppiin mitä tahtoo
             // sen vaikuttamatta alkuperäiseen.
-            clone.objects = new ArrayList(objects);
+            clone.objects = new ArrayList(Objects);
             clone.MaterialName = MaterialName;
 
-            for (int q = 0; q < objects.Count; q++)
+            for (int q = 0; q < Objects.Count; q++)
             {
-                object ob = objects[q];
+                Object ob = Objects[q];
 
-                Object3D child = (Object3D)objects[q];
-                clone.objects[q] = child.Clone();
+                Object3D child = (Object3D)Objects[q];
+                clone.Objects[q] = child.Clone();
             }
             return clone;
         }
 
-        public BoundingVolume ObjBoundingVolume = new BoundingVolume();
+        BoundingVolume objBoundingVolume = new BoundingVolume();
+        public BoundingVolume GetBoundingVolume()
+        {
+            return objBoundingVolume;
+        }
 
         Vector3[] vertex;
         Vector3[] normal;
@@ -101,9 +105,9 @@ namespace CSat
         /// </summary>
         public void Dispose()
         {
-            for (int q = 0; q < objects.Count; q++)
+            for (int q = 0; q < Objects.Count; q++)
             {
-                Object3D child = (Object3D)objects[q];
+                Object3D child = (Object3D)Objects[q];
                 Material.Dispose(child.MaterialName);
                 child.vbo.Dispose();
             }
@@ -287,9 +291,9 @@ namespace CSat
             if (path == false)
             {
                 // luo joka objektille vbo ja kopsaa datat sinne
-                for (int q = 0; q < parent.objects.Count; q++)
+                for (int q = 0; q < parent.Objects.Count; q++)
                 {
-                    child = (Object3D)parent.objects[q];
+                    child = (Object3D)parent.Objects[q];
                     child.vbo = new VBO();
                     child.vbo.DataToVBO(parent.vertex, parent.normal, parent.uv, null, null, ref child);
 
@@ -308,7 +312,7 @@ namespace CSat
 
                 }
                 CalcBoundingVolumes();
-                Log.WriteDebugLine("Object: " + parent.name + "  meshes: " + parent.objects.Count, 1);
+                Log.WriteDebugLine("Object: " + parent.name + "  meshes: " + parent.Objects.Count, 1);
 
             }
             else Log.WriteDebugLine("Path: " + parent.name, 1);
@@ -338,12 +342,6 @@ namespace CSat
         /// </summary>
         public void RenderFast()
         {
-            if (lookAtNextPoint)
-            {
-                GL.LoadMatrix(Matrix);
-// fix this --todo
-            }
-
             if (vbo != null)
             {
                 Material.SetMaterial(MaterialName);
@@ -366,7 +364,7 @@ namespace CSat
         /// <param name="index"></param>
         public Object3D GetObject(int index)
         {
-            return (Object3D)objects[index];
+            return (Object3D)Objects[index];
         }
 
         /// <summary>
@@ -376,10 +374,10 @@ namespace CSat
         /// <returns></returns>
         public Object3D GetObject(string name)
         {
-            for (int q = 0; q < objects.Count; q++)
+            for (int q = 0; q < Objects.Count; q++)
             {
-                Object3D o = (Object3D)objects[q];
-                if (o.name == name) return (Object3D)objects[q];
+                Object3D o = (Object3D)Objects[q];
+                if (o.name == name) return (Object3D)Objects[q];
             }
             return null;
         }
@@ -392,9 +390,9 @@ namespace CSat
         /// <param name="t2"></param>
         public void UseTextureUnits(bool t0, bool t1, bool t2)
         {
-            for (int q = 0; q < objects.Count; q++)
+            for (int q = 0; q < Objects.Count; q++)
             {
-                Object3D child = (Object3D)objects[q];
+                Object3D child = (Object3D)Objects[q];
                 if (Textured) child.vbo.UseTextureUnits(t0, t1, t2);
                 else child.vbo.UseTextureUnits(false, false, false);
             }
@@ -405,7 +403,7 @@ namespace CSat
         /// </summary>
         public void CalcBoundingVolumes()
         {
-            ObjBoundingVolume.CalcBounds(this);
+            GetBoundingVolume().CalcBounds(this);
         }
 
 
@@ -415,9 +413,9 @@ namespace CSat
         /// <param name="mode"></param>
         public void SetBoundingMode(byte mode)
         {
-            for (int q = 0; q < objects.Count; q++)
+            for (int q = 0; q < Objects.Count; q++)
             {
-                Object3D child = (Object3D)objects[q];
+                Object3D child = (Object3D)Objects[q];
                 child.MeshBoundingVolume.Mode = mode;
             }
         }
@@ -432,9 +430,9 @@ namespace CSat
         {
             if (name == "*") // muuta kaikki 2 puoliseks
             {
-                for (int q = 0; q < objects.Count; q++)
+                for (int q = 0; q < Objects.Count; q++)
                 {
-                    Object3D child = (Object3D)objects[q];
+                    Object3D child = (Object3D)Objects[q];
                     child.DoubleSided = doubleSided;
                 }
             }
@@ -459,9 +457,9 @@ namespace CSat
         /// <param name="fragmentShader"></param>
         public void LoadShader(string meshName, string vertexShader, string fragmentShader)
         {
-            for (int q = 0; q < objects.Count; q++)
+            for (int q = 0; q < Objects.Count; q++)
             {
-                Object3D child = (Object3D)objects[q];
+                Object3D child = (Object3D)Objects[q];
 
                 if (meshName.Contains("*"))
                 {
@@ -494,9 +492,9 @@ namespace CSat
             {
                 use = false;
             }
-            for (int q = 0; q < objects.Count; q++)
+            for (int q = 0; q < Objects.Count; q++)
             {
-                Object3D child = (Object3D)objects[q];
+                Object3D child = (Object3D)Objects[q];
                 if (use == true)
                 {
                     child.Shader = new GLSL();
@@ -507,6 +505,18 @@ namespace CSat
         }
 
         // mesh kohtaset
+
+        public int GetNumOfTriangles()
+        {
+            return VertexInd.Count / 3;
+        }
+        public void GetTriangle(int triNum, ref Vector3[] tri)
+        {
+            triNum *= 3;
+            tri[0] = vertex[(int)VertexInd[triNum]];
+            tri[1] = vertex[(int)VertexInd[triNum + 1]];
+            tri[2] = vertex[(int)VertexInd[triNum + 2]];
+        }
 
         /// <summary>
         /// onko läpikuultava

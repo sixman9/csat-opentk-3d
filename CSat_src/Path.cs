@@ -68,21 +68,18 @@ namespace CSat
             p *= d;
             Position = p1 + p;
 
-            Vector3 to;
-
-            // laske kohta johon katsotaan
-            if (lookAtNextPoint)
-            {
-                to = (path[(v2 + 1) % path.Length]) - p2;
-                to = p2 + (to * d);
-            }
-            else to = Front;
-
             // kamera asetetaan heti
             if (this is Camera)
             {
+                // laske kohta johon katsotaan
+                if (lookAtNextPoint)
+                {
+                    Front = (path[(v2 + 1) % path.Length]) - p2;
+                    Front = p2 + (Front * d);
+                }
+
                 GL.LoadIdentity();
-                Glu.LookAt(Position, to, Up);
+                Glu.LookAt(Position, Front, Up);
                 GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
                 Util.CopyArray(ref Util.ModelMatrix, ref Matrix);
             }
@@ -90,13 +87,24 @@ namespace CSat
             {
                 if (lookAtNextPoint)
                 {
+                    Front = (path[(v2 + 1) % path.Length]) - p2;
+                    Front = p2 + (Front * d);
+
+
                     // otetaan käännetyn objektin matriisi talteen
                     GL.PushMatrix();
                     GL.LoadIdentity();
-                    Glu.LookAt(Position, to, Up);
+                    Glu.LookAt(Position, Front, Up);
                     GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
                     Util.CopyArray(ref Util.ModelMatrix, ref Matrix);
                     GL.PopMatrix();
+
+                    Rotation.X = (float)Math.Atan2(-Matrix[9], Matrix[5]) / MathExt.PiOver180;
+                    Rotation.Y = -(float)Math.Atan2(-Matrix[2], Matrix[0]) / MathExt.PiOver180;
+                    Rotation.Z = (float)Math.Asin(Matrix[1]) / MathExt.PiOver180;
+
+                    // TODO huono tapa! parempi ottaa lookat ja matrix talteen
+                    // ja koittaa käyttää sitä asettamaan objektin asento.
                 }
             }
         }

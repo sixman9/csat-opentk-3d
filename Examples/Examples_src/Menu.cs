@@ -20,7 +20,7 @@ namespace CSatExamples
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void Form1_Load(Object sender, EventArgs e)
         {
             listBox1.Items.Add("2D test");
             listBox1.Items.Add("3D test, obj loader");
@@ -32,7 +32,7 @@ namespace CSatExamples
             listBox1.Items.Add("Group test");
             listBox1.Items.Add("GLSL test");
             listBox1.Items.Add("Path test");
-            listBox1.Items.Add("City");
+            listBox1.Items.Add("City (in progress)");
             listBox1.SelectedIndex = 0;
 
             textBox1.Lines = new string[] { "Moving:", "A D W S", "R F (up/down)", "shift - run", "", "Push mouse button to rotate the camera." };
@@ -49,7 +49,7 @@ namespace CSatExamples
             comboBox1.SelectedIndex = ind;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click(Object sender, EventArgs e)
         {
             // starttaa esimerkki
             GameWindow game = null;
