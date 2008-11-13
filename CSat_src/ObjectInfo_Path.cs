@@ -32,6 +32,7 @@ namespace CSat
 {
     public partial class ObjectInfo : Group
     {
+        float[] lookAtMatrix = new float[16];
         Vector3[] path = null;
         public bool Looping = true;
         public float Time = 0;
@@ -89,22 +90,16 @@ namespace CSat
                 {
                     Front = (path[(v2 + 1) % path.Length]) - p2;
                     Front = p2 + (Front * d);
+                    Front -= Position; // suuntavektori
 
-
-                    // otetaan käännetyn objektin matriisi talteen
-                    GL.PushMatrix();
                     GL.LoadIdentity();
-                    Glu.LookAt(Position, Front, Up);
+                    Glu.LookAt(Vector3.Zero, Front, Up);
                     GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
-                    Util.CopyArray(ref Util.ModelMatrix, ref Matrix);
-                    GL.PopMatrix();
+                    Util.CopyArray(ref Util.ModelMatrix, ref lookAtMatrix);
 
-                    Rotation.X = (float)Math.Atan2(-Matrix[9], Matrix[5]) / MathExt.PiOver180;
-                    Rotation.Y = -(float)Math.Atan2(-Matrix[2], Matrix[0]) / MathExt.PiOver180;
-                    Rotation.Z = (float)Math.Asin(Matrix[1]) / MathExt.PiOver180;
-
-                    // TODO huono tapa! parempi ottaa lookat ja matrix talteen
-                    // ja koittaa käyttää sitä asettamaan objektin asento.
+                    lookAtMatrix[0] = -lookAtMatrix[0];
+                    //lookAtMatrix[5] = -lookAtMatrix[5];
+                    lookAtMatrix[10] = -lookAtMatrix[10];
                 }
             }
         }
@@ -151,5 +146,28 @@ namespace CSat
             Log.WriteDebugLine("NewPath: " + path.Length, 2);
         }
 
+        /// <summary>
+        /// käydään path läpi, joka vertexin kohdalla (xz) etsitään y ja lisätään siihen yp.
+        /// </summary>
+        /// <param name="yp"></param>
+        /// <param name="obj"></param>
+        public void FixPathY(int yp, ref Object3D obj)
+        {
+            Vector3 v;
+            for (int q = 0; q < path.Length; q++)
+            {
+                v = path[q];
+                v.Y = -10000;  // vektorin toinen pää kaukana alhaalla
+
+                if (Intersection.CheckIntersection(ref path[q], ref v, ref obj))
+                {
+                    path[q].Y = Intersection.intersection.Y + yp;
+                }
+
+
+            }
+
+
+        }
     }
 }

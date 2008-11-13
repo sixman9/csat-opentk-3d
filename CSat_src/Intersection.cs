@@ -39,9 +39,17 @@ namespace CSat
 {
     public class Intersection
     {
-        static float EPSILON = 0.00001f;
+        static float Epsilon = 0.00001f;
+        public static float U, V, T;
+
+        /// <summary>
+        /// leikkauskohta 3d-maailmassa
+        /// </summary>
         public static Vector3 intersection;
-        public static float u, v, t;
+        /// <summary>
+        /// kuinka l‰helle objektia p‰‰st‰‰n
+        /// </summary>
+        public static float DistAdder = 1.0f;
 
         /// <summary>
         /// tarkista osuuko start->end vektori johonkin polyyn obj -objektissa (Object3D/AnimatedModel). palauttaa true jos osuu, muuten false.
@@ -91,9 +99,8 @@ namespace CSat
             dir = end - start;
 
             // vektorin pituus
-            float len = dir.Length;
+            float len = dir.Length + DistAdder;
             dir.Normalize();
-            //len *= 2;
 
             Vector3[] v = new Vector3[3];
             ObjectInfo ob = (ObjectInfo)obj;
@@ -124,7 +131,7 @@ namespace CSat
 
                 if (IntersectTriangle(ref start, ref dir, ref v[0], ref v[1], ref v[2]) == true)
                 {
-                    if (Math.Abs(t) > len) continue;
+                    if (Math.Abs(T) > len) continue;
                     return true;
                 }
             }
@@ -151,7 +158,7 @@ namespace CSat
             // if determinant is near zero, ray lies in plane of triangle
             det = Vector3.Dot(edge1, pvec);
 
-            if (det < EPSILON)
+            if (det < Epsilon)
             {
                 return false;
             }
@@ -160,8 +167,8 @@ namespace CSat
             tvec = orig - v0;
 
             // calculate U parameter and test bounds
-            u = Vector3.Dot(tvec, pvec);
-            if (u < 0.0 || u > det)
+            U = Vector3.Dot(tvec, pvec);
+            if (U < 0.0 || U > det)
             {
                 return false;
             }
@@ -170,21 +177,21 @@ namespace CSat
             qvec = Vector3.Cross(tvec, edge1);
 
             // calculate V parameter and test bounds
-            v = Vector3.Dot(dir, qvec);
-            if (v < 0.0 || u + v > det)
+            V = Vector3.Dot(dir, qvec);
+            if (V < 0.0 || U + V > det)
             {
                 return false;
             }
 
-            // calculate t, scale parameters, ray intersects triangle
-            t = Vector3.Dot(edge2, qvec);
+            // calculate T, scale parameters, ray intersects triangle
+            T = Vector3.Dot(edge2, qvec);
             inv_det = 1.0f / det;
 
-            u *= inv_det;
-            v *= inv_det;
-            t *= inv_det;
+            U *= inv_det;
+            V *= inv_det;
+            T *= inv_det;
 
-            intersection = v0 + (edge1 * u) + (edge2 * v);
+            intersection = v0 + (edge1 * U) + (edge2 * V);
 
             return true;
         }

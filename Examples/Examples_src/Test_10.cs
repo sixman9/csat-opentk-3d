@@ -32,7 +32,7 @@ namespace CSatExamples
         Camera cam = new Camera();
         ITextPrinter printer = new TextPrinter();
         TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
-        public Game10(int width, int height) : base(width, height, GraphicsMode.Default, "City") { }
+        public Game10(int width, int height) : base(width, height, GraphicsMode.Default, "Camera path") { }
 
         Group world = new Group("world"); // tänne lisäillään kaikki kamat
         Object3D city = new Object3D();

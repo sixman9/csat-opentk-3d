@@ -199,7 +199,7 @@ namespace CSat
                         continue;
                     }
 
-                    if (ln[0] == "vt") // texcoord u v
+                    if (ln[0] == "vt") // texcoord U V
                     {
                         parent.uv[cuv++] = new Vector2(Util.GetFloat(ln[1]), Util.GetFloat(ln[2]));
                         continue;

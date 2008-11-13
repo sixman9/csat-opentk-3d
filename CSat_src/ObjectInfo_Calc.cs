@@ -50,13 +50,13 @@ namespace CSat
         {
             // liikuta haluttuun kohtaan
             GL.Translate(Position + pos);
+            if (lookAtNextPoint) GL.MultMatrix(lookAtMatrix);
             GL.Rotate(Rotation.X, 1, 0, 0);
             GL.Rotate(Rotation.Y, 0, 1, 0);
             GL.Rotate(Rotation.Z, 0, 0, 1);
             GL.Rotate(FixRotation.X, 1, 0, 0);
             GL.Rotate(FixRotation.Y, 0, 1, 0);
             GL.Rotate(FixRotation.Z, 0, 0, 1);
-
             GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
             Util.CopyArray(ref Util.ModelMatrix, ref matrix);
         }

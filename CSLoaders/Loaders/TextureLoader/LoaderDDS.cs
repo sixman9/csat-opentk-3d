@@ -222,7 +222,7 @@ namespace TextureLoaders
                 #region Translate Header to less cryptic representation
                 ConvertDX9Header(ref _RawDataFromFile); // The first 128 Bytes of the file is non-image data
 
-                // start by checking if all forced flags are present. Flags indicate valid fields, but aren't written by every tool .....
+                // start by checking if all forced flags are present. Flags indicate valid fields, but aren'T written by every tool .....
                 if (idstring != "DDS " || // magic key
                      dwSize != 124 || // constant Size of struct, never reused
                      pfSize != 32 || // constant Size of struct, never reused
@@ -318,7 +318,7 @@ namespace TextureLoaders
                 // pf*Bitmasks should be examined here
                 #endregion
 
-                // Works, but commented out because some texture authoring tools don't set this flag.
+                // Works, but commented out because some texture authoring tools don'T set this flag.
                 /* Safety Check, if file is only 1x 2D surface without mipmaps, eDDSCAPS.COMPLEX should not be set
                 if ( CheckFlag( dwCaps1, (uint) eDDSCAPS.COMPLEX ) )
                 {

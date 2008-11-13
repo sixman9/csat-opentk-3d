@@ -66,7 +66,7 @@
     <Compile Include="CSat_src\ObjectInfo_Calc.cs" />
     <Compile Include="CSat_src\Particles.cs" />
     <Compile Include="CSat_src\Group.cs" />
-    <Compile Include="CSat_src\Path.cs" />
+    <Compile Include="CSat_src\ObjectInfo_Path.cs" />
     <Compile Include="CSat_src\Settings.cs" />
     <Compile Include="CSat_src\Skydome.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

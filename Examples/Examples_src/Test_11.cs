@@ -13,7 +13,7 @@
 
 // auton reitti on vähän miten sattuu joten siihen pieni korjaus:
 //  xz tasossa tein sen reitin ja jaksanu alkaa säätää y arvoja blenderissä joten etsitään 
-// oikea y xz kohdalta.
+// oikea y xz kohdalta ja korjataan samalla pathi.
 
 using System;
 using System.Drawing;
@@ -76,7 +76,7 @@ namespace CSatExamples
             uglyModel.FixRotation.Z = 180; // säätöä.. katse eteen päin!
 
             car.Load("car.obj", 7, 7, 7);
-            car.FixRotation.Y = -90;
+            car.FixRotation.Y = 90;
             world.Add(car);
 
             const float SC = 100;
@@ -91,7 +91,13 @@ namespace CSatExamples
             cam.Position.Y = 60;
             cam.Front.Z = -10;
             cam.Update6DOF();
+
+            // car path on tehty aikalailla xz tasossa (tai jotain y arvoja säädetty mutta menee aika pieleen),
+            // joten korjataan ne y arvot. tämä katsoo joka vertexin kohdalta y arvon ja lisää siihen yp:n (tässä 0).
+            car.FixPathY(0, ref city);
         }
+
+
 
         bool[] mouseButtons = new bool[5];
         void MouseButtonDown(MouseDevice sender, MouseButton button) { mouseButtons[(int)button] = true; }
