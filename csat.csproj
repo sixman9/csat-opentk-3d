@@ -1,0 +1,95 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectGuid>{EEEF9B46-99D0-40D6-87B1-81DA86E6F9FC}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>Library</OutputType>
+    <RootNamespace>csat</RootNamespace>
+    <AssemblyName>csat</AssemblyName>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <NoStdLib>False</NoStdLib>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <DebugSymbols>False</DebugSymbols>
+    <DebugType>None</DebugType>
+    <Optimize>True</Optimize>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
+  <ItemGroup>
+    <Reference Include="OpenTK">
+      <HintPath>Libraries\OpenTK.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="OpenTK.Utilities">
+      <HintPath>Libraries\OpenTK.Utilities.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="csat_src\AnimatedModel.cs" />
+    <Compile Include="csat_src\AssemblyInfo.cs" />
+    <Compile Include="csat_src\Billboard.cs" />
+    <Compile Include="csat_src\BitmapFont.cs" />
+    <Compile Include="csat_src\Camera.cs" />
+    <Compile Include="csat_src\BoundingVolume.cs" />
+    <Compile Include="csat_src\Frustum.cs" />
+    <Compile Include="csat_src\Fog.cs" />
+    <Compile Include="csat_src\GLSL.cs" />
+    <Compile Include="csat_src\Intersection.cs" />
+    <Compile Include="csat_src\Light.cs" />
+    <Compile Include="csat_src\Log.cs" />
+    <Compile Include="csat_src\Material.cs" />
+    <Compile Include="csat_src\MathExt.cs" />
+    <Compile Include="csat_src\Mesh.cs" />
+    <Compile Include="csat_src\Object2D.cs" />
+    <Compile Include="csat_src\Node.cs" />
+    <Compile Include="csat_src\ObjModel.cs" />
+    <Compile Include="csat_src\Particles.cs" />
+    <Compile Include="csat_src\Path.cs" />
+    <Compile Include="csat_src\Settings.cs" />
+    <Compile Include="csat_src\Sky.cs" />
+    <Compile Include="csat_src\Texture.cs" />
+    <Compile Include="csat_src\TextureLoader\LoaderDDS.cs" />
+    <Compile Include="csat_src\TextureLoader\LoaderGDI.cs" />
+    <Compile Include="csat_src\TextureLoader\LoaderStatics.cs" />
+    <Compile Include="csat_src\Util.cs" />
+    <Compile Include="csat_src\VBO.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+</Project>

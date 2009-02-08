@@ -1,0 +1,24 @@
+# Blender3D MTL File: car.blend
+# Material Count: 2
+newmtl Material_DARKWOOD.JPG_cartex.jpg
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.250000 0.250000 0.250000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd cartex.jpg
+
+
+newmtl Material.001_GRAPHITI_cartex.jpg
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.250000 0.250000 0.250000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd cartex.jpg
+
+
