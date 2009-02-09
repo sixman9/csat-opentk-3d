@@ -289,9 +289,9 @@ namespace CSat
                 {
                     int cc = 0;
 
+                    vertices = new Vertex[numOfFaces * 3];
                     for (int m = 0; m < meshes.Count; m++)
                     {
-                        vertices = new Vertex[numOfFaces * 3];
                         meshes[m].vertices = new Vertex[meshes[m]._vertexInd.Count];
 
                         for (int q = 0; q < meshes[m]._vertexInd.Count; q++)

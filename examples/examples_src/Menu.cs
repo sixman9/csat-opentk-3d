@@ -26,13 +26,13 @@ namespace CSatExamples
             listBox1.Items.Add("3D test, obj loader");
             listBox1.Items.Add("Particles");
             listBox1.Items.Add("Animation test");
-            listBox1.Items.Add("Collision detection (not working atm)");
+            listBox1.Items.Add("Collision detection");
             listBox1.Items.Add("Billboard");
             listBox1.Items.Add("BitmapFont");
             listBox1.Items.Add("Scene test");
             listBox1.Items.Add("GLSL test");
             listBox1.Items.Add("Path test");
-            //listBox1.Items.Add("City");
+            listBox1.Items.Add("City (work in progress)");
             listBox1.SelectedIndex = 0;
 
             textBox1.Lines = new string[] { "Moving:", "A D W S", "R F (up/down)", "shift - run", "", "Push mouse button to rotate the camera." };
@@ -93,11 +93,9 @@ namespace CSatExamples
                 case 10:
                     game = new Game10(width, height);
                     break;
-                /*case 11:
+                case 11:
                     game = new Game11(width, height);
                     break;
-                 */
-
             }
 
             // fullscreen?
@@ -120,7 +118,7 @@ namespace CSatExamples
 
             if (checkBox1.Checked)
                 dev.RestoreResolution();
-            
+
             Log.WriteDebugLine("Test finished..");
 
             game = null;

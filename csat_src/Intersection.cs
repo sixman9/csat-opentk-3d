@@ -73,7 +73,7 @@ namespace CSat
         {
             // jos objektia käännetty
             Matrix4 outm = new Matrix4();
-            Vector3 rot = -(obj.Rotation + obj.FixRotation);
+            Vector3 rot = -(obj.Rotation + obj.FixRotation); 
             if (rot.X != 0 || rot.Y != 0 || rot.Z != 0)
             {
                 rot = rot * MathExt.PiOver180;
@@ -116,7 +116,7 @@ namespace CSat
                 v[2] = obj.Vertices[e + 2].vertex;
 
                 Vector3 vout;
-                if (Math.Abs(rotation.X + rotation.Y + rotation.Z) > 0.001f)
+                if (Math.Abs(rotation.X + rotation.Y + rotation.Z) > 0.001f) 
                 {
                     vout = MathExt.VectorMatrixMult(ref v[0], ref matrix);
                     v[0] = vout;
@@ -173,13 +173,12 @@ namespace CSat
             if (CheckCollisionBB_Poly_Rec(ref group, start, end, len, ref obj, ref obj) == true) return true;
 
             // ei osunut joten tsekataan joka meshin bbox erikseen.
-            //TODO: hidas
-            for (int q = 0; q < obj.Meshes().Count; q++)
+            //TODO: --liian hidas
+            /*for (int q = 0; q < obj.Meshes().Count; q++)
             {
                 Mesh m = obj.Meshes()[q];
                 if (CheckCollisionBB_Poly_Rec(ref group, start, end, len, ref m, ref obj ) == true) return true;
-            }
-            
+            }*/
 
             return false;
         }
@@ -215,13 +214,7 @@ namespace CSat
                                 return true;
                             }
                         }
-
                     }
-                }
-                if (group.Objects[q] is Node)
-                {
-                    Node g = (Node)group.Objects[q];
-                    return CheckCollisionBB_Poly_Rec(ref g, start, end, len, ref mesh, ref obj);
                 }
             }
             return false;

@@ -73,6 +73,7 @@
     <Compile Include="examples_src\Test_0_empty.cs" />
     <Compile Include="examples_src\Test_1.cs" />
     <Compile Include="examples_src\Test_10.cs" />
+    <Compile Include="examples_src\Test_11.cs" />
     <Compile Include="examples_src\Test_2.cs" />
     <Compile Include="examples_src\Test_3.cs" />
     <Compile Include="examples_src\Test_4.cs" />
