@@ -20,8 +20,8 @@ namespace CSatExamples
     class Game4 : GameWindow
     {
         Camera cam = new Camera();
-        ITextPrinter printer = new TextPrinter();
-        TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
+        Font font = new Font(FontFamily.GenericSansSerif, 24.0f);
+        TextPrinter text = new TextPrinter();
 
         Mesh model;
 
@@ -141,7 +141,6 @@ namespace CSatExamples
         public override void OnRenderFrame(RenderFrameEventArgs e)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            base.OnRenderFrame(e);
 
             cam.UpdateXZ();
             Frustum.CalculateFrustum();
@@ -150,10 +149,9 @@ namespace CSatExamples
             model.Render();
 
             Texture.ActiveUnit(0);
-            printer.Begin();
-            printer.Draw("Animation test\nkeys:\n arrows, 1,2 : actions", font);
-            printer.End();
-            GL.MatrixMode(MatrixMode.Modelview);
+            text.Begin();
+            text.Print("Animation test\nkeys:\n arrows, 1,2 : actions", font, Color.White);
+            text.End();
 
             SwapBuffers();
         }

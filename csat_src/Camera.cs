@@ -90,17 +90,6 @@ namespace CSat
             Glu.LookAt(Position, pos, Up);
         }
 
-        /// <summary>
-        /// k‰‰nn‰ kuvakulma xyz:aan
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="z"></param>
-        public new void LookAt(float x, float y, float z)
-        {
-            GL.LoadIdentity();
-            Glu.LookAt(Position.X, Position.Y, Position.Z, x, y, z, Up.X, Up.Y, Up.Z);
-        }
     }
 }
 

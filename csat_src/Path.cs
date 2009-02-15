@@ -42,7 +42,6 @@ namespace CSat
         Vector3[] path = null;
         public bool Looping = true;
         public float Time = 0;
-        protected bool lookAtNextPoint = false;
 
         /// <summary>
         /// mitä objektia liikutetaan
@@ -134,7 +133,7 @@ namespace CSat
             attachedObj = obj;
             obj.Position = path[0];
             this.Looping = loop;
-            this.lookAtNextPoint = lookAtNextPoint;
+            this.LookAtNextPoint = lookAtNextPoint;
         }
 
         public void UpdatePath(float updateTime)
@@ -159,7 +158,7 @@ namespace CSat
             Vector3 to;
 
             // laske kohta johon katsotaan
-            if (lookAtNextPoint)
+            if (LookAtNextPoint)
             {
                 to = (path[(v2 + 1) % path.Length]) - p2;
                 to = p2 + (to * d);
@@ -176,7 +175,7 @@ namespace CSat
             }
             else
             {
-                if (lookAtNextPoint)
+                if (LookAtNextPoint)
                 {
                     // otetaan käännetyn objektin matriisi talteen
                     GL.PushMatrix();
@@ -184,6 +183,7 @@ namespace CSat
                     Glu.LookAt(attachedObj.Position, to, attachedObj.Up);
                     GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
                     Util.CopyArray(ref Util.ModelMatrix, ref attachedObj.Matrix);
+                    Util.CopyArray(ref Util.ModelMatrix, ref attachedObj.WMatrix);
                     GL.PopMatrix();
                 }
             }

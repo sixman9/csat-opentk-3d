@@ -19,8 +19,8 @@ namespace CSatExamples
     class Game0 : GameWindow
     {
         Camera cam = new Camera();
-        ITextPrinter printer = new TextPrinter();
-        TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
+        Font font = new Font(FontFamily.GenericSansSerif, 24.0f);
+        TextPrinter text = new TextPrinter();
 
         public Game0(int width, int height) : base(width, height, GraphicsMode.Default, "xxx") { }
 
@@ -96,10 +96,9 @@ namespace CSatExamples
 
 
             Texture.ActiveUnit(0);
-            printer.Begin();
-            printer.Draw("blaa bluu: " + Settings.NumOfObjects, font);
-            printer.End();
-            GL.MatrixMode(MatrixMode.Modelview); // tärkeä!
+            text.Begin();
+            text.Print("blaa bluu: " + Settings.NumOfObjects, font, Color.White);
+            text.End();
 
             SwapBuffers();
         }

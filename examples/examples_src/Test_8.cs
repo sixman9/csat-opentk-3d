@@ -36,8 +36,8 @@ namespace CSatExamples
 
         Mesh uglyModel;
 
-        ITextPrinter printer = new TextPrinter();
-        TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
+        Font font = new Font(FontFamily.GenericSansSerif, 24.0f);
+        TextPrinter text = new TextPrinter();
 
         Light light = new Light("light");
 
@@ -197,10 +197,9 @@ namespace CSatExamples
 
             Light.Disable();
             Texture.ActiveUnit(0);
-            printer.Begin();
-            printer.Draw("objs: " + Settings.NumOfObjects + " :_:", font);
-            printer.End();
-            GL.MatrixMode(MatrixMode.Modelview);
+            text.Begin();
+            text.Print("objs: " + Settings.NumOfObjects, font, Color.White);
+            text.End();
             Light.Enable();
 
             SwapBuffers();

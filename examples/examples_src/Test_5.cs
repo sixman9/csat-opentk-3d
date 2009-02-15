@@ -29,8 +29,8 @@ namespace CSatExamples
     class Game5 : GameWindow
     {
         Camera cam = new Camera();
-        ITextPrinter printer = new TextPrinter();
-        TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
+        Font font = new Font(FontFamily.GenericSansSerif, 24.0f);
+        TextPrinter text = new TextPrinter();
 
         Sky skybox = new Sky("skybox");
         Mesh car, car2;
@@ -226,11 +226,10 @@ namespace CSatExamples
             world.Render(); // skybox, groundplane, car ja car2 on lisätty worldiin joten tämä renderoi ne.
 
             Light.Disable();
-            printer.Begin();
-            printer.Draw("Collision detection -- objs: " + Settings.NumOfObjects + " --- ", font);
-            printer.End();
+            text.Begin();
+            text.Print("Collision detection -- objs: " + Settings.NumOfObjects, font, Color.White);
+            text.End();
             Light.Enable();
-            GL.MatrixMode(MatrixMode.Modelview);
 
             SwapBuffers();
         }

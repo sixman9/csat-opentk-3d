@@ -72,7 +72,7 @@ namespace CSat
 
     public class BitmapFont
     {
-        static string chars = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_'abcdefghijklmnopqrstuvwxyz{|}                                                                      Ä                 Ö             ä                 ö";
+        static string chars = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXyz[\\]^_'abcdefghijklmnopqrstuvwXyz{|}                                                                      Ä                 Ö             ä                 ö";
         Texture fontTex = new Texture();
         Rect[] uv = new Rect[chars.Length];
         int[] chDL = new int[chars.Length];

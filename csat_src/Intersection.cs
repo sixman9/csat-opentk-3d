@@ -37,10 +37,6 @@
  * http://jgt.akpeters.com/papers/MollerTrumbore97/
  *
  */
-// hidas tapa tarkistaa törmäyksiä!
-// metodit hieman pielessä mutta ehkä kannattaa ennemmin käyttää jotan fysiikkaengineä joka hoitaa
-// nämä tarkistukset ja paljon muuta.
-
 using System;
 using OpenTK.Graphics;
 using OpenTK.Math;
@@ -150,11 +146,11 @@ namespace CSat
         /// <param name="end"></param>
         /// <param name="mesh"></param>
         /// <returns></returns>
-        public static bool CheckCollisionBB_BB(ref Node group, Vector3 start, Vector3 end, ref Mesh obj)
+        /*public static bool CheckCollisionBB_BB(ref Node group, Vector3 start, Vector3 end, ref Mesh obj)
         {
             // TODO: collision bb_bb
             return false;
-        }
+        }*/
 
         /// <summary>
         /// palauttaa true jos objektin boundingboxin joku kulma osuu johonkin polyyn groupissa
@@ -170,14 +166,14 @@ namespace CSat
             if (Math.Abs(len.X + len.Y + len.Z) < Epsilon) return false;
 
             // tarkista objektin bbox
-            if (CheckCollisionBB_Poly_Rec(ref group, start, end, len, ref obj, ref obj) == true) return true;
+            if (CheckBB_Poly(ref group, len, ref obj, ref obj) == true) return true;
 
             // ei osunut joten tsekataan joka meshin bbox erikseen.
             //TODO: --liian hidas
             /*for (int q = 0; q < obj.Meshes().Count; q++)
             {
                 Mesh m = obj.Meshes()[q];
-                if (CheckCollisionBB_Poly_Rec(ref group, start, end, len, ref m, ref obj ) == true) return true;
+                if (CheckBB_Poly_Rec(ref group, start, end, len, ref m, ref obj ) == true) return true;
             }*/
 
             return false;
@@ -188,13 +184,11 @@ namespace CSat
         /// käytetään antamaan paikka ja tarkistukseen ettei tarkisteta törmäystä itteensä.
         /// </summary>
         /// <param name="group"></param>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
         /// <param name="len"></param>
         /// <param name="mesh"></param>
         /// <param name="obj"></param>
         /// <returns></returns>
-        static bool CheckCollisionBB_Poly_Rec(ref Node group, Vector3 start, Vector3 end, Vector3 len, ref Mesh mesh, ref Mesh obj)
+        private static bool CheckBB_Poly(ref Node group, Vector3 len, ref Mesh mesh, ref Mesh obj)
         {
             for (int q = 0; q < group.Objects.Length; q++)
             {

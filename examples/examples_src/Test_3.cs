@@ -25,8 +25,8 @@ namespace CSatExamples
 
         static Random random = new Random();
 
-        ITextPrinter printer = new TextPrinter();
-        TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
+        Font font = new Font(FontFamily.GenericSansSerif, 24.0f);
+        TextPrinter text = new TextPrinter();
 
         Object2D[] partObj = new Object2D[3];
 
@@ -154,10 +154,9 @@ namespace CSatExamples
 
             Texture.ActiveUnit(0);
             GL.Color4(1f, 1, 1, 1);
-            printer.Begin();
-            printer.Draw("Particles demo", font);
-            printer.End();
-            GL.MatrixMode(MatrixMode.Modelview);
+            text.Begin();
+            text.Print("Particles demo", font, Color.White);
+            text.End();
 
             Util.RenderGrid();
 

@@ -57,6 +57,8 @@ namespace CSat
         /// onko rendattava objekti. pelkkä node (paikkatieto) ei ole jolloin tämä false
         /// </summary>
         public bool IsRendObj = true;
+        public bool LookAtNextPoint = false;
+
         public BoundingVolume Boundings;
         public bool DoubleSided = false;
         public bool IsTranslucent = false;

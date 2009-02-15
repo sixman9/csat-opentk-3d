@@ -28,8 +28,8 @@ namespace CSatExamples
         Sky skydome = new Sky("sky");
 
         Camera cam = new Camera();
-        ITextPrinter printer = new TextPrinter();
-        TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
+        Font font = new Font(FontFamily.GenericSansSerif, 24.0f);
+        TextPrinter text = new TextPrinter();
         public Game10(int width, int height) : base(width, height, GraphicsMode.Default, "Camera path") { }
 
         Node world = new Node(); // tänne lisäillään kaikki kamat
@@ -99,10 +99,9 @@ namespace CSatExamples
             world.Render();
 
             Texture.ActiveUnit(0);
-            printer.Begin();
-            printer.Draw("objs: " + Settings.NumOfObjects, font);
-            printer.End();
-            GL.MatrixMode(MatrixMode.Modelview);
+            text.Begin();
+            text.Print("objs: " + Settings.NumOfObjects, font, Color.White);
+            text.End();
 
             SwapBuffers();
         }

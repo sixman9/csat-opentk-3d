@@ -149,7 +149,7 @@ namespace CSat
         #region --- Quaternion 2 ---
         public static void ComputeW(ref Quaternion q)
         {
-            float t = 1.0f - (q.XYZ.X * q.XYZ.X) - (q.XYZ.Y * q.XYZ.Y) - (q.XYZ.Z * q.XYZ.Z);
+            float t = 1.0f - (q.Xyz.X * q.Xyz.X) - (q.Xyz.Y * q.Xyz.Y) - (q.Xyz.Z * q.Xyz.Z);
             if (t < 0.0f) q.W = 0.0f;
             else q.W = (float)-Math.Sqrt(t);
         }
@@ -157,40 +157,39 @@ namespace CSat
         public static Vector3 RotatePoint(ref Quaternion q, ref Vector3 v)
         {
             Vector3 outv;
-            Quaternion inv;
-
-            // invert
-            inv.XYZ.X = -q.XYZ.X;
-            inv.XYZ.Y = -q.XYZ.Y;
-            inv.XYZ.Z = -q.XYZ.Z;
+            Quaternion inv=new Quaternion();
+           
+            inv.X = -q.X;
+            inv.Y = -q.Y;
+            inv.Z = -q.Z;
             inv.W = q.W;
 
             Quaternion norminv = Quaternion.Normalize(inv);
             Quaternion m = MultVec(ref q, ref v);
             Quaternion qm = MathExt.Mult(ref m, ref norminv);
 
-            outv.X = qm.XYZ.X;
-            outv.Y = qm.XYZ.Y;
-            outv.Z = qm.XYZ.Z;
+            outv.X = qm.Xyz.X;
+            outv.Y = qm.Xyz.Y;
+            outv.Z = qm.Xyz.Z;
 
             return outv;
         }
 
         public static Quaternion MultVec(ref Quaternion q, ref Vector3 v)
         {
-            Quaternion outq;
+            Quaternion outq=new Quaternion();
 
-            outq.W = -(q.XYZ.X * v.X) - (q.XYZ.Y * v.Y) - (q.XYZ.Z * v.Z);
-            outq.XYZ.X = ((q.W * v.X) + (q.XYZ.Y * v.Z)) - (q.XYZ.Z * v.Y);
-            outq.XYZ.Y = ((q.W * v.Y) + (q.XYZ.Z * v.X)) - (q.XYZ.X * v.Z);
-            outq.XYZ.Z = ((q.W * v.Z) + (q.XYZ.X * v.Y)) - (q.XYZ.Y * v.X);
+            outq.W = -(q.Xyz.X * v.X) - (q.Xyz.Y * v.Y) - (q.Xyz.Z * v.Z);
+            outq.X = ((q.W * v.X) + (q.Xyz.Y * v.Z)) - (q.Xyz.Z * v.Y);
+            outq.Y = ((q.W * v.Y) + (q.Xyz.Z * v.X)) - (q.Xyz.X * v.Z);
+            outq.Z = ((q.W * v.Z) + (q.Xyz.X * v.Y)) - (q.Xyz.Y * v.X);
 
             return outq;
         }
 
         public static float DotProduct(ref Quaternion qa, ref Quaternion qb)
         {
-            return ((qa.XYZ.X * qb.XYZ.X) + (qa.XYZ.Y * qb.XYZ.Y) + (qa.XYZ.Z * qb.XYZ.Z) + (qa.W * qb.W));
+            return ((qa.Xyz.X * qb.Xyz.X) + (qa.Xyz.Y * qb.Xyz.Y) + (qa.Xyz.Z * qb.Xyz.Z) + (qa.W * qb.W));
         }
 
         public static Quaternion Slerp(ref Quaternion qa, ref Quaternion qb, float t)
@@ -216,9 +215,9 @@ namespace CSat
             // different slerp. we chose q or -q to rotate using
             // the acute angle.
             float q1w = qb.W;
-            float q1x = qb.XYZ.X;
-            float q1y = qb.XYZ.Y;
-            float q1z = qb.XYZ.Z;
+            float q1x = qb.Xyz.X;
+            float q1y = qb.Xyz.Y;
+            float q1z = qb.Xyz.Z;
 
             if (cosOmega < 0.0f)
             {
@@ -271,9 +270,9 @@ namespace CSat
 
             // interpolate and return new quaternion
             outr.W = (k0 * qa.W) + (k1 * q1w);
-            outr.XYZ.X = (k0 * qa.XYZ.X) + (k1 * q1x);
-            outr.XYZ.Y = (k0 * qa.XYZ.Y) + (k1 * q1y);
-            outr.XYZ.Z = (k0 * qa.XYZ.Z) + (k1 * q1z);
+            outr.X = (k0 * qa.Xyz.X) + (k1 * q1x);
+            outr.Y = (k0 * qa.Xyz.Y) + (k1 * q1y);
+            outr.Z = (k0 * qa.Xyz.Z) + (k1 * q1z);
 
             return outr;
         }
@@ -283,10 +282,10 @@ namespace CSat
         {
             Quaternion outq = new Quaternion();
 
-            outq.W = (qb.W * qa.W) - (qb.XYZ.X * qa.XYZ.X) - (qb.XYZ.Y * qa.XYZ.Y) - (qb.XYZ.Z * qa.XYZ.Z);
-            outq.XYZ.X = ((qb.W * qa.XYZ.X) + (qb.XYZ.X * qa.W) + (qb.XYZ.Y * qa.XYZ.Z)) - (qb.XYZ.Z * qa.XYZ.Y);
-            outq.XYZ.Y = ((qb.W * qa.XYZ.Y) + (qb.XYZ.Y * qa.W) + (qb.XYZ.Z * qa.XYZ.X)) - (qb.XYZ.X * qa.XYZ.Z);
-            outq.XYZ.Z = ((qb.W * qa.XYZ.Z) + (qb.XYZ.Z * qa.W) + (qb.XYZ.X * qa.XYZ.Y)) - (qb.XYZ.Y * qa.XYZ.X);
+            outq.W = (qb.W * qa.W) - (qb.Xyz.X * qa.Xyz.X) - (qb.Xyz.Y * qa.Xyz.Y) - (qb.Xyz.Z * qa.Xyz.Z);
+            outq.X = ((qb.W * qa.Xyz.X) + (qb.Xyz.X * qa.W) + (qb.Xyz.Y * qa.Xyz.Z)) - (qb.Xyz.Z * qa.Xyz.Y);
+            outq.Y = ((qb.W * qa.Xyz.Y) + (qb.Xyz.Y * qa.W) + (qb.Xyz.Z * qa.Xyz.X)) - (qb.Xyz.X * qa.Xyz.Z);
+            outq.Z = ((qb.W * qa.Xyz.Z) + (qb.Xyz.Z * qa.W) + (qb.Xyz.X * qa.Xyz.Y)) - (qb.Xyz.Y * qa.Xyz.X);
 
             return outq;
         }
@@ -294,7 +293,7 @@ namespace CSat
         public static Quaternion Normalize(ref Quaternion q)
         {
             /* compute magnitude of the quaternion */
-            float mag = (float)Math.Sqrt((q.XYZ.X * q.XYZ.X) + (q.XYZ.Y * q.XYZ.Y) + (q.XYZ.Z * q.XYZ.Z) + (q.W * q.W));
+            float mag = (float)Math.Sqrt((q.Xyz.X * q.Xyz.X) + (q.Xyz.Y * q.Xyz.Y) + (q.Xyz.Z * q.Xyz.Z) + (q.W * q.W));
 
             /* check for bogus length, to protect against divide by zero */
             if (mag > 0.0f)
@@ -302,9 +301,9 @@ namespace CSat
                 /* normalize it */
                 float oneOverMag = 1.0f / mag;
 
-                q.XYZ.X *= oneOverMag;
-                q.XYZ.Y *= oneOverMag;
-                q.XYZ.Z *= oneOverMag;
+                q.X *= oneOverMag;
+                q.Y *= oneOverMag;
+                q.Z *= oneOverMag;
                 q.W *= oneOverMag;
             }
             return q;

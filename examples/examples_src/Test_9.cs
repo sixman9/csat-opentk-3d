@@ -25,8 +25,8 @@ namespace CSatExamples
     class Game9 : GameWindow
     {
         Camera cam = new Camera();
-        ITextPrinter printer = new TextPrinter();
-        TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
+        Font font = new Font(FontFamily.GenericSansSerif, 24.0f);
+        TextPrinter text = new TextPrinter();
 
         const int OBJS = 20;
 
@@ -168,10 +168,9 @@ namespace CSatExamples
             Texture.ActiveUnit(0);
 
             Light.Disable();
-            printer.Begin();
-            printer.Draw("Objs: " + Settings.NumOfObjects + " --", font);
-            printer.End();
-            GL.MatrixMode(MatrixMode.Modelview);
+            text.Begin();
+            text.Print("Objs: " + Settings.NumOfObjects, font, Color.White);
+            text.End();
             Light.Enable();
 
             SwapBuffers();

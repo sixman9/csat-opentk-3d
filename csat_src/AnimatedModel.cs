@@ -168,9 +168,13 @@ namespace CSat
                                 baseSkel[i].pos.X = t.fbuffer[0];
                                 baseSkel[i].pos.Y = t.fbuffer[1];
                                 baseSkel[i].pos.Z = t.fbuffer[2];
-                                baseSkel[i].orient.XYZ.X = t.fbuffer[3];
-                                baseSkel[i].orient.XYZ.Y = t.fbuffer[4];
-                                baseSkel[i].orient.XYZ.Z = t.fbuffer[5];
+                                baseSkel[i].orient = new Quaternion(t.fbuffer[3], t.fbuffer[4], t.fbuffer[5], 1);
+                                /*
+jotain tosi outoa..
+    toi orient homma ei skulaa..
+        vaik varaa tilaa new:llä, ei toimi..
+            eikä  orient.X = 1;  eikä mikään. miks??
+                */
                                 MathExt.ComputeW(ref baseSkel[i].orient);
                             }
                         }
@@ -482,19 +486,19 @@ namespace CSat
 
                 if ((jointInfos[i].flags & 8) > 0) /* Qx */
                 {
-                    animatedOrient.XYZ.X = animFrameData[jointInfos[i].startIndex + j];
+                    animatedOrient.X = animFrameData[jointInfos[i].startIndex + j];
                     ++j;
                 }
 
                 if ((jointInfos[i].flags & 16) > 0) /* Qy */
                 {
-                    animatedOrient.XYZ.Y = animFrameData[jointInfos[i].startIndex + j];
+                    animatedOrient.Y = animFrameData[jointInfos[i].startIndex + j];
                     ++j;
                 }
 
                 if ((jointInfos[i].flags & 32) > 0) /* Qz */
                 {
-                    animatedOrient.XYZ.Z = animFrameData[jointInfos[i].startIndex + j];
+                    animatedOrient.Z = animFrameData[jointInfos[i].startIndex + j];
                     ++j;
                 }
 
@@ -721,9 +725,9 @@ namespace CSat
                                 baseFrame[i].pos.X = t.fbuffer[0];
                                 baseFrame[i].pos.Y = t.fbuffer[1];
                                 baseFrame[i].pos.Z = t.fbuffer[2];
-                                baseFrame[i].orient.XYZ.X = t.fbuffer[3];
-                                baseFrame[i].orient.XYZ.Y = t.fbuffer[4];
-                                baseFrame[i].orient.XYZ.Z = t.fbuffer[5];
+                                baseFrame[i].orient.X = t.fbuffer[3];
+                                baseFrame[i].orient.Y = t.fbuffer[4];
+                                baseFrame[i].orient.Z = t.fbuffer[5];
 
                                 /* Compute the w component */
                                 MathExt.ComputeW(ref baseFrame[i].orient);

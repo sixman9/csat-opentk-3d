@@ -4,6 +4,37 @@
         <name>OpenTK.Utilities</name>
     </assembly>
     <members>
+        <member name="T:OpenTK.Graphics.AlphaTexture2D">
+            <summary>
+            Encapsulates an OpenGL texture.
+            </summary>
+        </member>
+        <member name="T:OpenTK.Graphics.IGraphicsResource">
+            <summary>
+            Defines a common interface to all OpenGL resources.
+            </summary>
+        </member>
+        <member name="P:OpenTK.Graphics.IGraphicsResource.Context">
+            <summary>
+            Gets the GraphicsContext that owns this resource.
+            </summary>
+        </member>
+        <member name="P:OpenTK.Graphics.IGraphicsResource.Id">
+            <summary>
+            Gets the Id of this IGraphicsResource.
+            </summary>
+        </member>
+        <member name="P:OpenTK.Graphics.Texture2D.Width">
+            <summary>Gets the width of the texture.</summary>
+        </member>
+        <member name="P:OpenTK.Graphics.Texture2D.Height">
+            <summary>Gets the height of the texture.</summary>
+        </member>
+        <member name="M:OpenTK.Graphics.AlphaTexture2D.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Constructs a new Texture.
+            </summary>
+        </member>
         <member name="T:OpenTK.Graphics.VboTextPrinter">
             <summary>
             Provides text printing through OpenGL 1.5 vertex buffer objects.
@@ -77,95 +108,6 @@
             Gets the TextureFont used for this text run.
             </summary>
         </member>
-        <member name="T:OpenTK.Graphics.TextPrinter">
-            <summary>
-            Provides methods to perform layout and print hardware accelerated text.
-            </summary>
-        </member>
-        <member name="T:OpenTK.Graphics.ITextPrinter">
-            <summary>
-            Defines the interface for a TextPrinter.
-            </summary>
-        </member>
-        <member name="M:OpenTK.Graphics.TextPrinter.#ctor">
-            <summary>
-            Constructs a new TextPrinter object.
-            </summary>
-        </member>
-        <member name="M:OpenTK.Graphics.TextPrinter.Prepare(System.String,OpenTK.Graphics.TextureFont,OpenTK.Graphics.TextHandle@)">
-            <summary>
-            Prepares text for drawing.
-            </summary>
-            <param name="text">The string to draw.</param>
-            <param name="font">The font to use for drawing.</param>
-            <param name="handle">The handle to the cached text. Use this to draw the text with the Draw() function.</param>
-            <see cref="!:TextPrinter.Draw()"/>
-        </member>
-        <member name="M:OpenTK.Graphics.TextPrinter.Prepare(System.String,OpenTK.Graphics.TextureFont,OpenTK.Graphics.TextHandle@,System.Single,System.Boolean)">
-            <summary>
-            Prepares text for drawing.
-            </summary>
-            <param name="text">The string to draw.</param>
-            <param name="font">The font to use for drawing.</param>
-            <param name="handle">The handle to the cached text. Use this to draw the text with the Draw() function.</param>
-            <param name="width">Not implemented.</param>
-            <param name="wordWarp">Not implemented.</param>
-            <see cref="!:TextPrinter.Draw()"/>
-        </member>
-        <member name="M:OpenTK.Graphics.TextPrinter.Prepare(System.String,OpenTK.Graphics.TextureFont,OpenTK.Graphics.TextHandle@,System.Single,System.Boolean,System.Drawing.StringAlignment)">
-            <summary>
-            Prepares text for drawing.
-            </summary>
-            <param name="text">The string to draw.</param>
-            <param name="font">The font to use for drawing.</param>
-            <param name="handle">The handle to the cached text. Use this to draw the text with the Draw() function.</param>
-            <param name="width">Not implemented.</param>
-            <param name="wordWarp">Not implemented.</param>
-            <param name="alignment">Not implemented.</param>
-            <see cref="!:TextPrinter.Draw()"/>
-        </member>
-        <member name="M:OpenTK.Graphics.TextPrinter.Prepare(System.String,OpenTK.Graphics.TextureFont,OpenTK.Graphics.TextHandle@,System.Single,System.Boolean,System.Drawing.StringAlignment,System.Boolean)">
-            <summary>
-            Prepares text for drawing.
-            </summary>
-            <param name="text">The string to draw.</param>
-            <param name="font">The font to use for drawing.</param>
-            <param name="handle">The handle to the cached text. Use this to draw the text with the Draw() function.</param>
-            <param name="width">Not implemented.</param>
-            <param name="wordWarp">Not implemented.</param>
-            <param name="alignment">Not implemented.</param>
-            <param name="rightToLeft">Not implemented.</param>
-            <see cref="!:TextPrinter.Draw()"/>
-            <exception cref="T:System.NotSupportedException">Occurs when OpenGL 1.1 is not supported.</exception>
-        </member>
-        <member name="M:OpenTK.Graphics.TextPrinter.Draw(OpenTK.Graphics.TextHandle)">
-            <summary>
-            Draws the cached text referred to by the TextHandle.
-            </summary>
-            <param name="handle">The TextHandle to the cached text.</param>
-        </member>
-        <member name="M:OpenTK.Graphics.TextPrinter.Draw(System.String,OpenTK.Graphics.TextureFont)">
-            <summary>
-            Draws dynamic text without caching. Not implemented yet!
-            </summary>
-            <param name="text">The System.String to draw.</param>
-            <param name="font">The OpenTK.Graphics.TextureFont to draw the text in.</param>
-        </member>
-        <member name="M:OpenTK.Graphics.TextPrinter.Begin">
-            <summary>
-            Sets up OpenGL state for drawing text.
-            </summary>
-        </member>
-        <member name="M:OpenTK.Graphics.TextPrinter.End">
-            <summary>
-            Restores OpenGL state.
-            </summary>
-        </member>
-        <member name="P:OpenTK.Graphics.TextPrinter.Printer">
-            <summary>
-            Checks the machine's capabilities and selects the fastest method to print text.
-            </summary>
-        </member>
         <member name="T:OpenTK.Graphics.Glyph">
             <summary>
             Represents a single character of a specific Font.
@@ -220,6 +162,16 @@
              Gets the Font of this Glyph.
             </summary>
         </member>
+        <member name="P:OpenTK.Graphics.Glyph.Size">
+            <summary>
+            Gets the size of this Glyph.
+            </summary>
+        </member>
+        <member name="P:OpenTK.Graphics.Glyph.Rectangle">
+            <summary>
+            Gets the bounding box of this Glyph.
+            </summary>
+        </member>
         <member name="P:OpenTK.Graphics.Glyph.Width">
             <summary>
             Gets an integer representing the width of the Glyph in pixels.
@@ -253,6 +205,11 @@
             <remarks>Changing the size of the TexturePacker surface will implicitly call TexturePacker.Clear().</remarks>
             <seealso cref="M:OpenTK.TexturePacker`1.Clear"/>
         </member>
+        <member name="T:OpenTK.Graphics.TextureRegion2D`1">
+            <summary>
+            Holds part or the whole of a 2d OpenGL texture.
+            </summary>
+        </member>
         <member name="T:OpenTK.Audio.AudioReaderException">
             <summary>Represents exceptions related to OpenTK.Audio.AudioReader objects.</summary>
         </member>
@@ -262,6 +219,167 @@
         <member name="M:OpenTK.Audio.AudioReaderException.#ctor(System.String)">
             <summary>Constructs a new AudioReaderException with the specified error message.</summary>
             <param name="message">The error message of the AudioReaderException.</param>
+        </member>
+        <member name="M:OpenTK.Graphics.Text.GlyphPacker.TryAdd(System.Drawing.Rectangle,System.Drawing.Rectangle@)">
+            <summary>
+            Adds boundingBox to the GlyphPacker.
+            </summary>
+            <param name="boundingBox">The bounding box of the item to pack.</param>
+            <param name="packedRectangle">The System.Drawing.Rectangle that contains the position of the packed item.</param>
+            <returns>True, if the item was successfully packed; false if the item is too big for this packer..</returns>
+            <exception cref="T:System.InvalidOperationException">Occurs if the item is larger than the available TexturePacker area</exception>
+            <exception cref="T:OpenTK.Graphics.Text.TexturePackerFullException">Occurs if the item cannot fit in the remaining packer space.</exception>
+        </member>
+        <member name="M:OpenTK.Graphics.Text.GlyphPacker.TryAdd(System.Drawing.RectangleF,System.Drawing.RectangleF@)">
+            <summary>
+            Adds boundingBox to the GlyphPacker.
+            </summary>
+            <param name="boundingBox">The bounding box of the item to pack.</param>
+            <param name="packedRectangle">The System.Drawing.RectangleF that contains the position of the packed item.</param>
+            <returns>True, if the item was successfully packed; false if the item is too big for this packer..</returns>
+            <exception cref="T:System.InvalidOperationException">Occurs if the item is larger than the available TexturePacker area</exception>
+            <exception cref="T:OpenTK.Graphics.Text.TexturePackerFullException">Occurs if the item cannot fit in the remaining packer space.</exception>
+        </member>
+        <member name="M:OpenTK.Graphics.Text.GlyphPacker.Add(System.Drawing.Rectangle)">
+            <summary>
+            Adds boundingBox to the GlyphPacker.
+            </summary>
+            <param name="boundingBox">The bounding box of the item to pack.</param>
+            <returns>A System.Drawing.Rectangle containing the coordinates of the packed item.</returns>
+            <exception cref="T:System.InvalidOperationException">Occurs if the item is larger than the available TexturePacker area</exception>
+            <exception cref="T:OpenTK.Graphics.Text.TexturePackerFullException">Occurs if the item cannot fit in the remaining packer space.</exception>
+        </member>
+        <member name="M:OpenTK.Graphics.Text.GlyphPacker.Add(System.Drawing.RectangleF)">
+            <summary>
+            Rounds boundingBox to the largest integer and adds the resulting Rectangle to the GlyphPacker.
+            </summary>
+            <param name="boundingBox">The bounding box of the item to pack.</param>
+            <returns>A System.Drawing.Rectangle containing the coordinates of the packed item.</returns>
+            <exception cref="T:System.InvalidOperationException">Occurs if the item is larger than the available TexturePacker area</exception>
+            <exception cref="T:System.ArgumentException">Occurs if the item already exists in the TexturePacker.</exception>
+        </member>
+        <member name="M:OpenTK.Graphics.Text.GlyphPacker.Clear">
+            <summary>
+            Discards all packed items.
+            </summary>
+        </member>
+        <member name="T:OpenTK.Graphics.ITextPrinter">
+            <summary>
+            Defines the interface for a TextPrinter.
+            </summary>
+        </member>
+        <member name="M:OpenTK.Graphics.ITextPrinter.Print(System.String,System.Drawing.Font,System.Drawing.Color)">
+            <summary>
+            Prints text using the specified color and layout options.
+            </summary>
+            <param name="text">The System.String to print.</param>
+            <param name="font">The System.Drawing.Font that will be used to print text.</param>
+            <param name="color">The System.Drawing.Color that will be used to print text.</param>
+        </member>
+        <member name="M:OpenTK.Graphics.ITextPrinter.Print(System.String,System.Drawing.Font,System.Drawing.Color,System.Drawing.RectangleF)">
+            <summary>
+            Prints text using the specified color and layout options.
+            </summary>
+            <param name="text">The System.String to print.</param>
+            <param name="font">The System.Drawing.Font that will be used to print text.</param>
+            <param name="color">The System.Drawing.Color that will be used to print text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+        </member>
+        <member name="M:OpenTK.Graphics.ITextPrinter.Print(System.String,System.Drawing.Font,System.Drawing.Color,System.Drawing.RectangleF,OpenTK.Graphics.TextPrinterOptions)">
+            <summary>
+            Prints text using the specified color and layout options.
+            </summary>
+            <param name="text">The System.String to print.</param>
+            <param name="font">The System.Drawing.Font that will be used to print text.</param>
+            <param name="color">The System.Drawing.Color that will be used to print text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+            <param name="options">The OpenTK.Graphics.TextPrinterOptions that will be used to print text.</param>
+        </member>
+        <member name="M:OpenTK.Graphics.ITextPrinter.Print(System.String,System.Drawing.Font,System.Drawing.Color,System.Drawing.RectangleF,OpenTK.Graphics.TextPrinterOptions,OpenTK.Graphics.TextAlignment)">
+            <summary>
+            Prints text using the specified color and layout options.
+            </summary>
+            <param name="text">The System.String to print.</param>
+            <param name="font">The System.Drawing.Font that will be used to print text.</param>
+            <param name="color">The System.Drawing.Color that will be used to print text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+            <param name="options">The OpenTK.Graphics.TextPrinterOptions that will be used to print text.</param>
+            <param name="alignment">The OpenTK.Graphics.TextAlignment that will be used to print text.</param>
+        </member>
+        <member name="M:OpenTK.Graphics.ITextPrinter.Print(System.String,System.Drawing.Font,System.Drawing.Color,System.Drawing.RectangleF,OpenTK.Graphics.TextPrinterOptions,OpenTK.Graphics.TextAlignment,OpenTK.Graphics.TextDirection)">
+            <summary>
+            Prints text using the specified color and layout options.
+            </summary>
+            <param name="text">The System.String to print.</param>
+            <param name="font">The System.Drawing.Font that will be used to print text.</param>
+            <param name="color">The System.Drawing.Color that will be used to print text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+            <param name="options">The OpenTK.Graphics.TextPrinterOptions that will be used to print text.</param>
+            <param name="alignment">The OpenTK.Graphics.TextAlignment that will be used to print text.</param>
+            <param name="direction">The OpenTK.Graphics.TextDirection that will be used to print text.</param>
+        </member>
+        <member name="M:OpenTK.Graphics.ITextPrinter.Measure(System.String,System.Drawing.Font)">
+            <summary>
+            Measures text using the specified layout options.
+            </summary>
+            <param name="text">The System.String to measure.</param>
+            <param name="font">The System.Drawing.Font that will be used to measure text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+            <returns>An OpenTK.Graphics.TextExtents instance that contains the results of the measurement.</returns>
+        </member>
+        <member name="M:OpenTK.Graphics.ITextPrinter.Measure(System.String,System.Drawing.Font,System.Drawing.RectangleF)">
+            <summary>
+            Measures text using the specified layout options.
+            </summary>
+            <param name="text">The System.String to measure.</param>
+            <param name="font">The System.Drawing.Font that will be used to measure text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+            <param name="options">The OpenTK.Graphics.TextPrinterOptions that will be used to measure text.</param>
+            <returns>An OpenTK.Graphics.TextExtents instance that contains the results of the measurement.</returns>
+        </member>
+        <member name="M:OpenTK.Graphics.ITextPrinter.Measure(System.String,System.Drawing.Font,System.Drawing.RectangleF,OpenTK.Graphics.TextPrinterOptions)">
+            <summary>
+            Measures text using the specified layout options.
+            </summary>
+            <param name="text">The System.String to measure.</param>
+            <param name="font">The System.Drawing.Font that will be used to measure text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+            <param name="options">The OpenTK.Graphics.TextPrinterOptions that will be used to measure text.</param>
+            <param name="alignment">The OpenTK.Graphics.TextAlignment that will be used to measure text.</param>
+            <returns>An OpenTK.Graphics.TextExtents instance that contains the results of the measurement.</returns>
+        </member>
+        <member name="M:OpenTK.Graphics.ITextPrinter.Measure(System.String,System.Drawing.Font,System.Drawing.RectangleF,OpenTK.Graphics.TextPrinterOptions,OpenTK.Graphics.TextAlignment)">
+            <summary>
+            Measures text using the specified layout options.
+            </summary>
+            <param name="text">The System.String to measure.</param>
+            <param name="font">The System.Drawing.Font that will be used to measure text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+            <param name="options">The OpenTK.Graphics.TextPrinterOptions that will be used to measure text.</param>
+            <param name="alignment">The OpenTK.Graphics.TextAlignment that will be used to measure text.</param>
+            <returns>An OpenTK.Graphics.TextExtents instance that contains the results of the measurement.</returns>
+        </member>
+        <member name="M:OpenTK.Graphics.ITextPrinter.Measure(System.String,System.Drawing.Font,System.Drawing.RectangleF,OpenTK.Graphics.TextPrinterOptions,OpenTK.Graphics.TextAlignment,OpenTK.Graphics.TextDirection)">
+            <summary>
+            Measures text using the specified layout options.
+            </summary>
+            <param name="text">The System.String to measure.</param>
+            <param name="font">The System.Drawing.Font that will be used to measure text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+            <param name="options">The OpenTK.Graphics.TextPrinterOptions that will be used to measure text.</param>
+            <param name="alignment">The OpenTK.Graphics.TextAlignment that will be used to measure text.</param>
+            <param name="direction">The OpenTK.Graphics.TextDirection that will be used to measure text.</param>
+            <returns>An OpenTK.Graphics.TextExtents instance that contains the results of the measurement.</returns>
+        </member>
+        <member name="M:OpenTK.Graphics.ITextPrinter.Begin">
+            <summary>
+            Sets up a resolution-dependent orthographic projection.
+            </summary>
+        </member>
+        <member name="M:OpenTK.Graphics.ITextPrinter.End">
+            <summary>
+            Restores the projection and modelview matrices to their previous state.
+            </summary>
         </member>
         <member name="M:OpenTK.Graphics.TextureFont.#ctor(System.Drawing.Font)">
             <summary>
@@ -427,6 +545,20 @@
             
             </summary>
         </member>
+        <member name="T:OpenTK.Graphics.TextAlignment">
+            <summary>
+            Defines available alignments for text.
+            </summary>
+        </member>
+        <member name="F:OpenTK.Graphics.TextAlignment.Near">
+            <summary>The text is aligned to the near side (left for left-to-right text and right for right-to-left text).</summary>
+        </member>
+        <member name="F:OpenTK.Graphics.TextAlignment.Center">
+            <summary>The text is aligned to the center.</summary>
+        </member>
+        <member name="F:OpenTK.Graphics.TextAlignment.Far">
+            <summary>The text is aligned to the far side (right for left-to-right text and left for right-to-left text).</summary>
+        </member>
         <member name="M:OpenTK.Audio.WaveReader.Supports(System.IO.Stream)">
             <summary>
             Checks whether the specified stream contains valid WAVE/RIFF buffer.
@@ -447,10 +579,262 @@
             </summary>
             <returns>An OpenTK.Audio.SoundData object that contains the decoded buffer.</returns>
         </member>
+        <member name="T:OpenTK.Graphics.TextQuality">
+            <summary>
+            Defines available quality levels for text printing.
+            </summary>
+        </member>
+        <member name="F:OpenTK.Graphics.TextQuality.Default">
+            <summary>Use the default quality, as specified by the operating system.</summary>
+        </member>
+        <member name="F:OpenTK.Graphics.TextQuality.Low">
+            <summary>Use fast, low quality text (typically non-antialiased) .</summary>
+        </member>
+        <member name="F:OpenTK.Graphics.TextQuality.Medium">
+            <summary>Use medium quality text (typically grayscale antialiased).</summary>
+        </member>
+        <member name="F:OpenTK.Graphics.TextQuality.High">
+            <summary>Use slow, high quality text (typically subpixel antialiased).</summary>
+        </member>
+        <member name="T:OpenTK.Graphics.GraphicsResourceException">
+            <summary>
+            Represents exceptions related to IGraphicsResources.
+            </summary>
+        </member>
+        <member name="M:OpenTK.Graphics.GraphicsResourceException.#ctor">
+            <summary>Constructs a new GraphicsResourceException.</summary>
+        </member>
+        <member name="M:OpenTK.Graphics.GraphicsResourceException.#ctor(System.String)">
+            <summary>Constructs a new string with the specified error message.</summary>
+        </member>
+        <member name="M:OpenTK.Graphics.Text.Glyph.#ctor(System.Char,System.Drawing.Font)">
+            <summary>
+            Constructs a new Glyph that represents the given character and Font.
+            </summary>
+            <param name="c">The character to represent.</param>
+            <param name="f">The Font of the character.</param>
+        </member>
+        <member name="M:OpenTK.Graphics.Text.Glyph.Equals(System.Object)">
+            <summary>
+            Checks whether the given object is equal (memberwise) to the current Glyph.
+            </summary>
+            <param name="obj">The obj to check.</param>
+            <returns>True, if the object is identical to the current Glyph.</returns>
+        </member>
+        <member name="M:OpenTK.Graphics.Text.Glyph.ToString">
+            <summary>
+            Describes this Glyph object.
+            </summary>
+            <returns>Returns a System.String describing this Glyph.</returns>
+        </member>
+        <member name="M:OpenTK.Graphics.Text.Glyph.GetHashCode">
+            <summary>
+            Calculates the hashcode for this Glyph.
+            </summary>
+            <returns>A System.Int32 containing a hashcode that uniquely identifies this Glyph.</returns>
+        </member>
+        <member name="P:OpenTK.Graphics.Text.Glyph.Character">
+            <summary>
+            Gets the character represented by this Glyph.
+            </summary>
+        </member>
+        <member name="P:OpenTK.Graphics.Text.Glyph.Font">
+            <summary>
+             Gets the Font of this Glyph.
+            </summary>
+        </member>
+        <member name="T:OpenTK.Graphics.TextPrinter">
+            <summary>
+            Provides methods to perform layout and print hardware accelerated text.
+            </summary>
+        </member>
+        <member name="M:OpenTK.Graphics.TextPrinter.#ctor">
+            <summary>
+            Constructs a new TextPrinter instance.
+            </summary>
+        </member>
+        <member name="M:OpenTK.Graphics.TextPrinter.#ctor(OpenTK.Graphics.TextQuality)">
+            <summary>
+            Constructs a new TextPrinter instance with the specified TextQuality level.
+            </summary>
+            <param name="quality">The desired TextQuality of this TextPrinter.</param>
+        </member>
+        <member name="M:OpenTK.Graphics.TextPrinter.Print(System.String,System.Drawing.Font,System.Drawing.Color)">
+            <summary>
+            Prints text using the specified color and layout options.
+            </summary>
+            <param name="text">The System.String to print.</param>
+            <param name="font">The System.Drawing.Font that will be used to print text.</param>
+            <param name="color">The System.Drawing.Color that will be used to print text.</param>
+        </member>
+        <member name="M:OpenTK.Graphics.TextPrinter.Print(System.String,System.Drawing.Font,System.Drawing.Color,System.Drawing.RectangleF)">
+            <summary>
+            Prints text using the specified color and layout options.
+            </summary>
+            <param name="text">The System.String to print.</param>
+            <param name="font">The System.Drawing.Font that will be used to print text.</param>
+            <param name="color">The System.Drawing.Color that will be used to print text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+        </member>
+        <member name="M:OpenTK.Graphics.TextPrinter.Print(System.String,System.Drawing.Font,System.Drawing.Color,System.Drawing.RectangleF,OpenTK.Graphics.TextPrinterOptions)">
+            <summary>
+            Prints text using the specified color and layout options.
+            </summary>
+            <param name="text">The System.String to print.</param>
+            <param name="font">The System.Drawing.Font that will be used to print text.</param>
+            <param name="color">The System.Drawing.Color that will be used to print text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+            <param name="options">The OpenTK.Graphics.TextPrinterOptions that will be used to print text.</param>
+        </member>
+        <member name="M:OpenTK.Graphics.TextPrinter.Print(System.String,System.Drawing.Font,System.Drawing.Color,System.Drawing.RectangleF,OpenTK.Graphics.TextPrinterOptions,OpenTK.Graphics.TextAlignment)">
+            <summary>
+            Prints text using the specified color and layout options.
+            </summary>
+            <param name="text">The System.String to print.</param>
+            <param name="font">The System.Drawing.Font that will be used to print text.</param>
+            <param name="color">The System.Drawing.Color that will be used to print text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+            <param name="options">The OpenTK.Graphics.TextPrinterOptions that will be used to print text.</param>
+            <param name="alignment">The OpenTK.Graphics.TextAlignment that will be used to print text.</param>
+        </member>
+        <member name="M:OpenTK.Graphics.TextPrinter.Print(System.String,System.Drawing.Font,System.Drawing.Color,System.Drawing.RectangleF,OpenTK.Graphics.TextPrinterOptions,OpenTK.Graphics.TextAlignment,OpenTK.Graphics.TextDirection)">
+            <summary>
+            Prints text using the specified color and layout options.
+            </summary>
+            <param name="text">The System.String to print.</param>
+            <param name="font">The System.Drawing.Font that will be used to print text.</param>
+            <param name="color">The System.Drawing.Color that will be used to print text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+            <param name="options">The OpenTK.Graphics.TextPrinterOptions that will be used to print text.</param>
+            <param name="alignment">The OpenTK.Graphics.TextAlignment that will be used to print text.</param>
+            <param name="direction">The OpenTK.Graphics.TextDirection that will be used to print text.</param>
+        </member>
+        <member name="M:OpenTK.Graphics.TextPrinter.Measure(System.String,System.Drawing.Font)">
+            <summary>
+            Measures text using the specified layout options.
+            </summary>
+            <param name="text">The System.String to measure.</param>
+            <param name="font">The System.Drawing.Font that will be used to measure text.</param>
+            <returns>An OpenTK.Graphics.TextExtents instance that contains the results of the measurement.</returns>
+        </member>
+        <member name="M:OpenTK.Graphics.TextPrinter.Measure(System.String,System.Drawing.Font,System.Drawing.RectangleF)">
+            <summary>
+            Measures text using the specified layout options.
+            </summary>
+            <param name="text">The System.String to measure.</param>
+            <param name="font">The System.Drawing.Font that will be used to measure text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+            <returns>An OpenTK.Graphics.TextExtents instance that contains the results of the measurement.</returns>
+        </member>
+        <member name="M:OpenTK.Graphics.TextPrinter.Measure(System.String,System.Drawing.Font,System.Drawing.RectangleF,OpenTK.Graphics.TextPrinterOptions)">
+            <summary>
+            Measures text using the specified layout options.
+            </summary>
+            <param name="text">The System.String to measure.</param>
+            <param name="font">The System.Drawing.Font that will be used to measure text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+            <param name="options">The OpenTK.Graphics.TextPrinterOptions that will be used to measure text.</param>
+            <returns>An OpenTK.Graphics.TextExtents instance that contains the results of the measurement.</returns>
+        </member>
+        <member name="M:OpenTK.Graphics.TextPrinter.Measure(System.String,System.Drawing.Font,System.Drawing.RectangleF,OpenTK.Graphics.TextPrinterOptions,OpenTK.Graphics.TextAlignment)">
+            <summary>
+            Measures text using the specified layout options.
+            </summary>
+            <param name="text">The System.String to measure.</param>
+            <param name="font">The System.Drawing.Font that will be used to measure text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+            <param name="options">The OpenTK.Graphics.TextPrinterOptions that will be used to measure text.</param>
+            <param name="alignment">The OpenTK.Graphics.TextAlignment that will be used to measure text.</param>
+            <returns>An OpenTK.Graphics.TextExtents instance that contains the results of the measurement.</returns>
+        </member>
+        <member name="M:OpenTK.Graphics.TextPrinter.Measure(System.String,System.Drawing.Font,System.Drawing.RectangleF,OpenTK.Graphics.TextPrinterOptions,OpenTK.Graphics.TextAlignment,OpenTK.Graphics.TextDirection)">
+            <summary>
+            Measures text using the specified layout options.
+            </summary>
+            <param name="text">The System.String to measure.</param>
+            <param name="font">The System.Drawing.Font that will be used to measure text.</param>
+            <param name="rect">The System.Drawing.Rectangle that defines the bounds for text layout.</param>
+            <param name="options">The OpenTK.Graphics.TextPrinterOptions that will be used to measure text.</param>
+            <param name="alignment">The OpenTK.Graphics.TextAlignment that will be used to measure text.</param>
+            <param name="direction">The OpenTK.Graphics.TextDirection that will be used to measure text.</param>
+            <returns>An OpenTK.Graphics.TextExtents instance that contains the results of the measurement.</returns>
+        </member>
+        <member name="M:OpenTK.Graphics.TextPrinter.Begin">
+            <summary>
+            Sets up a resolution-dependent orthographic projection.
+            </summary>
+        </member>
+        <member name="M:OpenTK.Graphics.TextPrinter.End">
+            <summary>
+            Restores the projection and modelview matrices to their previous state.
+            </summary>
+        </member>
+        <member name="M:OpenTK.Graphics.TextPrinter.Dispose">
+            <summary>
+            Frees the resources consumed by this TextPrinter object.
+            </summary>
+        </member>
+        <member name="T:OpenTK.Graphics.TextExtents">
+            <summary>
+            Holds the results of a text measurement.
+            </summary>
+        </member>
+        <member name="M:OpenTK.Graphics.TextExtents.Dispose">
+            <summary>
+            Frees the resources consumed by this TextExtents instance.
+            </summary>
+        </member>
+        <member name="P:OpenTK.Graphics.TextExtents.BoundingBox">
+            <summary>
+            Gets the bounding box of the measured text.
+            </summary>
+        </member>
+        <member name="P:OpenTK.Graphics.TextExtents.Item(System.Int32)">
+            <summary>
+            Gets the extents of each glyph in the measured text.
+            </summary>
+            <param name="i">The index of the glyph.</param>
+            <returns>The extents of the specified glyph.</returns>
+        </member>
+        <member name="P:OpenTK.Graphics.TextExtents.GlyphExtents">
+            <summary>
+            Gets the extents of each glyph in the measured text.
+            </summary>
+        </member>
+        <member name="P:OpenTK.Graphics.TextExtents.Count">
+            <summary>
+            Gets the number of the measured glyphs.
+            </summary>
+        </member>
         <member name="T:OpenTK.Graphics.DisplayListTextPrinter">
             <summary>
             Provides text printing through OpenGL 1.1 Display Lists.
             </summary>
+        </member>
+        <member name="T:OpenTK.Graphics.TextDirection">
+            <summary>
+            Defines available directions for text layout.
+            </summary>
+        </member>
+        <member name="F:OpenTK.Graphics.TextDirection.LeftToRight">
+            <summary>The text is layed out from left to right.</summary>
+        </member>
+        <member name="F:OpenTK.Graphics.TextDirection.RightToLeft">
+            <summary>The text is layed out from right to left.</summary>
+        </member>
+        <member name="F:OpenTK.Graphics.TextDirection.Vertical">
+            <summary>The text is layed out vertically.</summary>
+        </member>
+        <member name="T:OpenTK.Graphics.TextPrinterOptions">
+            <summary>
+            Defines available options for the TextPrinter.
+            </summary>
+        </member>
+        <member name="F:OpenTK.Graphics.TextPrinterOptions.Default">
+            <summary>The TextPrinter will use default printing options.</summary>
+        </member>
+        <member name="F:OpenTK.Graphics.TextPrinterOptions.NoCache">
+            <summary>The TextPrinter will not cache text blocks as they are measured or printed.</summary>
         </member>
     </members>
 </doc>

@@ -328,12 +328,6 @@ namespace CSat
             Glu.LookAt(Position, pos, Up);
         }
 
-        public void LookAt(float x, float y, float z)
-        {
-            GL.LoadIdentity();
-            Glu.LookAt(Position.X, Position.Y, Position.Z, x, y, z, Up.X, Up.Y, Up.Z);
-        }
-
         void Translate(Node obj)
         {
             // liikuta haluttuun kohtaan
@@ -349,7 +343,7 @@ namespace CSat
         protected void Translate()
         {
             // liikuta haluttuun kohtaan
-            GL.Translate(Position.X, Position.Y, Position.Z);
+            GL.Translate(Position);
 
             // aseta oikea asento
             GL.Rotate(Rotation.X, 1, 0, 0);
@@ -411,30 +405,52 @@ namespace CSat
         /// <summary>
         /// laskee joka objektin paikan ja ottaa sen talteen joko Matrix tai WMatrix taulukkoon
         /// </summary>
-        /// <param name="wMatrix"></param>
-        public void CalcPositions(bool wMatrix)
+        /// <param name="getWMatrix"></param>
+        public void CalcPositions(bool getWMatrix)
         {
             GL.PushMatrix();
             foreach (Node o in Objects)
             {
                 GL.PushMatrix();
 
-                if (wMatrix)
+                if (this is Mesh)
                 {
-                    o.Translate(o);
-                    GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
-                    Util.CopyArray(ref Util.ModelMatrix, ref o.WMatrix);
+                    Mesh m = (Mesh)this;
+                    if (m.LookAtNextPoint == false)
+                    {
+                        if (getWMatrix)
+                        {
+                            o.Translate(o);
+                            GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
+                            Util.CopyArray(ref Util.ModelMatrix, ref o.WMatrix);
+                        }
+                        else
+                        {
+                            o.Translate();
+                            GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
+                            Util.CopyArray(ref Util.ModelMatrix, ref o.Matrix);
+                        }
+                    }
                 }
                 else
                 {
-                    o.Translate();
-                    GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
-                    Util.CopyArray(ref Util.ModelMatrix, ref o.Matrix);
+                    if (getWMatrix)
+                    {
+                        o.Translate(o);
+                        GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
+                        Util.CopyArray(ref Util.ModelMatrix, ref o.WMatrix);
+                    }
+                    else
+                    {
+                        o.Translate();
+                        GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
+                        Util.CopyArray(ref Util.ModelMatrix, ref o.Matrix);
+                    }
                 }
 
                 if (o.Objects.Length > 0)
                 {
-                    o.CalcPositions(wMatrix);
+                    o.CalcPositions(getWMatrix);
                 }
 
                 GL.PopMatrix();
@@ -444,6 +460,12 @@ namespace CSat
 
         public void CalcPosition(bool wMatrix)
         {
+            if (this is Mesh)
+            {
+                Mesh m = (Mesh)this;
+                if (m.LookAtNextPoint) return;
+            }
+
             if (wMatrix)
             {
                 Translate(this);

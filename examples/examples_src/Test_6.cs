@@ -22,8 +22,8 @@ namespace CSatExamples
         Camera cam = new Camera();
         Billboard obj = new Billboard("billboard");
 
-        ITextPrinter printer = new TextPrinter();
-        TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
+        Font font = new Font(FontFamily.GenericSansSerif, 24.0f);
+        TextPrinter text = new TextPrinter();
 
         public Game6(int width, int height) : base(width, height, GraphicsMode.Default, "Billboard test") { }
 
@@ -132,10 +132,9 @@ namespace CSatExamples
             Util.RenderGrid();
 
             Texture.ActiveUnit(0);
-            printer.Begin();
-            printer.Draw("camerapos: " + cam.Position.ToString() + "  --", font);
-            printer.End();
-            GL.MatrixMode(MatrixMode.Modelview);
+            text.Begin();
+            text.Print("camerapos: " + cam.Position.ToString(), font, Color.White);
+            text.End();
 
             SwapBuffers();
         }

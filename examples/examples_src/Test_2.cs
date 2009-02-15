@@ -25,8 +25,8 @@ namespace CSatExamples
     class Game2 : GameWindow
     {
         Camera cam = new Camera();
-        ITextPrinter printer = new TextPrinter();
-        TextureFont font = new TextureFont(new Font(FontFamily.GenericSerif, 24.0f));
+        Font font = new Font(FontFamily.GenericSansSerif, 24.0f);
+        TextPrinter text = new TextPrinter();
 
         Sky skybox = new Sky("sky");
         Mesh obj;
@@ -139,10 +139,9 @@ namespace CSatExamples
             GL.Disable(EnableCap.Blend);
 
             Texture.ActiveUnit(0);
-            printer.Begin();
-            printer.Draw("3D test -- objs: " + Settings.NumOfObjects + " ::: ", font);
-            printer.End();
-            GL.MatrixMode(MatrixMode.Modelview);
+            text.Begin();
+            text.Print("3D test -- objs: " + Settings.NumOfObjects, font, Color.White);
+            text.End();
 
             SwapBuffers();
         }
