@@ -74,8 +74,6 @@ namespace CSat
         /// </summary>
         public float[] WMatrix = null;
 
-        static protected bool _nodeRender = false;
-
         protected List<Node> objects = new List<Node>();
         public Node[] Objects
         {
@@ -409,43 +407,23 @@ namespace CSat
         public void CalcPositions(bool getWMatrix)
         {
             GL.PushMatrix();
+            CalcPosition(getWMatrix);
+
             foreach (Node o in Objects)
             {
                 GL.PushMatrix();
 
-                if (this is Mesh)
+                if (getWMatrix)
                 {
-                    Mesh m = (Mesh)this;
-                    if (m.LookAtNextPoint == false)
-                    {
-                        if (getWMatrix)
-                        {
-                            o.Translate(o);
-                            GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
-                            Util.CopyArray(ref Util.ModelMatrix, ref o.WMatrix);
-                        }
-                        else
-                        {
-                            o.Translate();
-                            GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
-                            Util.CopyArray(ref Util.ModelMatrix, ref o.Matrix);
-                        }
-                    }
+                    o.Translate(o);
+                    GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
+                    Util.CopyArray(ref Util.ModelMatrix, ref o.WMatrix);
                 }
                 else
                 {
-                    if (getWMatrix)
-                    {
-                        o.Translate(o);
-                        GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
-                        Util.CopyArray(ref Util.ModelMatrix, ref o.WMatrix);
-                    }
-                    else
-                    {
-                        o.Translate();
-                        GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
-                        Util.CopyArray(ref Util.ModelMatrix, ref o.Matrix);
-                    }
+                    o.Translate();
+                    GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
+                    Util.CopyArray(ref Util.ModelMatrix, ref o.Matrix);
                 }
 
                 if (o.Objects.Length > 0)
@@ -460,10 +438,15 @@ namespace CSat
 
         public void CalcPosition(bool wMatrix)
         {
-            if (this is Mesh)
+            Mesh m = this as Mesh;
+            if (m != null)
             {
-                Mesh m = (Mesh)this;
-                if (m.LookAtNextPoint) return;
+                if (m.LookAtNextPoint)
+                {
+                    // TODO:
+                    // objekti ei k‰‰nny viel‰
+                    return;
+                }
             }
 
             if (wMatrix)
@@ -482,12 +465,10 @@ namespace CSat
 
         protected void CalculatePositions()
         {
-            CalcPosition(false);
             CalcPositions(false);
 
             GL.PushMatrix();
             GL.LoadIdentity();
-            CalcPosition(true);
             CalcPositions(true);
             GL.PopMatrix();
 
@@ -498,9 +479,12 @@ namespace CSat
             // j‰rjest‰ translucent listassa olevat objektit et‰isyyden mukaan, kauimmaiset ekaks
         }
 
+        protected virtual void RenderObject()
+        {
+        }
+
         public virtual void Render()
         {
-            if (_nodeRender) return;
             GL.PushMatrix();
 
             // lasketaan kaikkien objektien paikat valmiiksi. 
@@ -508,16 +492,14 @@ namespace CSat
             CalculatePositions();
 
             // renderointi
-            _nodeRender = true; // flagi ilmoittamaan objmodelin renderille ett‰ kutsutaan nodesta
             foreach (Node o in visibleObjects)
             {
-                o.Render();
+                o.RenderObject();
             }
             foreach (Node o in translucentObjects)
             {
-                o.Render();
+                o.RenderObject();
             }
-            _nodeRender = false;
 
             visibleObjects.Clear();
             translucentObjects.Clear();

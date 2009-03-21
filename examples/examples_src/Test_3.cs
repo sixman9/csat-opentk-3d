@@ -20,6 +20,7 @@ namespace CSatExamples
 {
     class Game3 : GameWindow
     {
+        private int _oldMouseX, _oldMouseY;
         Camera cam = new Camera();
         const int PART = 100; // montako partikkelia laitetaan savuun, räjähdykseen ja testiin
 
@@ -62,9 +63,6 @@ namespace CSatExamples
             cam.Position.Z = 100;
             cam.Position.Y = 2;
 
-            Mouse.ButtonDown += MouseButtonDown;
-            Mouse.ButtonUp += MouseButtonUp;
-
             particles.Add(test, null);
             particles.Add(explosion, new ParticleCallback(RenderParticleCallback));
             particles.Add(smoke, null);
@@ -73,11 +71,6 @@ namespace CSatExamples
             Util.Set3DMode();
 
         }
-
-        bool[] mouseButtons = new bool[5];
-        void MouseButtonDown(MouseDevice sender, MouseButton button) { mouseButtons[(int)button] = true; }
-        void MouseButtonUp(MouseDevice sender, MouseButton button) { mouseButtons[(int)button] = false; }
-
 
         #region OnUnload
         public override void OnUnload(EventArgs e)
@@ -119,12 +112,12 @@ namespace CSatExamples
             if (Keyboard[Key.D]) cam.MoveXZ(0, spd);
             if (Keyboard[Key.R]) cam.Position.Y++;
             if (Keyboard[Key.F]) cam.Position.Y--;
-            if (mouseButtons[(int)MouseButton.Left])
+            if (Mouse[MouseButton.Left])
             {
-                cam.TurnXZ(Mouse.XDelta);
-                cam.LookUpXZ(Mouse.YDelta);
+                cam.TurnXZ(Mouse.X - _oldMouseX);
+                cam.LookUpXZ(Mouse.Y - _oldMouseY);
             }
-            int tmp = Mouse.XDelta; tmp = Mouse.YDelta;
+            _oldMouseX = Mouse.X; _oldMouseY = Mouse.Y;
         }
 
 

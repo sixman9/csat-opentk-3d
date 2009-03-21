@@ -31,6 +31,7 @@ namespace CSatExamples
 {
     class Game11 : GameWindow
     {
+        private int _oldMouseX, _oldMouseY;
         Sky skydome = new Sky("sky");
 
         Camera cam = new Camera("Camera");
@@ -60,8 +61,6 @@ namespace CSatExamples
             GL.Enable(EnableCap.Lighting);
             GL.Enable(EnableCap.Light0);
 
-            Mouse.ButtonDown += MouseButtonDown;
-            Mouse.ButtonUp += MouseButtonUp;
             Util.Set3DMode();
 
             skydome.LoadSkydome("sky/space.jpg", 1f);
@@ -95,10 +94,6 @@ namespace CSatExamples
             // joten korjataan ne y arvot. tämä katsoo joka vertexin kohdalta y arvon ja lisää siihen yp:n (tässä 0).
             carPath.FixPathY(0, ref city);
         }
-
-        bool[] mouseButtons = new bool[5];
-        void MouseButtonDown(MouseDevice sender, MouseButton button) { mouseButtons[(int)button] = true; }
-        void MouseButtonUp(MouseDevice sender, MouseButton button) { mouseButtons[(int)button] = false; }
 
         public override void OnUnload(EventArgs e)
         {
@@ -175,13 +170,12 @@ namespace CSatExamples
             // ellei, palautetaan orig kameraan.
             CheckMove(ref origCamPos, ref cam.Position, ref city);
 
-            if (mouseButtons[(int)MouseButton.Left] && mode != 1)
+            if (Mouse[MouseButton.Left] && mode != 1)
             {
-                if (mode != 1) cam.RotateX(-Mouse.YDelta);
-                cam.RotateY(-Mouse.XDelta);
+                cam.RotateY(-(Mouse.X - _oldMouseX));
+                cam.RotateX(-(Mouse.Y - _oldMouseY));
             }
-
-            int tmp = Mouse.XDelta; tmp = Mouse.YDelta;
+            _oldMouseX = Mouse.X; _oldMouseY = Mouse.Y;
 
             cam.Up = new Vector3(0, 1, 0);
 

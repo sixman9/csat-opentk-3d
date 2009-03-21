@@ -19,6 +19,7 @@ namespace CSatExamples
 {
     class Game6 : GameWindow
     {
+        private int _oldMouseX, _oldMouseY;
         Camera cam = new Camera();
         Billboard obj = new Billboard("billboard");
 
@@ -42,9 +43,6 @@ namespace CSatExamples
             GL.Enable(EnableCap.Lighting);
             GL.Enable(EnableCap.Light0);
 
-            Mouse.ButtonDown += MouseButtonDown;
-            Mouse.ButtonUp += MouseButtonUp;
-
             obj.Load("1.png");
 
             cam.Position.Z = 100;
@@ -52,10 +50,6 @@ namespace CSatExamples
 
             Util.Set3DMode();
         }
-
-        bool[] mouseButtons = new bool[5];
-        void MouseButtonDown(MouseDevice sender, MouseButton button) { mouseButtons[(int)button] = true; }
-        void MouseButtonUp(MouseDevice sender, MouseButton button) { mouseButtons[(int)button] = false; }
 
         #region OnUnload
         public override void OnUnload(EventArgs e)
@@ -95,12 +89,13 @@ namespace CSatExamples
             if (Keyboard[Key.D]) cam.MoveXZ(0, spd);
             if (Keyboard[Key.R]) cam.Position.Y++;
             if (Keyboard[Key.F]) cam.Position.Y--;
-            if (mouseButtons[(int)MouseButton.Left])
+
+            if (Mouse[MouseButton.Left])
             {
-                cam.TurnXZ(Mouse.XDelta);
-                cam.LookUpXZ(Mouse.YDelta);
+                cam.TurnXZ(Mouse.X - _oldMouseX);
+                cam.LookUpXZ(Mouse.Y - _oldMouseY);
             }
-            int tmp = Mouse.XDelta; tmp = Mouse.YDelta;
+            _oldMouseX = Mouse.X; _oldMouseY = Mouse.Y;
         }
 
         /// <summary>

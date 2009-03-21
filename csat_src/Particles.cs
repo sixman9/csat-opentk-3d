@@ -233,10 +233,20 @@ namespace CSat
             }
         }
 
+        protected override void RenderObject()
+        {
+            RenderMesh();
+        }
+
         /// <summary>
         /// renderoi partikkelit. jos l‰pin‰kyvi‰, j‰rjestet‰‰n partikkelit, muuten ei.
         /// </summary>
         public override void Render()
+        {
+            base.Render(); // renderoi objektin ja kaikki siihen liitetyt objektit
+        }
+
+        public void RenderMesh()
         {
             if (IsTranslucent) RenderSorted();
             else RenderNotSorted();
@@ -291,8 +301,7 @@ namespace CSat
             GL.PopAttrib();
             GL.Color4(1f, 1, 1, 1);
         }
-
-
+        
         /// <summary>
         /// piirr‰ partikkelit. sortataan ja callback.
         /// </summary>

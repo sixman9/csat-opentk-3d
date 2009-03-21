@@ -353,17 +353,15 @@ jotain tosi outoa..
             }
         }
 
+        protected override void RenderObject()
+        {
+            GL.LoadMatrix(Matrix);
+            RenderMesh();
+        }
+
         public override void Render()
         {
-            if (_nodeRender == false) // jos itse kutsutaan Render metodia
-            {
-                base.Render(); // renderoi objektin ja kaikki siihen liitetyt objektit
-            }
-            else // node render
-            {
-                GL.LoadMatrix(Matrix);
-                RenderMesh();
-            }
+            base.Render(); // renderoi objektin ja kaikki siihen liitetyt objektit
         }
 
         public void RenderMesh()

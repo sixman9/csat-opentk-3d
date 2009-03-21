@@ -51,7 +51,7 @@ namespace CSat
         /// <summary>
         /// tämä on 0,1,2,3,4,..
         /// </summary>
-        protected int[] indices; 
+        protected int[] indices;
 
         /// <summary>
         /// onko rendattava objekti. pelkkä node (paikkatieto) ei ole jolloin tämä false

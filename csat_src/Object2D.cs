@@ -125,8 +125,18 @@ namespace CSat
             texture = null;
             vbo = null;
         }
+        
+        protected override void RenderObject()
+        {
+            RenderMesh();
+        }
 
         public override void Render()
+        {
+            base.Render(); // renderoi objektin ja kaikki siihen liitetyt objektit
+        }
+
+        public void RenderMesh()
         {
             Translate();
             Render(Scale);

@@ -56,10 +56,6 @@ namespace CSat
 
         }
 
-        public override void Render()
-        {
-        }
-
         public static void Remove(Light light)
         {
             light.SetLight(false);

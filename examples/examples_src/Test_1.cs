@@ -81,7 +81,9 @@ namespace CSatExamples
         public override void OnUpdateFrame(UpdateFrameEventArgs e)
         {
             if (Keyboard[Key.Escape])
+            {
                 Exit();
+            }
         }
 
         /// <summary>

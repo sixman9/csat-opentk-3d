@@ -49,8 +49,6 @@ namespace CSatExamples
             GL.Enable(EnableCap.Lighting);
             GL.Enable(EnableCap.Light0);
 
-            Mouse.ButtonDown += MouseButtonDown;
-            Mouse.ButtonUp += MouseButtonUp;
             Util.Set3DMode();
 
             skydome.LoadSkydome("sky/space.jpg", 1f);
@@ -67,10 +65,6 @@ namespace CSatExamples
             Node cam_tmp = cam;
             cameraPath.FollowPath(ref cam_tmp, true, true);
         }
-
-        bool[] mouseButtons = new bool[5];
-        void MouseButtonDown(MouseDevice sender, MouseButton button) { mouseButtons[(int)button] = true; }
-        void MouseButtonUp(MouseDevice sender, MouseButton button) { mouseButtons[(int)button] = false; }
 
         public override void OnUnload(EventArgs e)
         {

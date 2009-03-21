@@ -63,14 +63,14 @@ namespace CSat
 
         public Path UsePath(int index)
         {
-            Path p = new Path(Name+index);
+            Path p = new Path(Name + index);
             p.GetPath(index);
             return p;
         }
 
         public Path UsePath(string pathName)
         {
-            Path p=new Path(pathName);
+            Path p = new Path(pathName);
             for (int q = 0; q < Meshes().Count; q++)
             {
                 if (Meshes()[q].Name == pathName)
@@ -81,7 +81,7 @@ namespace CSat
             }
             return p;
         }
-        
+
         public void GetPath(int index)
         {
             path = pathData.ToArray();
@@ -128,12 +128,20 @@ namespace CSat
             Log.WriteDebugLine("NewPath: " + path.Length);
         }
 
+        /// <summary>
+        /// aseta obj seuraamaan pathia. jos obj on Mesh ja lookAtNextPoint==true, objekti kääntyy pathin suuntaan
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="loop"></param>
+        /// <param name="lookAtNextPoint"></param>
         public void FollowPath(ref Node obj, bool loop, bool lookAtNextPoint)
         {
             attachedObj = obj;
             obj.Position = path[0];
             this.Looping = loop;
-            this.LookAtNextPoint = lookAtNextPoint;
+
+            Mesh m = obj as Mesh;
+            if (m != null) m.LookAtNextPoint = lookAtNextPoint;
         }
 
         public void UpdatePath(float updateTime)

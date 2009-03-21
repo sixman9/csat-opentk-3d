@@ -92,7 +92,17 @@ namespace CSat
             obj.RenderVBO();
         }
 
+        protected override void RenderObject()
+        {
+            RenderMesh();
+        }
+
         public override void Render()
+        {
+            base.Render(); // renderoi objektin ja kaikki siihen liitetyt objektit
+        }
+
+        public new void RenderMesh()
         {
             RenderBillboard(Position.X, Position.Y, Position.Z, Front.X);
         }
