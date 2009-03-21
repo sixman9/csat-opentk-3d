@@ -443,8 +443,6 @@ namespace CSat
             {
                 if (m.LookAtNextPoint)
                 {
-                    // TODO:
-                    // objekti ei k‰‰nny viel‰
                     return;
                 }
             }

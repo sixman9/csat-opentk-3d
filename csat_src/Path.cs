@@ -142,6 +142,7 @@ namespace CSat
 
             Mesh m = obj as Mesh;
             if (m != null) m.LookAtNextPoint = lookAtNextPoint;
+            this.LookAtNextPoint = lookAtNextPoint;
         }
 
         public void UpdatePath(float updateTime)
@@ -185,6 +186,7 @@ namespace CSat
             {
                 if (LookAtNextPoint)
                 {
+                    Front = to;
                     // otetaan käännetyn objektin matriisi talteen
                     GL.PushMatrix();
                     GL.LoadIdentity();
