@@ -11,7 +11,7 @@ illum 2
 map_Kd wintex.jpg
 
 
-newmtl Material.001_city.jpg
+newmtl Material.001_city.jpg.001
 Ns 96.078431
 Ka 0.000000 0.000000 0.000000
 Kd 0.640000 0.640000 0.640000

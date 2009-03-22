@@ -1,5 +1,5 @@
 # Blender3D MTL File: head.blend
-# Material Count: 4
+# Material Count: 5
 newmtl (null)
 Ns 96.078431
 Ka 0.000000 0.000000 0.000000
@@ -8,6 +8,17 @@ Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
+
+
+newmtl None_saw.tga_saw.jpg
+Ns 0.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.400000 0.400000 0.400000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd saw.jpg
 
 
 newmtl None_arm.tga_arm.jpg

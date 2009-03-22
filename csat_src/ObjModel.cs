@@ -108,6 +108,7 @@ namespace CSat
         /// <param name="zs"></param>
         public void Load(string fileName, float xs, float ys, float zs)
         {
+            pathData.Clear();
             ObjModel mesh = null;
             List<Vector3> _vertex = new List<Vector3>();
             List<Vector3> _normal = new List<Vector3>();
@@ -191,16 +192,6 @@ namespace CSat
                         else if (mesh.Name.Contains("BBox_") || mesh.Name.Contains("BSphere_"))
                         {
                             // TODO: bbox_ bsphere_
-                        }
-
-                        // seuraavalla rivillä on #POS jos käytetty obj2 exportteria
-                        if (lines[q + 1].Contains("#POS"))
-                        {
-                            // otetaan meshin paikka talteen
-                            string[] spos = lines[q + 1].Split(' ');
-                            mesh.Position = new Vector3(Util.GetFloat(spos[1]), Util.GetFloat(spos[2]), Util.GetFloat(spos[3]));
-
-                            Log.WriteDebugLine(mesh.Name + " POS: " + mesh.Position.ToString());
                         }
 
                         continue;

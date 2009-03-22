@@ -1,13 +1,13 @@
 ﻿#region --- MIT License ---
 /* Licensed under the MIT/X11 license.
- * Copyright (c) 2008 mjt[matola@sci.fi]
+ * Copyright (c) 2008-2009 mjt[matola@sci.fi]
  * This notice may not be removed from any source distribution.
  * See license.txt for licensing details.
  */
 #endregion
 
 // path testi
-// ladataan kaupunki ja camerapath joka liitetään kameraan.
+// ladataan kaupunki ja camerapath johon kamera liitetään.
 
 // skyboxin tilalla ladataan puolipallo johon texturointi. enemmän polyja mutta vain 1 texture.
 
@@ -54,12 +54,12 @@ namespace CSatExamples
             skydome.LoadSkydome("sky/space.jpg", 1f);
             world.Add(skydome); // skydome aina ekana koska se on kaikkien takana
 
-            const float SC = 100;
-            city = new ObjModel("city", "city.obj", SC, SC, SC);
+            const float Scale = 100;
+            city = new ObjModel("city", "city.obj", Scale, Scale, Scale);
             world.Add(city);
 
             // lataa reitit
-            cameraPath = new Path("path", "camerapath.obj", SC, SC, SC); // sama skaalaus ku cityssä
+            cameraPath = new Path("path", "camerapath.obj", Scale, Scale, Scale); // sama skaalaus ku cityssä
 
             cameraPath.MakeCurve(3); // tehdään reitistä spline
             Node cam_tmp = cam;

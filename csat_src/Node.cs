@@ -210,8 +210,8 @@ namespace CSat
         /// <param name="f">paljonko liikutaan eteen/taaksepäin</param>
         public void MoveXZ(float f)
         {
-            Position.X -= ((float)Math.Sin(Rotation.Y * MathExt.PiOver180) * f);
-            Position.Z -= ((float)Math.Cos(Rotation.Y * MathExt.PiOver180) * f);
+            Position.X -= ((float)Math.Sin(Rotation.Y * MathExt.DegToRad) * f);
+            Position.Z -= ((float)Math.Cos(Rotation.Y * MathExt.DegToRad) * f);
         }
 
         /// <summary>
@@ -220,8 +220,8 @@ namespace CSat
         /// <param name="f">paljonko liikutaan sivuttain</param>
         public void StrafeXZ(float f)
         {
-            Position.X += ((float)Math.Cos(-Rotation.Y * MathExt.PiOver180) * f);
-            Position.Z += ((float)Math.Sin(-Rotation.Y * MathExt.PiOver180) * f);
+            Position.X += ((float)Math.Cos(-Rotation.Y * MathExt.DegToRad) * f);
+            Position.Z += ((float)Math.Sin(-Rotation.Y * MathExt.DegToRad) * f);
         }
 
         /*
@@ -285,8 +285,8 @@ namespace CSat
         public void RotateX(float f)
         {
             Rotation.X -= f;
-            Front *= (float)Math.Cos(f * MathExt.PiOver180);
-            Up *= (float)Math.Sin(f * MathExt.PiOver180);
+            Front *= (float)Math.Cos(f * MathExt.DegToRad);
+            Up *= (float)Math.Sin(f * MathExt.DegToRad);
 
             Front += Up;
             Front.Normalize();
@@ -298,8 +298,8 @@ namespace CSat
         public void RotateY(float f)
         {
             Rotation.Y -= f;
-            Front *= (float)Math.Cos(f * MathExt.PiOver180);
-            Right *= (float)Math.Sin(f * MathExt.PiOver180);
+            Front *= (float)Math.Cos(f * MathExt.DegToRad);
+            Right *= (float)Math.Sin(f * MathExt.DegToRad);
 
             Front -= Right;
             Front.Normalize();
@@ -310,8 +310,8 @@ namespace CSat
         public void RotateZ(float f)
         {
             Rotation.Z -= f;
-            Right *= (float)Math.Cos(f * MathExt.PiOver180);
-            Up *= (float)Math.Sin(f * MathExt.PiOver180);
+            Right *= (float)Math.Cos(f * MathExt.DegToRad);
+            Up *= (float)Math.Sin(f * MathExt.DegToRad);
 
             Right += Up;
             Right.Normalize();
@@ -384,9 +384,9 @@ namespace CSat
         public void MakeList()
         {
             // jos objekti on Mesh
-            if (this is Mesh)
+            Mesh m = this as Mesh;
+            if(m!=null)
             {
-                Mesh m = (Mesh)this;
                 // tarkista onko objekti näkökentässä
                 if (Frustum.ObjectInFrustum(WMatrix[12], WMatrix[13], WMatrix[14], m.Boundings))
                 {
@@ -407,7 +407,7 @@ namespace CSat
         public void CalcPositions(bool getWMatrix)
         {
             GL.PushMatrix();
-            CalcPosition(getWMatrix);
+//            CalcPosition(getWMatrix);
 
             foreach (Node o in Objects)
             {
@@ -438,15 +438,6 @@ namespace CSat
 
         public void CalcPosition(bool wMatrix)
         {
-            Mesh m = this as Mesh;
-            if (m != null)
-            {
-                if (m.LookAtNextPoint)
-                {
-                    return;
-                }
-            }
-
             if (wMatrix)
             {
                 Translate(this);
@@ -463,10 +454,12 @@ namespace CSat
 
         protected void CalculatePositions()
         {
+            CalcPosition(false);
             CalcPositions(false);
 
             GL.PushMatrix();
             GL.LoadIdentity();
+            CalcPosition(true);
             CalcPositions(true);
             GL.PopMatrix();
 

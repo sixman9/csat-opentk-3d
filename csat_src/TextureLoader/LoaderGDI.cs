@@ -104,6 +104,8 @@ namespace TextureLoaders
 				if (wOK == false || hOK == false) throw new Exception("Use power of 2 size texture maps only!");
 				// ---
 
+                // TODO: muuta kokoa jos tarvis
+
 				if (Data.Height > 1)
 				{ // image is 2D
 					if (TextureLoaderParameters.BuildMipmapsForUncompressed)

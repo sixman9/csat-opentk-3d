@@ -11,7 +11,7 @@ illum 2
 map_Kd cartex.jpg
 
 
-newmtl Material.001_GRAPHITI_cartex.jpg
+newmtl Material.001_GRAPHITI_cartex.jpg.001
 Ns 92.156863
 Ka 0.000000 0.000000 0.000000
 Kd 0.512000 0.512000 0.512000

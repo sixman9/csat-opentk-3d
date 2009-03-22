@@ -37,9 +37,10 @@ using OpenTK.Math;
 
 namespace CSat
 {
-    public class MathExt
+    public static class MathExt
     {
-        public static readonly float PiOver180 = (float)(Math.PI / 180);
+        public static readonly float RadToDeg = (float)(180 / Math.PI);
+        public static readonly float DegToRad = (float)(Math.PI / 180);
 
 
         #region --- Calc plane, normals.. ---
@@ -157,8 +158,8 @@ namespace CSat
         public static Vector3 RotatePoint(ref Quaternion q, ref Vector3 v)
         {
             Vector3 outv;
-            Quaternion inv=new Quaternion();
-           
+            Quaternion inv = new Quaternion();
+
             inv.X = -q.X;
             inv.Y = -q.Y;
             inv.Z = -q.Z;
@@ -177,7 +178,7 @@ namespace CSat
 
         public static Quaternion MultVec(ref Quaternion q, ref Vector3 v)
         {
-            Quaternion outq=new Quaternion();
+            Quaternion outq = new Quaternion();
 
             outq.W = -(q.Xyz.X * v.X) - (q.Xyz.Y * v.Y) - (q.Xyz.Z * v.Z);
             outq.X = ((q.W * v.X) + (q.Xyz.Y * v.Z)) - (q.Xyz.Z * v.Y);
@@ -309,6 +310,28 @@ namespace CSat
             return q;
         }
         #endregion
+
+        public static void MatrixToEuler(ref float[] matrix, out float heading, out float attitude, out float bank)
+        {
+            if (matrix[4] > 0.998)
+            {
+                heading = (float)Math.Atan2(matrix[2], matrix[10]);
+                attitude = (float)Math.PI / 2;
+                bank = 0;
+                return;
+            }
+            if (matrix[4] < -0.998)
+            {
+                heading = (float)Math.Atan2(matrix[2], matrix[10]);
+                attitude = (float)-Math.PI / 2;
+                bank = 0;
+                return;
+            }
+            heading = (float)Math.Atan2(-matrix[8], matrix[0]);
+            bank = (float)Math.Atan2(-matrix[6], matrix[5]);
+            attitude = (float)Math.Asin(matrix[4]);
+        }
+
 
     }
 }

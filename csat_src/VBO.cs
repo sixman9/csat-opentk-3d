@@ -117,11 +117,11 @@ namespace CSat
         {
             GL.GenBuffers(1, out vertexID);
             GL.BindBuffer(BufferTarget.ArrayBuffer, vertexID);
-            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertSize * vertexSize), null, usage);
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertSize * vertexSize), (IntPtr)null, usage);
 
             GL.GenBuffers(1, out indexID);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, indexID);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indSize * sizeof(int)), null, usage);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indSize * sizeof(int)), (IntPtr)null, usage);
 
             numOfIndices = indSize;
 

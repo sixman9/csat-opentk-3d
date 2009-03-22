@@ -1,22 +1,10 @@
 ﻿#region --- MIT License ---
 /* Licensed under the MIT/X11 license.
- * Copyright (c) 2008 mjt[matola@sci.fi]
+ * Copyright (c) 2008-2009 mjt[matola@sci.fi]
  * This notice may not be removed from any source distribution.
  * See license.txt for licensing details.
  */
 #endregion
-
-// camera collision
-// voit kävellä kaupungilla.
-// 6dof camera
-
-// auton reitti on vähän miten sattuu joten siihen pieni korjaus:
-//  xz tasossa tein sen reitin ja jaksanu alkaa säätää y arvoja blenderissä joten etsitään
-// oikea y xz kohdalta ja korjataan samalla pathi.
-
-// auto ei vielä katso menosuuntaan vaan liukuu reittiä pitkin.
-
-// -kesken-
 
 using System;
 using System.Drawing;
@@ -41,12 +29,11 @@ namespace CSatExamples
 
         Node world = new Node(); // tänne lisäillään kaikki kamat
         Mesh city, car;
-        Mesh uglyModel; // animoitu tyyppi
         Path carPath;
 
         byte mode = 0;
-        bool flying = false, moving = false;
-        //bool tab = false;
+        bool flying = false;
+        bool tab = false;
 
         public override void OnLoad(EventArgs e)
         {
@@ -66,25 +53,18 @@ namespace CSatExamples
             skydome.LoadSkydome("sky/space.jpg", 1f);
             world.Add(skydome); // skydome aina ekana koska se on kaikkien takana
 
-            uglyModel = new AnimatedModel("ugly", "Ugly/Ukko.mesh");
-            uglyModel.LoadAnim("walk", "Ugly/Ukko_walk.anim");
-
-            uglyModel.FixRotation.X = -90; // ukko on "makaavassa" asennossa joten nostetaan se fixRotationilla pystyyn.
-            uglyModel.FixRotation.Z = 180; // säätöä.. katse eteen päin!
-
             car = new ObjModel("car", "car.obj", 7, 7, 7);
-            car.FixRotation.Y = 90;
+            car.FixRotation.Y = -90;
             world.Add(car);
 
-            const float SC = 100;
-            city = new ObjModel("city", "city.obj", SC, SC, SC);
+            const float Scale = 110;
+            city = new ObjModel("city", "city.obj", Scale, Scale, Scale);
             world.Add(city);
 
             // lataa reitit
-            carPath = new Path("carpath", "carpath.obj", SC, SC, SC); // sama skaalaus ku cityssä
+            carPath = new Path("carpath", "carpath.obj", Scale, Scale, Scale); // sama skaalaus ku cityssä
             Node carInfo = car;
             carPath.FollowPath(ref carInfo, true, true);
-            carPath.MakeCurve(4); // tehdään reitistä spline
 
             cam.Position.Y = 60;
             cam.Front.Z = -10;
@@ -117,52 +97,36 @@ namespace CSatExamples
             if (Keyboard[Key.Escape])
                 Exit();
 
-            /*if (Keyboard[Key.Tab]) TODO
+            if (Keyboard[Key.Tab])
             {
                 if (tab == false)
                 {
                     tab = true;
                     mode++;
-                    if (mode == 3) mode = 0;
-
-                    if (mode == 1)
-                    {
-                        //uglyModel.Add(cam); // kiinnitä kamera ukkoon 
-                    }
-                    else
-                    {
-                        //uglyModel.Remove(cam); 
-                    }
-
+                    if (mode == 2) mode = 0;
                 }
             }
             else tab = false;
-            */
 
             Vector3 origCamPos = cam.Position; // ensin alkuperäinen paikka talteen
-            moving = false;
 
             // ohjaus
             float spd = 1f;
             if (Keyboard[Key.ShiftLeft]) spd = 2;
             if (Keyboard[Key.W])
             {
-                moving = true;
                 cam.MoveForward(spd, !flying);
             }
             if (Keyboard[Key.S])
             {
-                moving = true;
                 cam.MoveForward(-spd, !flying);
             }
             if (Keyboard[Key.A])
             {
-                moving = true;
                 cam.StrafeRight(-spd, !flying);
             }
             if (Keyboard[Key.D])
             {
-                moving = true;
                 cam.StrafeRight(spd, !flying);
             }
 
@@ -170,7 +134,7 @@ namespace CSatExamples
             // ellei, palautetaan orig kameraan.
             CheckMove(ref origCamPos, ref cam.Position, ref city);
 
-            if (Mouse[MouseButton.Left] && mode != 1)
+            if (Mouse[MouseButton.Left])
             {
                 cam.RotateY(-(Mouse.X - _oldMouseX));
                 cam.RotateX(-(Mouse.Y - _oldMouseY));
@@ -181,8 +145,8 @@ namespace CSatExamples
 
             Vector3 tmpV;
             // laske kameralle Y (luodaan vektori kamerasta kauas alaspäin ja otetaan leikkauspiste. sit leikkauspisteen y asetetaan kameraan)
-            // (jos mode!=2 eli lentomoodi)
-            if (mode != 2)
+            // (jos mode!=1 eli lentomoodi)
+            if (mode != 1)
             {
                 tmpV = cam.Position;
                 tmpV.Y = -10000;
@@ -193,7 +157,7 @@ namespace CSatExamples
             }
 
             // laske autolle Y (reitti ei seuraa maaston korkeutta oikein niin lasketaan se sitten tässä).
-            carPath.UpdatePath((float)e.Time * 2.5f);
+            carPath.UpdatePath((float)e.Time * 0.4f);
             car.Position.Y = 1000;
             tmpV = car.Position;
             tmpV.Y = -10000;
@@ -201,8 +165,6 @@ namespace CSatExamples
             {
                 car.Position.Y = Intersection.IntersectionPoint.Y + 0.7f;
             }
-
-            if (moving) uglyModel.Update((float)e.Time * 15);
 
         }
 
@@ -212,37 +174,16 @@ namespace CSatExamples
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             base.OnRenderFrame(e);
 
-            flying = false;
-            if (mode == 1) // ukon takaa   TODO ei toimi
-            {
-                uglyModel.Position = cam.Position;
+            flying = (mode==1) ? true : false;
 
-                Vector3 campos = cam.Position + new Vector3(0, 1, 1); ;
+            cam.Update6DOF();
 
-                Glu.LookAt(campos, uglyModel.Position, new Vector3(0, 1, 0));
-                Frustum.CalculateFrustum();
-
-                world.Render();
-                uglyModel.Render();
-
-            }
-            else // mode0 ja mode2
-            {
-
-                if (mode == 2) // lentomoodi
-                {
-                    flying = true;
-                }
-
-                cam.Update6DOF();
-
-                Frustum.CalculateFrustum();
-                world.Render();
-            }
+            Frustum.CalculateFrustum();
+            world.Render();
 
             Texture.ActiveUnit(0);
             text.Begin();
-            text.Print("mode: " + mode + "  objs: " + Settings.NumOfObjects, font, Color.White);
+            text.Print("mode: " + (mode==0 ? "walking" : "flying") + "  (TAB changes mode)\nobjs: " + Settings.NumOfObjects, font, Color.White);
             text.End();
 
             SwapBuffers();

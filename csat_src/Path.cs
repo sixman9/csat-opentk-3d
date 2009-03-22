@@ -55,35 +55,7 @@ namespace CSat
         public Path(string name, string fileName, float sx, float sy, float sz)
             : base(name, fileName, sx, sy, sz)
         {
-            if (Meshes().Count > 0)
-            {
-                GetPath(0);
-            }
-        }
-
-        public Path UsePath(int index)
-        {
-            Path p = new Path(Name + index);
-            p.GetPath(index);
-            return p;
-        }
-
-        public Path UsePath(string pathName)
-        {
-            Path p = new Path(pathName);
-            for (int q = 0; q < Meshes().Count; q++)
-            {
-                if (Meshes()[q].Name == pathName)
-                {
-                    p.GetPath(q);
-                    break;
-                }
-            }
-            return p;
-        }
-
-        public void GetPath(int index)
-        {
+            pathData.RemoveAt(0); // !!
             path = pathData.ToArray();
         }
 
@@ -117,13 +89,12 @@ namespace CSat
                 }
 
                 tmpv.Add(path[path.Length - 1]); // vika vertex
+                if(Looping)  tmpv.Add(path[0]); // eka vertex 
 
-                // if(closed) tmpv.Add(path.vertex[ 0 ]);
                 // korvataan alkuperäinen reitti uudella reitillä
                 path = null;
                 path = new Vector3[tmpv.Count];
-                for (int q = 0; q < path.Length; q++)
-                    path[q] = tmpv[q];
+                for (int q = 0; q < path.Length; q++) path[q] = tmpv[q];
             }
             Log.WriteDebugLine("NewPath: " + path.Length);
         }
@@ -139,9 +110,6 @@ namespace CSat
             attachedObj = obj;
             obj.Position = path[0];
             this.Looping = loop;
-
-            Mesh m = obj as Mesh;
-            if (m != null) m.LookAtNextPoint = lookAtNextPoint;
             this.LookAtNextPoint = lookAtNextPoint;
         }
 
@@ -171,6 +139,7 @@ namespace CSat
             {
                 to = (path[(v2 + 1) % path.Length]) - p2;
                 to = p2 + (to * d);
+                attachedObj.Front = to;
             }
             else to = Front;
 
@@ -178,7 +147,7 @@ namespace CSat
             if (attachedObj is Camera)
             {
                 GL.LoadIdentity();
-                Glu.LookAt(attachedObj.Position, to, Up);
+                Glu.LookAt(attachedObj.Position, to, attachedObj.Up);
                 GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
                 Util.CopyArray(ref Util.ModelMatrix, ref attachedObj.Matrix);
             }
@@ -186,15 +155,25 @@ namespace CSat
             {
                 if (LookAtNextPoint)
                 {
-                    Front = to;
                     // otetaan käännetyn objektin matriisi talteen
                     GL.PushMatrix();
                     GL.LoadIdentity();
                     Glu.LookAt(attachedObj.Position, to, attachedObj.Up);
                     GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
-                    Util.CopyArray(ref Util.ModelMatrix, ref attachedObj.Matrix);
-                    Util.CopyArray(ref Util.ModelMatrix, ref attachedObj.WMatrix);
+
+                    //Util.CopyArray(ref Util.ModelMatrix, ref attachedObj.Matrix);
+                    //Util.CopyArray(ref Util.ModelMatrix, ref attachedObj.WMatrix);
+                    // paikkatiedot nollaks
+                    //Matrix[13] = Matrix[14] = Matrix[15] = 0;
+                    //WMatrix[13] = WMatrix[14] = WMatrix[15] = 0;
+
                     GL.PopMatrix();
+
+                    float heading, attitude, bank;
+                    MathExt.MatrixToEuler(ref Util.ModelMatrix, out heading, out attitude, out bank);
+                    attachedObj.Rotation.Y = heading * MathExt.RadToDeg;
+                    attachedObj.Rotation.X = bank * MathExt.RadToDeg;
+                    attachedObj.Rotation.Z = attitude * MathExt.RadToDeg;
                 }
             }
         }

@@ -72,7 +72,7 @@ namespace CSat
             Vector3 rot = -(obj.Rotation + obj.FixRotation); 
             if (rot.X != 0 || rot.Y != 0 || rot.Z != 0)
             {
-                rot = rot * MathExt.PiOver180;
+                rot = rot * MathExt.DegToRad;
                 Matrix4 mx = Matrix4.RotateX(rot.X);
                 Matrix4 my = Matrix4.RotateY(rot.Y);
                 Matrix4 mz = Matrix4.RotateZ(rot.Z);

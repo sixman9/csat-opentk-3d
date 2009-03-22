@@ -1,5 +1,5 @@
 # Blender3D MTL File: head.blend
-# Material Count: 3
+# Material Count: 4
 newmtl body_face.png_face.jpg
 Ns 92.156863
 Ka 0.000000 0.000000 0.000000
@@ -20,6 +20,16 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd face.jpg
+
+
+newmtl head_face.png
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.577255 0.494431 0.444235
+Ks 0.250000 0.250000 0.250000
+Ni 1.000000
+d 1.000000
+illum 2
 
 
 newmtl Material_table.tga_table.jpg

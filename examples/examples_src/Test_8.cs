@@ -67,7 +67,7 @@ namespace CSatExamples
             skybox.LoadSkybox("sky/sky2_", "jpg", 100);
             world.Add(skybox); // skybox aina ekana koska se on kaikkien takana
 
-            obj[0] = new ObjModel("head", "Head/head.obj2"); // ladataan kerran
+            obj[0] = new ObjModel("head", "Head/head.obj"); // ladataan kerran
             obj[0].Position.Z = 0;
 
             // tehdään muutama kopio, siirretään vierekkäin
@@ -83,18 +83,14 @@ namespace CSatExamples
             obj[4] = obj[0].Clone();
             obj[4].Position.X = 20;
 
-            obj[5] = new ObjModel("arm", "Head/arm.obj2");
-            obj[6] = new ObjModel("saw", "Head/saw.obj2");
-
-            obj[1].Add(obj[6]); // pää nro 2. lisätään terä
-            obj[1].Add(obj[5]); // ja käsi
+            obj[5] = new ObjModel("arm", "Head/arm.obj");
+            obj[1].Add(obj[5]); // pää nro 2:seen lisätään käsi
 
             // lasketaan groupille bounding volume
             obj[1].Boundings.CreateBoundingVolume(obj[1]);
 
             // lisää kamat worldiin
-            for (int q = 0; q < 4; q++) // ei addata 5 ja 6 koska ne on liitetty jo obj[1]:seen ja liikkuu sen mukana
-                world.Add(obj[q]);
+            for (int q = 0; q < 4; q++) world.Add(obj[q]);
 
             // rumilus
             uglyModel = new AnimatedModel("ukko", "Ugly/Ukko.mesh");
@@ -170,8 +166,9 @@ namespace CSatExamples
 
             // ja hullu ukko huittisista pyörimään myös
             uglyModel.Rotation.Y -= (float)e.Time * 50;
-
             uglyModel.Update((float)e.Time);
+
+            obj[5].Rotation.Y += (float)e.Time * 100;
         }
 
         /// <summary>
