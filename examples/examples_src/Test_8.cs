@@ -55,7 +55,6 @@ namespace CSatExamples
             GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
             GL.Enable(EnableCap.CullFace);
             GL.ShadeModel(ShadingModel.Smooth);
-
             GL.Enable(EnableCap.ColorMaterial);
 
             Light.Enable();

@@ -105,7 +105,7 @@ namespace CSat
         /// <param name="obj"></param>
         /// <param name="loop"></param>
         /// <param name="lookAtNextPoint"></param>
-        public void FollowPath(ref Node obj, bool loop, bool lookAtNextPoint)
+        public void FollowPath(Node obj, bool loop, bool lookAtNextPoint)
         {
             attachedObj = obj;
             obj.Position = path[0];

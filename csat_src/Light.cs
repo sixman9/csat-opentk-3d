@@ -56,6 +56,13 @@ namespace CSat
 
         }
 
+        public static void Add(Light light, int lightNum)
+        {
+            light.lightNum = lightNum;
+            light.SetLight(true);
+            Lights.Add(light);
+        }
+
         public static void Remove(Light light)
         {
             light.SetLight(false);
@@ -70,13 +77,11 @@ namespace CSat
         public static void Dispose(Light light)
         {
             Lights.Remove(light);
-
             Log.WriteDebugLine("Disposed: Light");
         }
         public new static void DisposeAll()
         {
             Lights.Clear();
-
             Log.WriteDebugLine("Disposed: All Lights");
         }
 
@@ -109,6 +114,7 @@ namespace CSat
             }
             Enabled = true;
             GL.Enable(EnableCap.Light0 + lightNum);
+            UpdateColor();
         }
 
         /// <summary>
@@ -137,7 +143,7 @@ namespace CSat
         {
             for (int q = 0; q < Lights.Count; q++)
             {
-                Light l = (Light)Lights[q];
+                Light l = Lights[q];
                 l.UpdateLight();
             }
 

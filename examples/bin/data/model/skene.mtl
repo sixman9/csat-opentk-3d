@@ -1,42 +1,67 @@
 # Blender3D MTL File: skene.blend
-# Material Count: 4
-newmtl None_GRAPHITI.JPG
+# Material Count: 6
+newmtl None_GRAVSTN.JPG_jupiter2.jpg
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd jupiter2.jpg
+
+
+newmtl None_brick4.jpg
 Ns 0
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
 d 1
 illum 2
-map_Kd GRAPHITI.JPG
+map_Kd brick4.jpg
 
 
-newmtl None_CHRMWARP.JPG
-Ns 0
+newmtl None_CHRMWARP.JPG_2.jpg
+Ns 96.078431
 Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-d 1
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
 illum 2
-map_Kd CHRMWARP.JPG
+map_Kd 2.jpg
 
 
-newmtl None_GRAVSTN.JPG
-Ns 0
+newmtl None_GRAPHITI.JPG_graphiti.jpg
+Ns 96.078431
 Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-d 1
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
 illum 2
-map_Kd GRAVSTN.JPG
+map_Kd graphiti.jpg
 
 
-newmtl None_JUPITER2.JPG
-Ns 0
+newmtl None_GRAVSTN.JPG_brick4.jpg
+Ns 96.078431
 Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-d 1
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
 illum 2
-map_Kd JUPITER2.JPG
+map_Kd brick4.jpg
+
+
+newmtl None_JUPITER2.JPG_chrmwarp.jpg
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd chrmwarp.jpg
 
 

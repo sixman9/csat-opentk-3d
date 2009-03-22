@@ -8,7 +8,7 @@
 
 /* 
  * 3D test
- * parent loading, skybox, multitexturing
+ * obj loading, skybox, multitexturing
  * 
  */
 
@@ -19,6 +19,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Input;
 using OpenTK.Platform;
+using OpenTK.Math;
 
 namespace CSatExamples
 {
@@ -45,8 +46,18 @@ namespace CSatExamples
             GL.Enable(EnableCap.CullFace);
             GL.ShadeModel(ShadingModel.Smooth);
             GL.Enable(EnableCap.Normalize);
-            GL.Enable(EnableCap.Lighting);
-            GL.Enable(EnableCap.Light0);
+            GL.Enable(EnableCap.ColorMaterial);
+
+            Light.Enable();
+            Light light=new Light("light");
+            light.Position = new Vector3(20, 50, 0);
+            light.Ambient = new Vector3(0.8f, 0.8f, 0.8f);
+            Light.Add(light, 0);
+            
+            light = new Light("light2");
+            light.Position = new Vector3(-40, 50, 50);
+            light.Ambient = new Vector3(0.8f, 0.8f, 0.8f);
+            Light.Add(light, 1);
 
             obj = new ObjModel("scene", "skene.obj", 20, 20, 20);
             skybox.LoadSkybox("sky/sky2_", "jpg", 100);
@@ -116,11 +127,11 @@ namespace CSatExamples
         {
             Settings.NumOfObjects = 0;
             GL.Clear(ClearBufferMask.DepthBufferBit);
-            base.OnRenderFrame(e);
 
             cam.UpdateXZ();
             skybox.Render();
             Frustum.CalculateFrustum();
+            Light.UpdateLights();
 
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.OneMinusDstAlpha);

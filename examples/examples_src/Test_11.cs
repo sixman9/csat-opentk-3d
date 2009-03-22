@@ -63,8 +63,7 @@ namespace CSatExamples
 
             // lataa reitit
             carPath = new Path("carpath", "carpath.obj", Scale, Scale, Scale); // sama skaalaus ku cityssä
-            Node carInfo = car;
-            carPath.FollowPath(ref carInfo, true, true);
+            carPath.FollowPath(car, true, true);
 
             cam.Position.Y = 60;
             cam.Front.Z = -10;

@@ -62,8 +62,7 @@ namespace CSatExamples
             cameraPath = new Path("path", "camerapath.obj", Scale, Scale, Scale); // sama skaalaus ku cityssä
 
             cameraPath.MakeCurve(3); // tehdään reitistä spline
-            Node cam_tmp = cam;
-            cameraPath.FollowPath(ref cam_tmp, true, true);
+            cameraPath.FollowPath(cam, true, true);
         }
 
         public override void OnUnload(EventArgs e)
