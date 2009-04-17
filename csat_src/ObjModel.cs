@@ -295,6 +295,10 @@ namespace CSat
                                                                                 _uv[meshes[m]._uvInd[q]].X, _uv[meshes[m]._uvInd[q]].Y);
 
                             // pistet‰‰n myˆs objektille kaikki vertexit yhteen klimppiin.
+
+//TODO Miks? vie vaa muistia nii paljo, mesheiss‰ kumminki nuo datat s‰ilytet‰‰n.
+// jos t‰‰ on VAIN collisionia varten, siihe ny o helppo tehd‰ se et se menee objektin puun l‰pi
+// ni sit ei tartte t‰t‰
                             vertices[cc].vertex = _vertex[meshes[m]._vertexInd[q]];
                             vertices[cc].normal = _normal[meshes[m]._normalInd[q]];
                             if (meshes[m]._uvInd.Count != 0)

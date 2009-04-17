@@ -244,10 +244,10 @@ namespace CSat
 
             if (DiffuseTex != null) DiffuseTex.Bind();
 
-            GL.Materialv(MaterialFace.Front, MaterialParameter.Ambient, AmbientColor);
-            GL.Materialv(MaterialFace.Front, MaterialParameter.Diffuse, DiffuseColor);
-            GL.Materialv(MaterialFace.Front, MaterialParameter.Specular, SpecularColor);
-            GL.Materialv(MaterialFace.Front, MaterialParameter.Emission, EmissionColor);
+            GL.Material(MaterialFace.Front, MaterialParameter.Ambient, AmbientColor);
+            GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, DiffuseColor);
+            GL.Material(MaterialFace.Front, MaterialParameter.Specular, SpecularColor);
+            GL.Material(MaterialFace.Front, MaterialParameter.Emission, EmissionColor);
             GL.Material(MaterialFace.Front, MaterialParameter.Shininess, PhongSpec);
         }
 

@@ -123,7 +123,7 @@ namespace CSat
         public void UpdateLight()
         {
             if (Enabled == false) return;
-            GL.Lightv(LightName.Light0 + lightNum, LightParameter.Position, new float[] { Position.X, Position.Y, Position.Z, 1 });
+            GL.Light(LightName.Light0 + lightNum, LightParameter.Position, new float[] { Position.X, Position.Y, Position.Z, 1 });
         }
 
         /// <summary>
@@ -131,9 +131,9 @@ namespace CSat
         /// </summary>
         public void UpdateColor()
         {
-            GL.Lightv(LightName.Light0 + lightNum, LightParameter.Ambient, new float[] { Ambient.X, Ambient.Y, Ambient.Z });
-            GL.Lightv(LightName.Light0 + lightNum, LightParameter.Diffuse, new float[] { Diffuse.X, Diffuse.Y, Diffuse.Z });
-            GL.Lightv(LightName.Light0 + lightNum, LightParameter.Specular, new float[] { Specular.X, Specular.Y, Specular.Z });
+            GL.Light(LightName.Light0 + lightNum, LightParameter.Ambient, new float[] { Ambient.X, Ambient.Y, Ambient.Z });
+            GL.Light(LightName.Light0 + lightNum, LightParameter.Diffuse, new float[] { Diffuse.X, Diffuse.Y, Diffuse.Z });
+            GL.Light(LightName.Light0 + lightNum, LightParameter.Specular, new float[] { Specular.X, Specular.Y, Specular.Z });
         }
 
         /// <summary>

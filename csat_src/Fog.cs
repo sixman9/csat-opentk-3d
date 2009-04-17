@@ -50,8 +50,8 @@ namespace CSat
         public static void CreateFog(FogMode mode, float start, float end, float density)
         {
             GL.Fog(FogParameter.FogMode, (int)mode);
-
-            GL.Fogv(FogParameter.FogColor, new float[] { Color.X, Color.Y, Color.Z });
+            
+            GL.Fog(FogParameter.FogColor, new float[] { Color.X, Color.Y, Color.Z });
             GL.Fog(FogParameter.FogDensity, density);
             GL.Hint(HintTarget.FogHint, HintMode.DontCare);
 
