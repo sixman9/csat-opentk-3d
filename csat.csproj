@@ -89,7 +89,4 @@
     <Compile Include="csat_src\Util.cs" />
     <Compile Include="csat_src\VBO.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
 </Project>
