@@ -1820,6 +1820,20 @@
             </summary>
             <param name="e">Contains information about the Resize event.</param>
         </member>
+        <member name="M:OpenTK.GameWindow.PointToClient(System.Drawing.Point)">
+            <summary>
+            Converts the screen coordinates of a specified point on the screen to client-area coordinates.
+            </summary>
+            <param name="point">A System.Drawing.Point structure that specifies the screen coordinates to be converted</param>
+            <returns>The client-area coordinates of the point. The new coordinates are relative to the upper-left corner of the GameWindow's client area.</returns>
+        </member>
+        <member name="M:OpenTK.GameWindow.PointToScreen(System.Drawing.Point)">
+            <summary>
+            Converts the client-area coordinates of a specified point to screen coordinates.
+            </summary>
+            <param name="p">A System.Drawing.Point structure that specifies the client-area coordinates to be converted</param>
+            <returns>The screen coordinates of the point, relative to the upper-left corner of the screen. Note, a screen-coordinate point that is above the window's client area has a negative y-coordinate. Similarly, a screen coordinate to the left of a client area has a negative x-coordinate.</returns>
+        </member>
         <member name="M:OpenTK.GameWindow.Dispose">
             <summary>
             Disposes of the GameWindow, releasing all resources consumed by it.
@@ -19867,7 +19881,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ColorTable(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
+        <member name="M:OpenTK.Graphics.GL.ColorTable(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
             <summary>
             Define a color lookup table
             </summary>
@@ -19902,7 +19916,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ColorTable``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
+        <member name="M:OpenTK.Graphics.GL.ColorTable``1(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
             <summary>
             Define a color lookup table
             </summary>
@@ -19937,7 +19951,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ColorTable``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
+        <member name="M:OpenTK.Graphics.GL.ColorTable``1(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
             <summary>
             Define a color lookup table
             </summary>
@@ -19972,7 +19986,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ColorTable``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.ColorTable``1(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
             <summary>
             Define a color lookup table
             </summary>
@@ -20007,7 +20021,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ColorTable``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.ColorTable``1(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
             <summary>
             Define a color lookup table
             </summary>
@@ -20042,7 +20056,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ColorTableParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Single[])">
+        <member name="M:OpenTK.Graphics.GL.ColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.ColorTableParameterPName,System.Single[])">
             <summary>
             Set color lookup table parameters
             </summary>
@@ -20062,7 +20076,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ColorTableParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Single@)">
+        <member name="M:OpenTK.Graphics.GL.ColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.ColorTableParameterPName,System.Single@)">
             <summary>
             Set color lookup table parameters
             </summary>
@@ -20082,7 +20096,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ColorTableParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Single*)">
+        <member name="M:OpenTK.Graphics.GL.ColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.ColorTableParameterPName,System.Single*)">
             <summary>
             Set color lookup table parameters
             </summary>
@@ -20102,7 +20116,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ColorTableParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Int32[])">
+        <member name="M:OpenTK.Graphics.GL.ColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.ColorTableParameterPName,System.Int32[])">
             <summary>
             Set color lookup table parameters
             </summary>
@@ -20122,7 +20136,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ColorTableParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Int32@)">
+        <member name="M:OpenTK.Graphics.GL.ColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.ColorTableParameterPName,System.Int32@)">
             <summary>
             Set color lookup table parameters
             </summary>
@@ -20142,7 +20156,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ColorTableParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Int32*)">
+        <member name="M:OpenTK.Graphics.GL.ColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.ColorTableParameterPName,System.Int32*)">
             <summary>
             Set color lookup table parameters
             </summary>
@@ -20162,7 +20176,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.CopyColorTable(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,System.Int32,System.Int32)">
+        <member name="M:OpenTK.Graphics.GL.CopyColorTable(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,System.Int32,System.Int32)">
             <summary>
             Copy pixels into a color table
             </summary>
@@ -20192,7 +20206,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetColorTable(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
+        <member name="M:OpenTK.Graphics.GL.GetColorTable(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
             <summary>
             Retrieve contents of a color lookup table
             </summary>
@@ -20217,7 +20231,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetColorTable``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
+        <member name="M:OpenTK.Graphics.GL.GetColorTable``1(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
             <summary>
             Retrieve contents of a color lookup table
             </summary>
@@ -20242,7 +20256,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetColorTable``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
+        <member name="M:OpenTK.Graphics.GL.GetColorTable``1(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
             <summary>
             Retrieve contents of a color lookup table
             </summary>
@@ -20267,7 +20281,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetColorTable``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.GetColorTable``1(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
             <summary>
             Retrieve contents of a color lookup table
             </summary>
@@ -20292,7 +20306,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetColorTable``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.GetColorTable``1(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
             <summary>
             Retrieve contents of a color lookup table
             </summary>
@@ -20317,7 +20331,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetColorTableParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Single[])">
+        <member name="M:OpenTK.Graphics.GL.GetColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.GetColorTableParameterPName,System.Single[])">
             <summary>
             Get color lookup table parameters
             </summary>
@@ -20337,7 +20351,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetColorTableParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Single@)">
+        <member name="M:OpenTK.Graphics.GL.GetColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.GetColorTableParameterPName,System.Single@)">
             <summary>
             Get color lookup table parameters
             </summary>
@@ -20357,7 +20371,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetColorTableParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Single*)">
+        <member name="M:OpenTK.Graphics.GL.GetColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.GetColorTableParameterPName,System.Single*)">
             <summary>
             Get color lookup table parameters
             </summary>
@@ -20377,7 +20391,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetColorTableParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Int32[])">
+        <member name="M:OpenTK.Graphics.GL.GetColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.GetColorTableParameterPName,System.Int32[])">
             <summary>
             Get color lookup table parameters
             </summary>
@@ -20397,7 +20411,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetColorTableParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Int32@)">
+        <member name="M:OpenTK.Graphics.GL.GetColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.GetColorTableParameterPName,System.Int32@)">
             <summary>
             Get color lookup table parameters
             </summary>
@@ -20417,7 +20431,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetColorTableParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Int32*)">
+        <member name="M:OpenTK.Graphics.GL.GetColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.GetColorTableParameterPName,System.Int32*)">
             <summary>
             Get color lookup table parameters
             </summary>
@@ -20437,7 +20451,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ColorSubTable(OpenTK.Graphics.Version12,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
+        <member name="M:OpenTK.Graphics.GL.ColorSubTable(OpenTK.Graphics.ColorTableTarget,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
             <summary>
             Respecify a portion of a color table
             </summary>
@@ -20472,7 +20486,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ColorSubTable``1(OpenTK.Graphics.Version12,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
+        <member name="M:OpenTK.Graphics.GL.ColorSubTable``1(OpenTK.Graphics.ColorTableTarget,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
             <summary>
             Respecify a portion of a color table
             </summary>
@@ -20507,7 +20521,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ColorSubTable``1(OpenTK.Graphics.Version12,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
+        <member name="M:OpenTK.Graphics.GL.ColorSubTable``1(OpenTK.Graphics.ColorTableTarget,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
             <summary>
             Respecify a portion of a color table
             </summary>
@@ -20542,7 +20556,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ColorSubTable``1(OpenTK.Graphics.Version12,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.ColorSubTable``1(OpenTK.Graphics.ColorTableTarget,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
             <summary>
             Respecify a portion of a color table
             </summary>
@@ -20577,7 +20591,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ColorSubTable``1(OpenTK.Graphics.Version12,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.ColorSubTable``1(OpenTK.Graphics.ColorTableTarget,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
             <summary>
             Respecify a portion of a color table
             </summary>
@@ -20612,7 +20626,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.CopyColorSubTable(OpenTK.Graphics.Version12,System.Int32,System.Int32,System.Int32,System.Int32)">
+        <member name="M:OpenTK.Graphics.GL.CopyColorSubTable(OpenTK.Graphics.ColorTableTarget,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Respecify a portion of a color table
             </summary>
@@ -20637,7 +20651,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter1D(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter1D(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
             <summary>
             Define a one-dimensional convolution filter
             </summary>
@@ -20672,7 +20686,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter1D``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter1D``1(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
             <summary>
             Define a one-dimensional convolution filter
             </summary>
@@ -20707,7 +20721,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter1D``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter1D``1(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
             <summary>
             Define a one-dimensional convolution filter
             </summary>
@@ -20742,7 +20756,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter1D``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter1D``1(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
             <summary>
             Define a one-dimensional convolution filter
             </summary>
@@ -20777,7 +20791,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter1D``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter1D``1(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
             <summary>
             Define a one-dimensional convolution filter
             </summary>
@@ -20812,7 +20826,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter2D(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter2D(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
             <summary>
             Define a two-dimensional convolution filter
             </summary>
@@ -20852,7 +20866,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter2D``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter2D``1(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
             <summary>
             Define a two-dimensional convolution filter
             </summary>
@@ -20892,7 +20906,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter2D``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter2D``1(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
             <summary>
             Define a two-dimensional convolution filter
             </summary>
@@ -20932,7 +20946,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter2D``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter2D``1(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
             <summary>
             Define a two-dimensional convolution filter
             </summary>
@@ -20972,7 +20986,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter2D``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionFilter2D``1(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
             <summary>
             Define a two-dimensional convolution filter
             </summary>
@@ -21012,7 +21026,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Single)">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionParameter(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.ConvolutionParameter,System.Single)">
             <summary>
             Set convolution parameters
             </summary>
@@ -21035,7 +21049,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Single[])">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionParameter(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.ConvolutionParameter,System.Single[])">
             <summary>
             Set convolution parameters
             </summary>
@@ -21058,7 +21072,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Single@)">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionParameter(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.ConvolutionParameter,System.Single@)">
             <summary>
             Set convolution parameters
             </summary>
@@ -21081,7 +21095,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Single*)">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionParameter(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.ConvolutionParameter,System.Single*)">
             <summary>
             Set convolution parameters
             </summary>
@@ -21104,7 +21118,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Int32)">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionParameter(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.ConvolutionParameter,System.Int32)">
             <summary>
             Set convolution parameters
             </summary>
@@ -21127,7 +21141,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Int32[])">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionParameter(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.ConvolutionParameter,System.Int32[])">
             <summary>
             Set convolution parameters
             </summary>
@@ -21150,7 +21164,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Int32@)">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionParameter(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.ConvolutionParameter,System.Int32@)">
             <summary>
             Set convolution parameters
             </summary>
@@ -21173,7 +21187,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.ConvolutionParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Int32*)">
+        <member name="M:OpenTK.Graphics.GL.ConvolutionParameter(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.ConvolutionParameter,System.Int32*)">
             <summary>
             Set convolution parameters
             </summary>
@@ -21196,7 +21210,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.CopyConvolutionFilter1D(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,System.Int32,System.Int32)">
+        <member name="M:OpenTK.Graphics.GL.CopyConvolutionFilter1D(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,System.Int32,System.Int32)">
             <summary>
             Copy pixels into a one-dimensional convolution filter
             </summary>
@@ -21221,7 +21235,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.CopyConvolutionFilter2D(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelInternalFormat,System.Int32,System.Int32,System.Int32,System.Int32)">
+        <member name="M:OpenTK.Graphics.GL.CopyConvolutionFilter2D(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Copy pixels into a two-dimensional convolution filter
             </summary>
@@ -21251,7 +21265,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetConvolutionFilter(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
+        <member name="M:OpenTK.Graphics.GL.GetConvolutionFilter(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
             <summary>
             Get current 1D or 2D convolution filter kernel
             </summary>
@@ -21276,7 +21290,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetConvolutionFilter``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
+        <member name="M:OpenTK.Graphics.GL.GetConvolutionFilter``1(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
             <summary>
             Get current 1D or 2D convolution filter kernel
             </summary>
@@ -21301,7 +21315,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetConvolutionFilter``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
+        <member name="M:OpenTK.Graphics.GL.GetConvolutionFilter``1(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
             <summary>
             Get current 1D or 2D convolution filter kernel
             </summary>
@@ -21326,7 +21340,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetConvolutionFilter``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.GetConvolutionFilter``1(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
             <summary>
             Get current 1D or 2D convolution filter kernel
             </summary>
@@ -21351,7 +21365,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetConvolutionFilter``1(OpenTK.Graphics.Version12,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.GetConvolutionFilter``1(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
             <summary>
             Get current 1D or 2D convolution filter kernel
             </summary>
@@ -21376,7 +21390,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetConvolutionParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Single[])">
+        <member name="M:OpenTK.Graphics.GL.GetConvolutionParameter(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.Version12,System.Single[])">
             <summary>
             Get convolution parameters
             </summary>
@@ -21396,7 +21410,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetConvolutionParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Single@)">
+        <member name="M:OpenTK.Graphics.GL.GetConvolutionParameter(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.Version12,System.Single@)">
             <summary>
             Get convolution parameters
             </summary>
@@ -21416,7 +21430,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetConvolutionParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Single*)">
+        <member name="M:OpenTK.Graphics.GL.GetConvolutionParameter(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.Version12,System.Single*)">
             <summary>
             Get convolution parameters
             </summary>
@@ -21436,7 +21450,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetConvolutionParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Int32[])">
+        <member name="M:OpenTK.Graphics.GL.GetConvolutionParameter(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.Version12,System.Int32[])">
             <summary>
             Get convolution parameters
             </summary>
@@ -21456,7 +21470,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetConvolutionParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Int32@)">
+        <member name="M:OpenTK.Graphics.GL.GetConvolutionParameter(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.Version12,System.Int32@)">
             <summary>
             Get convolution parameters
             </summary>
@@ -21476,7 +21490,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.GetConvolutionParameter(OpenTK.Graphics.Version12,OpenTK.Graphics.Version12,System.Int32*)">
+        <member name="M:OpenTK.Graphics.GL.GetConvolutionParameter(OpenTK.Graphics.ConvolutionTarget,OpenTK.Graphics.Version12,System.Int32*)">
             <summary>
             Get convolution parameters
             </summary>
@@ -49310,7 +49324,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.ColorSubTable(OpenTK.Graphics.ExtColorSubtable,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
+        <member name="M:OpenTK.Graphics.GL.Ext.ColorSubTable(OpenTK.Graphics.ColorTableTarget,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
             <summary>
             Respecify a portion of a color table
             </summary>
@@ -49345,7 +49359,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.ColorSubTable``1(OpenTK.Graphics.ExtColorSubtable,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
+        <member name="M:OpenTK.Graphics.GL.Ext.ColorSubTable``1(OpenTK.Graphics.ColorTableTarget,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
             <summary>
             Respecify a portion of a color table
             </summary>
@@ -49380,7 +49394,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.ColorSubTable``1(OpenTK.Graphics.ExtColorSubtable,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
+        <member name="M:OpenTK.Graphics.GL.Ext.ColorSubTable``1(OpenTK.Graphics.ColorTableTarget,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
             <summary>
             Respecify a portion of a color table
             </summary>
@@ -49415,7 +49429,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.ColorSubTable``1(OpenTK.Graphics.ExtColorSubtable,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.Ext.ColorSubTable``1(OpenTK.Graphics.ColorTableTarget,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
             <summary>
             Respecify a portion of a color table
             </summary>
@@ -49450,7 +49464,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.ColorSubTable``1(OpenTK.Graphics.ExtColorSubtable,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.Ext.ColorSubTable``1(OpenTK.Graphics.ColorTableTarget,System.Int32,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
             <summary>
             Respecify a portion of a color table
             </summary>
@@ -49485,7 +49499,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.CopyColorSubTable(OpenTK.Graphics.ExtColorSubtable,System.Int32,System.Int32,System.Int32,System.Int32)">
+        <member name="M:OpenTK.Graphics.GL.Ext.CopyColorSubTable(OpenTK.Graphics.ColorTableTarget,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Respecify a portion of a color table
             </summary>
@@ -49510,7 +49524,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.ColorTable(OpenTK.Graphics.ExtPalettedTexture,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
+        <member name="M:OpenTK.Graphics.GL.Ext.ColorTable(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
             <summary>
             Define a color lookup table
             </summary>
@@ -49545,7 +49559,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.ColorTable``1(OpenTK.Graphics.ExtPalettedTexture,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
+        <member name="M:OpenTK.Graphics.GL.Ext.ColorTable``1(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
             <summary>
             Define a color lookup table
             </summary>
@@ -49580,7 +49594,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.ColorTable``1(OpenTK.Graphics.ExtPalettedTexture,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
+        <member name="M:OpenTK.Graphics.GL.Ext.ColorTable``1(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
             <summary>
             Define a color lookup table
             </summary>
@@ -49615,7 +49629,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.ColorTable``1(OpenTK.Graphics.ExtPalettedTexture,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.Ext.ColorTable``1(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
             <summary>
             Define a color lookup table
             </summary>
@@ -49650,7 +49664,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.ColorTable``1(OpenTK.Graphics.ExtPalettedTexture,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.Ext.ColorTable``1(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelInternalFormat,System.Int32,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
             <summary>
             Define a color lookup table
             </summary>
@@ -49685,7 +49699,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTable(OpenTK.Graphics.ExtPalettedTexture,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
+        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTable(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,System.IntPtr)">
             <summary>
             Retrieve contents of a color lookup table
             </summary>
@@ -49710,7 +49724,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTable``1(OpenTK.Graphics.ExtPalettedTexture,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
+        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTable``1(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0@)">
             <summary>
             Retrieve contents of a color lookup table
             </summary>
@@ -49735,7 +49749,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTable``1(OpenTK.Graphics.ExtPalettedTexture,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
+        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTable``1(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[])">
             <summary>
             Retrieve contents of a color lookup table
             </summary>
@@ -49760,7 +49774,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTable``1(OpenTK.Graphics.ExtPalettedTexture,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTable``1(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:])">
             <summary>
             Retrieve contents of a color lookup table
             </summary>
@@ -49785,7 +49799,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTable``1(OpenTK.Graphics.ExtPalettedTexture,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
+        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTable``1(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.PixelFormat,OpenTK.Graphics.PixelType,``0[0:,0:,0:])">
             <summary>
             Retrieve contents of a color lookup table
             </summary>
@@ -49810,7 +49824,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTableParameter(OpenTK.Graphics.ExtPalettedTexture,OpenTK.Graphics.ExtPalettedTexture,System.Int32[])">
+        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.GetColorTableParameterPName,System.Int32[])">
             <summary>
             Get color lookup table parameters
             </summary>
@@ -49830,7 +49844,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTableParameter(OpenTK.Graphics.ExtPalettedTexture,OpenTK.Graphics.ExtPalettedTexture,System.Int32@)">
+        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.GetColorTableParameterPName,System.Int32@)">
             <summary>
             Get color lookup table parameters
             </summary>
@@ -49850,7 +49864,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTableParameter(OpenTK.Graphics.ExtPalettedTexture,OpenTK.Graphics.ExtPalettedTexture,System.Int32*)">
+        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.GetColorTableParameterPName,System.Int32*)">
             <summary>
             Get color lookup table parameters
             </summary>
@@ -49870,7 +49884,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTableParameter(OpenTK.Graphics.ExtPalettedTexture,OpenTK.Graphics.ExtPalettedTexture,System.Single[])">
+        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.GetColorTableParameterPName,System.Single[])">
             <summary>
             Get color lookup table parameters
             </summary>
@@ -49890,7 +49904,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTableParameter(OpenTK.Graphics.ExtPalettedTexture,OpenTK.Graphics.ExtPalettedTexture,System.Single@)">
+        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.GetColorTableParameterPName,System.Single@)">
             <summary>
             Get color lookup table parameters
             </summary>
@@ -49910,7 +49924,7 @@
             </para>
             </param>
         </member>
-        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTableParameter(OpenTK.Graphics.ExtPalettedTexture,OpenTK.Graphics.ExtPalettedTexture,System.Single*)">
+        <member name="M:OpenTK.Graphics.GL.Ext.GetColorTableParameter(OpenTK.Graphics.ColorTableTarget,OpenTK.Graphics.GetColorTableParameterPName,System.Single*)">
             <summary>
             Get color lookup table parameters
             </summary>
@@ -56460,6 +56474,18 @@
             </para>
             <para>This function allocates memory.</para>
             </remarks>
+        </member>
+        <member name="M:OpenTK.Platform.Utilities.CreateGraphicsContext(OpenTK.Graphics.GraphicsMode,OpenTK.Platform.IWindowInfo,System.Int32,System.Int32,OpenTK.Graphics.GraphicsContextFlags)">
+             <summary>
+             Creates a Graphics context and for a window or control.
+             </summary>
+             <param name="mode"></param>
+            
+             <param name="major">Major version number of OpenGL context to create.</param>
+             <param name="minor">Minor version number of OpenGL context to create.</param>
+             <param name="flags"></param>
+             <param name="context"></param>
+             <param name="info"></param>
         </member>
         <member name="M:OpenTK.Platform.Utilities.CreateGraphicsContext(OpenTK.Graphics.GraphicsMode,System.Windows.Forms.Control,OpenTK.Graphics.GraphicsContext@,OpenTK.Platform.IWindowInfo@)">
             <summary>
