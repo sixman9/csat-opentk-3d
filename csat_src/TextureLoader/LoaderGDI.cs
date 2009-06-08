@@ -67,12 +67,6 @@ namespace TextureLoaders
 						pf = OpenTK.Graphics.PixelFormat.Bgr;
 						pt = OpenTK.Graphics.PixelType.UnsignedShort5551Ext;
 						break;
-					case System.Drawing.Imaging.PixelFormat.Format16bppRgb565:
-						pif = OpenTK.Graphics.PixelInternalFormat.R5G6B5IccSgix;
-						pf = OpenTK.Graphics.PixelFormat.R5G6B5IccSgix;
-						pt = OpenTK.Graphics.PixelType.UnsignedByte;
-						break;
-
 					case System.Drawing.Imaging.PixelFormat.Format24bppRgb: // works
 						pif = OpenTK.Graphics.PixelInternalFormat.Rgb8;
 						pf = OpenTK.Graphics.PixelFormat.Bgr;

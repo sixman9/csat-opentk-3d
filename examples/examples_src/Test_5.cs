@@ -111,16 +111,16 @@ namespace CSatExamples
         /// along when the aspect ratio of your window).
         /// </summary>
         /// <param name="e">Contains information on the new Width and Size of the GameWindow.</param>
-        protected override void OnResize(ResizeEventArgs e)
+        protected override void OnResize(EventArgs e)
         {
-            Util.Resize(e.Width, e.Height, 1.0, 1000);
+            Util.Resize(Width, Height, 1.0, 1000);
         }
 
         /// <summary>
         /// Called when it is time to setup the next frame.
         /// </summary>
         /// <param name="e">Contains timing information for framerate independent logic.</param>
-        public override void OnUpdateFrame(UpdateFrameEventArgs e)
+        protected override void OnUpdateFrame(FrameEventArgs e)
         {
             if (Keyboard[Key.Escape])
                 Exit();
@@ -208,7 +208,7 @@ namespace CSatExamples
         /// Called when it is time to render the next frame.
         /// </summary>
         /// <param name="e">Contains timing information.</param>
-        public override void OnRenderFrame(RenderFrameEventArgs e)
+        protected override void OnRenderFrame(FrameEventArgs e)
         {
             Settings.NumOfObjects = 0;
             GL.Clear(ClearBufferMask.DepthBufferBit);

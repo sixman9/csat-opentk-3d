@@ -71,18 +71,18 @@ namespace CSatExamples
             Util.ClearArrays(); // poistaa kaikki materiaalit ja texturet
         }
 
-        protected override void OnResize(ResizeEventArgs e)
+        protected override void OnResize(EventArgs e)
         {
-            Util.Resize(e.Width, e.Height, 1.0, 1000);
+            Util.Resize(Width, Height, 1.0, 1000);
         }
 
-        public override void OnUpdateFrame(UpdateFrameEventArgs e)
+        protected override void OnUpdateFrame(FrameEventArgs e)
         {
             if (Keyboard[Key.Escape]) Exit();
             cameraPath.UpdatePath((float)e.Time * 5);
         }
 
-        public override void OnRenderFrame(RenderFrameEventArgs e)
+        protected override void OnRenderFrame(FrameEventArgs e)
         {
             Settings.NumOfObjects = 0;
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
