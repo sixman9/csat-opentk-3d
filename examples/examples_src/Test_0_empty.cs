@@ -10,7 +10,7 @@ using System;
 using System.Drawing;
 using CSat;
 using OpenTK;
-using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using OpenTK.Platform;
 
@@ -21,9 +21,9 @@ namespace CSatExamples
         private int _oldMouseX, _oldMouseY;
         Camera cam = new Camera();
         Font font = new Font(FontFamily.GenericSansSerif, 24.0f);
-        TextPrinter text = new TextPrinter();
+        OpenTK.Graphics.TextPrinter text = new OpenTK.Graphics.TextPrinter();
 
-        public Game0(int width, int height) : base(width, height, GraphicsMode.Default, "xxx") { }
+        public Game0(int width, int height) : base(width, height, OpenTK.Graphics.GraphicsMode.Default, "xxx") { }
 
         public override void OnLoad(EventArgs e)
         {
@@ -51,7 +51,7 @@ namespace CSatExamples
 
         protected override void OnResize(EventArgs e)
         {
-            Util.Resize(Width, Height, 1.0, 1000);
+            Util.Resize(Width, Height, 1, 1000);
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)

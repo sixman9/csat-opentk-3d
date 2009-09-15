@@ -10,9 +10,8 @@ using System;
 using System.Drawing;
 using CSat;
 using OpenTK;
-using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
-using OpenTK.Math;
 using OpenTK.Platform;
 
 namespace CSatExamples
@@ -24,8 +23,8 @@ namespace CSatExamples
 
         Camera cam = new Camera("Camera");
         Font font = new Font(FontFamily.GenericSansSerif, 24.0f);
-        TextPrinter text = new TextPrinter();
-        public Game11(int width, int height) : base(width, height, GraphicsMode.Default, "City") { }
+        OpenTK.Graphics.TextPrinter text = new OpenTK.Graphics.TextPrinter();
+        public Game11(int width, int height) : base(width, height, OpenTK.Graphics.GraphicsMode.Default, "City") { }
 
         Node world = new Node(); // tänne lisäillään kaikki kamat
         Mesh city, car;
@@ -82,7 +81,7 @@ namespace CSatExamples
 
         protected override void OnResize(EventArgs e)
         {
-            Util.Resize(Width, Height, 1.0, 1000);
+            Util.Resize(Width, Height, 1, 1000);
         }
 
         public void CheckMove(ref Vector3 orig, ref Vector3 newpos, ref Mesh obj)

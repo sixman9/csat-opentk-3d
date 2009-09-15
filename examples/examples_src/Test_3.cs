@@ -11,9 +11,8 @@ using System;
 using System.Drawing;
 using CSat;
 using OpenTK;
-using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
-using OpenTK.Math;
 using OpenTK.Platform;
 
 namespace CSatExamples
@@ -27,7 +26,7 @@ namespace CSatExamples
         static Random random = new Random();
 
         Font font = new Font(FontFamily.GenericSansSerif, 24.0f);
-        TextPrinter text = new TextPrinter();
+        OpenTK.Graphics.TextPrinter text = new OpenTK.Graphics.TextPrinter();
 
         Object2D[] partObj = new Object2D[3];
 
@@ -37,7 +36,7 @@ namespace CSatExamples
 
         ParticleEngine particles = new ParticleEngine(); // engine huolehtii että partikkelit renderoidaan oikeassa järjestyksessä
 
-        public Game3(int width, int height) : base(width, height, GraphicsMode.Default, "Particles test") { }
+        public Game3(int width, int height) : base(width, height, OpenTK.Graphics.GraphicsMode.Default, "Particles test") { }
 
         /// <summary>Load resources here.</summary>
         public override void OnLoad(EventArgs e)
@@ -89,7 +88,7 @@ namespace CSatExamples
         /// <param name="e">Contains information on the new Width and Size of the GameWindow.</param>
         protected override void OnResize(EventArgs e)
         {
-            Util.Resize(Width, Height, 1.0, 1000);
+            Util.Resize(Width, Height, 1, 1000);
         }
 
         /// <summary>

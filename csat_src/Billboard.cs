@@ -33,7 +33,7 @@
 // billboard tut:
 //  http://www.lighthouse3d.com/opengl/billboarding/index.php3?billCheat
 
-using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 
 namespace CSat
 {

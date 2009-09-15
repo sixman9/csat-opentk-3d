@@ -9,7 +9,7 @@ using System;
 using System.Windows.Forms;
 using CSat;
 using OpenTK;
-using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 
 namespace CSatExamples
 {

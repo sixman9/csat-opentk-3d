@@ -31,8 +31,8 @@
 #endregion
 
 using System;
-using OpenTK.Graphics;
-using OpenTK.Math;
+using OpenTK.Graphics.OpenGL;
+using OpenTK;
 using System.Collections.Generic;
 
 namespace CSat

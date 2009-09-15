@@ -31,8 +31,8 @@
 #endregion
 
 using System;
-using OpenTK.Graphics;
-using OpenTK.Math;
+using OpenTK.Graphics.OpenGL;
+using OpenTK;
 
 namespace CSat
 {
@@ -134,7 +134,7 @@ namespace CSat
         }
 
         static bool is3DMode = false;
-        public static double Near = 0.1, Far = 1000, Fov = 45;
+        public static float Near = 0.1f, Far = 1000, Fov = 45;
         public static int ScreenWidth = 800, ScreeenHeight = 600;
         public static void Set2DMode(int width, int height)
         {
@@ -152,7 +152,7 @@ namespace CSat
             GL.Disable(EnableCap.DepthTest);
             GL.Disable(EnableCap.CullFace);
         }
-        public static void Set3DMode(int width, int height, double near, double far)
+        public static void Set3DMode(int width, int height, float near, float far)
         {
             is3DMode = true;
             ScreenWidth = width;
@@ -163,7 +163,8 @@ namespace CSat
             GL.Viewport(0, 0, width, height);
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadIdentity();
-            Glu.Perspective(Fov, (double)width / (double)height, near, far);
+            Matrix4 perpective = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(Fov), width / height, near, far);
+            GL.LoadMatrix(ref perpective);
 
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
@@ -172,7 +173,7 @@ namespace CSat
             GL.Enable(EnableCap.CullFace);
         }
 
-        public static void Resize(int width, int height, double near, double far)
+        public static void Resize(int width, int height, float near, float far)
         {
             if (is3DMode) Set3DMode(width, height, near, far);
             else Set2DMode(width, height);
@@ -199,7 +200,7 @@ namespace CSat
             error = GL.GetError();
             if (error != ErrorCode.NoError)
             {
-                throw new ArgumentException(className + ": " + Glu.ErrorString(error) + " (" + error + ")");
+                throw new ArgumentException("Error: " + className);
             }
         }
 

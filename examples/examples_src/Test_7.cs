@@ -15,9 +15,8 @@
 using System;
 using CSat;
 using OpenTK;
-using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
-using OpenTK.Math;
 using OpenTK.Platform;
 
 namespace CSatExamples
@@ -35,7 +34,7 @@ namespace CSatExamples
         Particles explosion = new Particles("explosion");
         ParticleEngine particles = new ParticleEngine(); // engine huolehtii että partikkelit renderoidaan oikeassa järjestyksessä
 
-        public Game7(int width, int height) : base(width, height, GraphicsMode.Default, "Bitmap Font") { }
+        public Game7(int width, int height) : base(width, height, OpenTK.Graphics.GraphicsMode.Default, "Bitmap Font") { }
 
         /// <summary>Load resources here.</summary>
         public override void OnLoad(EventArgs e)
@@ -83,7 +82,7 @@ namespace CSatExamples
         /// <param name="e">Contains information on the new Width and Size of the GameWindow.</param>
         protected override void OnResize(EventArgs e)
         {
-            Util.Resize(Width, Height, 1.0, 1000);
+            Util.Resize(Width, Height, 1, 1000);
         }
 
         /// <summary>

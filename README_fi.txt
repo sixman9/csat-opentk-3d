@@ -4,13 +4,14 @@ matola@sci.fi
 
 -=K‰yt‰ omalla vastuullasi=-
 
-Lisensoitu MIT-lisenssill‰ (license.txt).
+MIT-lisenssi (Licenses/csat-license.txt).
 
 Hakemistot:
  examples/examples_src/    esimerkkien l‰hdekoodit
  csat_src/                 csatin l‰hdekoodit
  csat_src/TextureLoader/   texturelataaja (gdi/dds)
- Libraries/                tarvittavat kirjastot (ja lisenssi)
+ Libraries/                tarvittavat kirjastot
+ Licenses/                 lisenssit
  examples/bin/Release/     k‰‰nnetty exe
  examples/bin/data/        3d-mallit ja texturet
 

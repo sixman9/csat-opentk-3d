@@ -33,8 +33,8 @@
 
 using System;
 using System.Collections.Generic;
-using OpenTK.Graphics;
-using OpenTK.Math;
+using OpenTK.Graphics.OpenGL;
+using OpenTK;
 
 namespace CSat
 {

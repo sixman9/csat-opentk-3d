@@ -31,8 +31,8 @@
 #endregion
 
 using System;
-using OpenTK.Graphics;
-using OpenTK.Math;
+using OpenTK.Graphics.OpenGL;
+using OpenTK;
 using System.Collections.Generic;
 
 namespace CSat
@@ -147,7 +147,7 @@ namespace CSat
             if (attachedObj is Camera)
             {
                 GL.LoadIdentity();
-                Glu.LookAt(attachedObj.Position, to, attachedObj.Up);
+                MathExt.LookAt(attachedObj.Position, to, attachedObj.Up);
                 GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
                 Util.CopyArray(ref Util.ModelMatrix, ref attachedObj.Matrix);
             }
@@ -158,7 +158,7 @@ namespace CSat
                     // otetaan käännetyn objektin matriisi talteen
                     GL.PushMatrix();
                     GL.LoadIdentity();
-                    Glu.LookAt(attachedObj.Position, to, attachedObj.Up);
+                    MathExt.LookAt(attachedObj.Position, to, attachedObj.Up);
                     GL.GetFloat(GetPName.ModelviewMatrix, Util.ModelMatrix);
 
                     //Util.CopyArray(ref Util.ModelMatrix, ref attachedObj.Matrix);

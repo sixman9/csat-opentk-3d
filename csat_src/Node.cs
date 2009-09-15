@@ -31,8 +31,8 @@
 #endregion
 
 using System;
-using OpenTK.Graphics;
-using OpenTK.Math;
+using OpenTK.Graphics.OpenGL;
+using OpenTK;
 using System.Collections.Generic;
 
 namespace CSat
@@ -323,7 +323,7 @@ namespace CSat
         public void LookAt(Vector3 pos)
         {
             GL.LoadIdentity();
-            Glu.LookAt(Position, pos, Up);
+            MathExt.LookAt(Position, pos, Up);
         }
 
         void Translate(Node obj)
@@ -385,7 +385,7 @@ namespace CSat
         {
             // jos objekti on Mesh
             Mesh m = this as Mesh;
-            if(m!=null)
+            if (m != null)
             {
                 // tarkista onko objekti näkökentässä
                 if (Frustum.ObjectInFrustum(WMatrix[12], WMatrix[13], WMatrix[14], m.Boundings))
@@ -407,7 +407,7 @@ namespace CSat
         public void CalcPositions(bool getWMatrix)
         {
             GL.PushMatrix();
-//            CalcPosition(getWMatrix);
+            //            CalcPosition(getWMatrix);
 
             foreach (Node o in Objects)
             {

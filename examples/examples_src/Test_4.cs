@@ -11,7 +11,7 @@ using System;
 using System.Drawing;
 using CSat;
 using OpenTK;
-using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using OpenTK.Platform;
 
@@ -22,11 +22,11 @@ namespace CSatExamples
         private int _oldMouseX, _oldMouseY;
         Camera cam = new Camera();
         Font font = new Font(FontFamily.GenericSansSerif, 24.0f);
-        TextPrinter text = new TextPrinter();
+        OpenTK.Graphics.TextPrinter text = new OpenTK.Graphics.TextPrinter();
 
         Mesh model;
 
-        public Game4(int width, int height) : base(width, height, GraphicsMode.Default, "Animation test") { }
+        public Game4(int width, int height) : base(width, height, OpenTK.Graphics.GraphicsMode.Default, "Animation test") { }
 
         /// <summary>Load resources here.</summary>
         public override void OnLoad(EventArgs e)
@@ -76,7 +76,7 @@ namespace CSatExamples
         /// <param name="e">Contains information on the new Width and Size of the GameWindow.</param>
         protected override void OnResize(EventArgs e)
         {
-            Util.Resize(Width, Height, 1.0, 1000);
+            Util.Resize(Width, Height, 1, 1000);
         }
 
         /// <summary>

@@ -33,7 +33,8 @@
 // Normaalien laskut ym ja lisää quaternion metodeita.
 
 using System;
-using OpenTK.Math;
+using OpenTK;
+using OpenTK.Graphics.OpenGL;
 
 namespace CSat
 {
@@ -42,6 +43,11 @@ namespace CSat
         public static readonly float RadToDeg = (float)(180 / Math.PI);
         public static readonly float DegToRad = (float)(Math.PI / 180);
 
+        public static void LookAt(Vector3 src, Vector3 dest, Vector3 up)
+        {
+            Matrix4 lookat = Matrix4.LookAt(src, dest, up);
+            GL.LoadMatrix(ref lookat);
+        }
 
         #region --- Calc plane, normals.. ---
         public static Vector3 VectorMatrixMult(ref Vector3 vec, ref Matrix4 mat)

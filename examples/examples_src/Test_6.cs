@@ -11,7 +11,7 @@ using System;
 using System.Drawing;
 using CSat;
 using OpenTK;
-using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using OpenTK.Platform;
 
@@ -24,9 +24,9 @@ namespace CSatExamples
         Billboard obj = new Billboard("billboard");
 
         Font font = new Font(FontFamily.GenericSansSerif, 24.0f);
-        TextPrinter text = new TextPrinter();
+        OpenTK.Graphics.TextPrinter text = new OpenTK.Graphics.TextPrinter();
 
-        public Game6(int width, int height) : base(width, height, GraphicsMode.Default, "Billboard test") { }
+        public Game6(int width, int height) : base(width, height, OpenTK.Graphics.GraphicsMode.Default, "Billboard test") { }
 
         /// <summary>Load resources here.</summary>
         public override void OnLoad(EventArgs e)
@@ -68,7 +68,7 @@ namespace CSatExamples
         /// <param name="e">Contains information on the new Width and Size of the GameWindow.</param>
         protected override void OnResize(EventArgs e)
         {
-            Util.Resize(Width, Height, 0.1, 1000);
+            Util.Resize(Width, Height, 1, 1000);
         }
 
         /// <summary>

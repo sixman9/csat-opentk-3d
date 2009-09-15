@@ -50,10 +50,6 @@
       <HintPath>Libraries\OpenTK.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="OpenTK.Utilities">
-      <HintPath>Libraries\OpenTK.Utilities.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />

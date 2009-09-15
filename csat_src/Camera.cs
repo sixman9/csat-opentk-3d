@@ -30,8 +30,8 @@
  */
 #endregion
 
-using OpenTK.Graphics;
-using OpenTK.Math;
+using OpenTK.Graphics.OpenGL;
+using OpenTK;
 
 namespace CSat
 {
@@ -75,7 +75,7 @@ namespace CSat
         public void Update6DOF()
         {
             GL.LoadIdentity();
-            Glu.LookAt(Position, Position + Front, Up);
+            MathExt.LookAt(Position, Position + Front, Up);
 
             GL.GetFloat(GetPName.ModelviewMatrix, CameraMatrix);
         }
@@ -87,7 +87,7 @@ namespace CSat
         public new void LookAt(Vector3 pos)
         {
             GL.LoadIdentity();
-            Glu.LookAt(Position, pos, Up);
+            MathExt.LookAt(Position, pos, Up);
         }
 
     }

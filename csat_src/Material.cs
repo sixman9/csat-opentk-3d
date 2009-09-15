@@ -31,8 +31,8 @@
 #endregion
 
 using System.Collections.Generic;
-using OpenTK.Graphics;
-using OpenTK.Math;
+using OpenTK.Graphics.OpenGL;
+using OpenTK;
 
 /*
  * Ns = Phong SpecularTex component. Ranges from 0 to 200.

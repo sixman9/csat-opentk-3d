@@ -6,7 +6,7 @@
  */
 #endregion
 
-using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 
 namespace TextureLoaders
 {
