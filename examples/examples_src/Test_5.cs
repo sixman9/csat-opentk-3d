@@ -45,7 +45,7 @@ namespace CSatExamples
         public Game5(int width, int height) : base(width, height, OpenTK.Graphics.GraphicsMode.Default, "Collision detection") { }
 
         /// <summary>Load resources here.</summary>
-        public override void OnLoad(EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
@@ -97,7 +97,7 @@ namespace CSatExamples
         }
 
         #region OnUnload
-        public override void OnUnload(EventArgs e)
+        protected override void OnUnload(EventArgs e)
         {
             font.Dispose();
             Util.ClearArrays();

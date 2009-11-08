@@ -53,8 +53,7 @@
       <HintPath>..\Libraries\OpenTK.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="OpenTK.Compatibility, Version=0.9.9.2, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="OpenTK.Compatibility">
       <HintPath>..\Libraries\OpenTK.Compatibility.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -85,6 +84,12 @@
     <EmbeddedResource Include="examples_src\Menu.resx">
       <DependentUpon>Menu.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="OpenTK.Compatibility.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="OpenTK.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\csat.csproj">

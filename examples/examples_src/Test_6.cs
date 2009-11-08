@@ -29,7 +29,7 @@ namespace CSatExamples
         public Game6(int width, int height) : base(width, height, OpenTK.Graphics.GraphicsMode.Default, "Billboard test") { }
 
         /// <summary>Load resources here.</summary>
-        public override void OnLoad(EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
@@ -52,7 +52,7 @@ namespace CSatExamples
         }
 
         #region OnUnload
-        public override void OnUnload(EventArgs e)
+        protected override void OnUnload(EventArgs e)
         {
             font.Dispose();
             obj.Dispose();

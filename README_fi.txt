@@ -8,7 +8,7 @@ MIT-lisenssi (Licenses/csat-license.txt).
 
 Hakemistot:
  examples/examples_src/    esimerkkien lähdekoodit
- csat_src/                 csatin lähdekoodit
+ csat_src/                 csat lähdekoodit
  csat_src/TextureLoader/   texturelataaja (gdi/dds)
  Libraries/                tarvittavat kirjastot
  Licenses/                 lisenssit

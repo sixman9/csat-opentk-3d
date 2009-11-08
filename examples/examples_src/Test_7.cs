@@ -37,7 +37,7 @@ namespace CSatExamples
         public Game7(int width, int height) : base(width, height, OpenTK.Graphics.GraphicsMode.Default, "Bitmap Font") { }
 
         /// <summary>Load resources here.</summary>
-        public override void OnLoad(EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
@@ -66,7 +66,7 @@ namespace CSatExamples
         }
 
         #region OnUnload
-        public override void OnUnload(EventArgs e)
+        protected override void OnUnload(EventArgs e)
         {
             partObj.Dispose();
             bfont.Dispose();

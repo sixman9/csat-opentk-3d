@@ -34,7 +34,7 @@ namespace CSat
 {
     public static class Settings
     {
-        public static string Version = "0.4.5.2";
+        public static string Version = "0.4.5.5";
         public static string DataDir = "data/model/";
         public static string TextureDir = "data/texture/";
         public static string ShaderDir = "data/shader/";

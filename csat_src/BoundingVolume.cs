@@ -72,7 +72,7 @@ namespace CSat
 
             if (mesh.IsRendObj)
             {
-                v.Scale(0.5f, 0.5f, 0.5f); // puoleen väliin
+            	v = Vector3.Multiply(v, 0.5f); // puoleen väliin
                 mesh.ObjCenter = Min + v; // objektin keskikohta
             }
 
@@ -90,7 +90,7 @@ namespace CSat
 
             if (mesh.IsRendObj)
             {
-                v.Scale(0.5f, 0.5f, 0.5f); // puoleen väliin
+            	v = Vector3.Multiply(v, 0.5f); // puoleen väliin
                 mesh.ObjCenter = Min + v; // objektin keskikohta
             }
 

@@ -73,9 +73,9 @@ namespace CSat
             if (rot.X != 0 || rot.Y != 0 || rot.Z != 0)
             {
                 rot = rot * MathExt.DegToRad;
-                Matrix4 mx = Matrix4.RotateX(rot.X);
-                Matrix4 my = Matrix4.RotateY(rot.Y);
-                Matrix4 mz = Matrix4.RotateZ(rot.Z);
+                Matrix4 mx = Matrix4.CreateRotationX(rot.X);
+                Matrix4 my = Matrix4.CreateRotationY(rot.Y);
+                Matrix4 mz = Matrix4.CreateRotationZ(rot.Z);
                 Matrix4 outm0;
                 Matrix4.Mult(ref mx, ref my, out outm0);
                 Matrix4.Mult(ref outm0, ref mz, out outm);

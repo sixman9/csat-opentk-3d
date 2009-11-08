@@ -35,7 +35,7 @@ namespace CSatExamples
         Mesh city;
         Path cameraPath;
 
-        public override void OnLoad(EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
@@ -64,7 +64,7 @@ namespace CSatExamples
             cameraPath.FollowPath(cam, true, true);
         }
 
-        public override void OnUnload(EventArgs e)
+        protected override void OnUnload(EventArgs e)
         {
             font.Dispose();
             Util.ClearArrays(); // poistaa kaikki materiaalit ja texturet

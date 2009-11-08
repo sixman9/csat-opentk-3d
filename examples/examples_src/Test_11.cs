@@ -34,7 +34,7 @@ namespace CSatExamples
         bool flying = false;
         bool tab = false;
 
-        public override void OnLoad(EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
@@ -73,7 +73,7 @@ namespace CSatExamples
             carPath.FixPathY(0, ref city);
         }
 
-        public override void OnUnload(EventArgs e)
+        protected override void OnUnload(EventArgs e)
         {
             font.Dispose();
             Util.ClearArrays(); // poistaa kaikki materiaalit ja texturet

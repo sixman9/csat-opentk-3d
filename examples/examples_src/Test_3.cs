@@ -39,7 +39,7 @@ namespace CSatExamples
         public Game3(int width, int height) : base(width, height, OpenTK.Graphics.GraphicsMode.Default, "Particles test") { }
 
         /// <summary>Load resources here.</summary>
-        public override void OnLoad(EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
@@ -72,7 +72,7 @@ namespace CSatExamples
         }
 
         #region OnUnload
-        public override void OnUnload(EventArgs e)
+        protected override void OnUnload(EventArgs e)
         {
             font.Dispose();
             for (int q = 0; q < 3; q++) partObj[q].Dispose();

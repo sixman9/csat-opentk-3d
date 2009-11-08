@@ -25,7 +25,7 @@ namespace CSatExamples
 
         public Game0(int width, int height) : base(width, height, OpenTK.Graphics.GraphicsMode.Default, "xxx") { }
 
-        public override void OnLoad(EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
             GL.ClearColor(System.Drawing.Color.Blue);
             GL.Enable(EnableCap.DepthTest);
@@ -43,7 +43,7 @@ namespace CSatExamples
 
         }
 
-        public override void OnUnload(EventArgs e)
+        protected override void OnUnload(EventArgs e)
         {
             font.Dispose();
             Util.ClearArrays();

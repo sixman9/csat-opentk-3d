@@ -38,12 +38,12 @@ namespace CSatExamples
             textBox1.Lines = new string[] { "Moving:", "A D W S", "R F (up/down)", "shift - run", "", "Push left mouse button to rotate the camera." };
 
             DisplayDevice dev = DisplayDevice.Default;
-            DisplayResolution[] res = dev.AvailableResolutions;
-
-            for (int q = 0; q < res.Length; q++)
+            for (int q = 0; q < dev.AvailableResolutions.Count; q++)
             {
-                if (res[q].BitsPerPixel >= 16)
-                    comboBox1.Items.Add("" + res[q].Width + "x" + res[q].Height + "x" + res[q].BitsPerPixel);
+                if (dev.AvailableResolutions[q].BitsPerPixel >= 16)
+                    comboBox1.Items.Add(dev.AvailableResolutions[q].Width+"x"+
+                	                    dev.AvailableResolutions[q].Height+"x"+
+                	                    dev.AvailableResolutions[q].BitsPerPixel);
             }
             int ind = comboBox1.FindString("800x600");
             comboBox1.SelectedIndex = ind;
